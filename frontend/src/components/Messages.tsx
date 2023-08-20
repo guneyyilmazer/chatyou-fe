@@ -1,9 +1,12 @@
 import { message } from "../types/MessageType";
-import '../css/Messages.css'
+import { useState } from "react";
+import "../css/Messages.css";
 const Messages = () => {
+  const [clientId, setClientId] = useState("user1");
+
   const list: message[] = [
     {
-      sender: { id: "id", username: "Dave" },
+      sender: { id: "user1", username: "Dave" },
       content: { message: "hey", pictures: [] },
     },
     {
@@ -14,10 +17,17 @@ const Messages = () => {
   return (
     <div className="col-8" style={{}}>
       {list.map((item) => (
-        <div className="mt-5 d-flex">
+        <div className={
+            item.sender.id != clientId
+              ? "mt-5 d-flex justify-content-start"
+              : "mt-5 d-flex justify-content-end"
+          }>
           <span
-            className="message-received text-break"
-            style={{ borderRadius: "15px", borderBottomLeftRadius: "0px" }}
+            className={
+              item.sender.id != clientId
+                ? "message-received text-break"
+                : "message-sent text-break"
+            }
           >
             {item.content.message + " " + item.sender.username}
           </span>
