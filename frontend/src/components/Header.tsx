@@ -6,9 +6,9 @@ const Header = () => {
             <div className="btn-group">
                 <button className="btn btn-danger">Home</button>
             </div>
-            <div className="btn-group">
-                <button className="btn btn-danger">Exit Room</button>
-                <button className="btn btn-danger">Logout</button>
+            <div className="">
+                <button className="btn btn-danger mx-1">Exit Room</button>
+                <button className="btn btn-danger mx-1">Logout</button>
             </div>
 
         </nav>

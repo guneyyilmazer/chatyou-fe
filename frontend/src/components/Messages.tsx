@@ -1,6 +1,5 @@
-import {message} from '../types/MessageType'
+import { message } from "../types/MessageType";
 const Messages = () => {
-  
   const list: message[] = [
     {
       sender: { id: "id", username: "Dave" },
@@ -12,14 +11,14 @@ const Messages = () => {
     },
   ];
   return (
-    <div className="d-flex flex-column col-6" style={{}}>
+    <div className="col-8" style={{}}>
       {list.map((item) => (
-        <span
-          className="bg-danger flex-wrap text-break p-2 my-2"
+        <div
+          className="bg-danger d-flex justify-content-start text-break p-2 my-2"
           style={{ borderRadius: "15px", borderBottomLeftRadius: "0px" }}
         >
-          {item.content.message + " " + item.sender.username}
-        </span>
+          <span>{item.content.message + " " + item.sender.username}</span>
+        </div>
       ))}
     </div>
   );
