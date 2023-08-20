@@ -1,4 +1,5 @@
 import { message } from "../types/MessageType";
+import '../css/Messages.css'
 const Messages = () => {
   const list: message[] = [
     {
@@ -13,9 +14,9 @@ const Messages = () => {
   return (
     <div className="col-8" style={{}}>
       {list.map((item) => (
-        <div className="my-4">
+        <div className="mt-5 d-flex">
           <span
-            className="bg-danger p-2 text-break"
+            className="message-received text-break"
             style={{ borderRadius: "15px", borderBottomLeftRadius: "0px" }}
           >
             {item.content.message + " " + item.sender.username}
