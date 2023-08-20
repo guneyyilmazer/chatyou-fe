@@ -13,11 +13,13 @@ const Messages = () => {
   return (
     <div className="col-8" style={{}}>
       {list.map((item) => (
-        <div
-          className="bg-danger d-flex justify-content-start text-break p-2 my-2"
-          style={{ borderRadius: "15px", borderBottomLeftRadius: "0px" }}
-        >
-          <span>{item.content.message + " " + item.sender.username}</span>
+        <div className="my-4">
+          <span
+            className="bg-danger p-2 text-break"
+            style={{ borderRadius: "15px", borderBottomLeftRadius: "0px" }}
+          >
+            {item.content.message + " " + item.sender.username}
+          </span>
         </div>
       ))}
     </div>
