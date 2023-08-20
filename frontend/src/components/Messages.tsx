@@ -1,8 +1,6 @@
+import {message} from '../types/MessageType'
 const Messages = () => {
-  type message = {
-    sender: { id: String; username: String };
-    content: { message: String; pictures?: String[] };
-  };
+  
   const list: message[] = [
     {
       sender: { id: "id", username: "Dave" },
