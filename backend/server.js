@@ -21,4 +21,5 @@ io.on("connection",(socket)=>{
     console.log(socket.id+" connected")
 })
 
-mongoose.connect("mongodb://localhost:27017/chatapp").then(()=>console.log("db connected"))
+mongoose.connect(process.env.MONGODB_URI).then(()=>console.log("db connected"))
+
