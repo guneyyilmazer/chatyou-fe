@@ -1,4 +1,5 @@
 const express = require("express");
+const { default: mongoose } = require("mongoose");
 require("dotenv").config();
 require("mongoose");
 const io = require("socket.io")(3001, {
@@ -19,3 +20,5 @@ app.listen(process.env.PORT, () => {
 io.on("connection",(socket)=>{
     console.log(socket.id+" connected")
 })
+
+mongoose.connect("mongodb://localhost:27017/chatapp").then(()=>console.log("db connected"))
