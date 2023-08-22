@@ -1,0 +1,69 @@
+const UserModel = require("../schemas/userSchema");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
+const genToken = (userId, username) => {
+  return jwt.sign({ userId, username }, process.env.SECRET, {
+    expiresIn: "7d",
+  });
+};
+const Signup = async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+    const userId = await UserModel.signup(username, email, password);
+    const token = genToken(userId, username);
+    res.status(200).json({ AuthValidation: token });
+  } catch (err) {
+    console.log(err.message)
+    res.status(401).json({ error: err.message });
+  }
+};
+
+const Login = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const userId = await UserModel.login(username, password);
+    const token = genToken(userId, username);
+    res.status(200).json({ AuthValidation: token });
+  } catch (err) {
+    console.log(err.message);
+    res.status(401).json({ error: err.message });
+  }
+};
+
+const LoadUser = async (req, res) => {
+  try {
+    const { username } = req.body;
+    const inDB = await UserModel.findOne({ username });
+    console.log(inDB);
+    res
+      .status(200)
+      .json({
+        username: inDB.username,
+        id: inDB._id,
+        profilePicture: inDB.profilePicture,
+      });
+  } catch (err) {
+    console.log(err.message);
+    res.status(401).json({ error: err.message });
+  }
+};
+
+const UpdateProfilePicture = async (req, res) => {
+  try {
+    const { username, profilePicture } = req.body;
+    const auth = await UserModel.findOne({ _id: req.user }); //already verifying the token with middleware
+    if (!auth) {
+      throw new Error("Not verified.");
+    }
+    const inDB = await UserModel.findOneAndUpdate(
+      { username },
+      { profilePicture },
+      { new: true }
+    );
+    res.status(200).json({ inDB });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+module.exports = { Signup, Login, LoadUser, UpdateProfilePicture };
