@@ -1,5 +1,6 @@
 const express = require("express");
 const { default: mongoose } = require("mongoose");
+const userRouter = require("./routers/userRouter");
 require("dotenv").config();
 require("mongoose");
 const io = require("socket.io")(3001, {
@@ -10,6 +11,7 @@ const io = require("socket.io")(3001, {
 });
 const app = express();
 app.use(express.json({ limit: "10mb" }));
+app.use("user",userRouter)
 
 app.listen(process.env.PORT, () => {
   console.log("listening on port " + process.env.PORT);
