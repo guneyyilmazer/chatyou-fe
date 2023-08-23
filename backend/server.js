@@ -8,18 +8,24 @@ const io = require("socket.io")(3001, {
     origin: "http://localhost:3000",
   },
 });
-
 const app = express();
 app.use(express.json({ limit: "10mb" }));
-
 
 app.listen(process.env.PORT, () => {
   console.log("listening on port " + process.env.PORT);
 });
 
-io.on("connection",(socket)=>{
-    console.log(socket.id+" connected")
-})
+io.on("connection", (socket) => {
+  console.log(socket.id + " connected");
 
-mongoose.connect(process.env.MONGODB_URI).then(()=>console.log("db connected"))
+  socket.on("join-room", async (room) => {
+    try {
+      socket.join(room);
+      console.log(socket.id + " connected to room " + room);
+    } catch (err) {}
+  });
+});
 
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log("db connected"));
