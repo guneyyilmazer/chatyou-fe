@@ -8,11 +8,12 @@ const app = () => {
 
   return (
     <div className="d-flex flex-column mt-5 justify-content-center align-items-center">
-      {/* <Room/> */} {/* Currently working on JoinRoom.tsx */}
-      {
+      {localStorage.getItem("room") ? (
         //@ts-ignore doesn't have an easy fix
+        <Room socket={socket} />
+      ) : (
         <JoinRoom socket={socket} />
-      }
+      )}
     </div>
   );
 };

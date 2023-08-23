@@ -2,6 +2,7 @@ const express = require("express");
 const { default: mongoose } = require("mongoose");
 const userRouter = require("./routers/userRouter");
 require("dotenv").config();
+const RoomModel = require("./schemas/roomSchema")
 require("mongoose");
 const io = require("socket.io")(3001, {
   maxHttpBufferSize: 1e7,
@@ -22,10 +23,15 @@ io.on("connection", (socket) => {
 
   socket.on("join-room", async (room) => {
     try {
+        
       socket.join(room);
       console.log(socket.id + " connected to room " + room);
     } catch (err) {}
   });
+  socket.on("send-msg", (room,content,pictures)=>{
+    io.to(room).emit("receive-msg",content,pictures)
+
+  })
 });
 
 mongoose
