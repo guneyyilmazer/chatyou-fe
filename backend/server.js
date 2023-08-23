@@ -2,7 +2,7 @@ const express = require("express");
 const { default: mongoose } = require("mongoose");
 const userRouter = require("./routers/userRouter");
 require("dotenv").config();
-const RoomModel = require("./schemas/roomSchema")
+const RoomModel = require("./schemas/roomSchema");
 require("mongoose");
 const io = require("socket.io")(3001, {
   maxHttpBufferSize: 1e7,
@@ -12,7 +12,7 @@ const io = require("socket.io")(3001, {
 });
 const app = express();
 app.use(express.json({ limit: "10mb" }));
-app.use("user",userRouter)
+app.use("user", userRouter);
 
 app.listen(process.env.PORT, () => {
   console.log("listening on port " + process.env.PORT);
@@ -23,15 +23,27 @@ io.on("connection", (socket) => {
 
   socket.on("join-room", async (room) => {
     try {
-        
       socket.join(room);
       console.log(socket.id + " connected to room " + room);
     } catch (err) {}
   });
-  socket.on("send-msg", (room,content,pictures)=>{
-    io.to(room).emit("receive-msg",content,pictures)
-
-  })
+  socket.on("send-msg", async (user, room, content, pictures) => {
+    if (await RoomModel.findOne({ name: room })) {
+      const roomInDB = await RoomModel.findOne({ name: room });
+      roomInDB.messages = [
+        ...roomInDB.messages,
+        { sender: user, content, pictures },
+      ];
+      io.to(room).emit("receive-msg", user, content, pictures);
+      roomInDB.save()
+    } else {
+      await RoomModel.create({
+        name: room,
+        messages: [{ sender: user, content, pictures }],
+      });
+      io.to(room).emit("receive-msg", content, pictures);
+    }
+  });
 });
 
 mongoose

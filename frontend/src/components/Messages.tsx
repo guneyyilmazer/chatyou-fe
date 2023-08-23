@@ -6,7 +6,7 @@ const Messages = ({ socket }: any) => {
 
   socket.on(
     "receive-msg",
-    (content: String, pictures: String[], user: String) => {
+    (user: String,content: String, pictures: String[]) => {
       setMessages([
         ...messages,
         {

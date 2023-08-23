@@ -7,7 +7,7 @@ const SendMessage = ({socket}:any) => {
         if(inputRef.current?.value)
         {
 
-            socket.emit("send-msg",localStorage.getItem("room"),inputRef.current!.value)
+            socket.emit("send-msg","placeholder-userId",localStorage.getItem("room"),inputRef.current!.value)
         }
     }
   return (
