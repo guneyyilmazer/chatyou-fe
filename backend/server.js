@@ -10,7 +10,7 @@ const io = require("socket.io")(3001, {
 });
 
 const app = express();
-
+app.use(express.json({ limit: "10mb" }));
 
 
 app.listen(process.env.PORT, () => {
