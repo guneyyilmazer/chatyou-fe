@@ -1,12 +1,19 @@
 import { message } from "../types/MessageType";
-import { useState } from "react";
+import { useState,useRef, useEffect } from "react";
 import "../css/Messages.css";
 const Messages = ({ socket }: any) => {
   const [clientId, setClientId] = useState("user1");
+  const messageContainerRef = useRef<HTMLDivElement>(null)
+  const scrollDown = () => {
+    messageContainerRef.current &&
+    messageContainerRef.current!.scrollIntoView({
+        behavior: "smooth",
+      });
+  };
 
   socket.on(
     "receive-msg",
-    (user: String,content: String, pictures: String[]) => {
+    (user: String, content: String, pictures: String[]) => {
       setMessages([
         ...messages,
         {
@@ -26,11 +33,16 @@ const Messages = ({ socket }: any) => {
       content: { message: "hey2", pictures: [] },
     },
   ]);
+  useEffect(scrollDown,[messages])
 
   return (
-    <div className="d-flex flex-column overflow-auto" style={{"maxHeight":"80vh","maxWidth":"50vw"}}>
+    <div
+      className="d-flex flex-column overflow-auto"
+      style={{ maxHeight: "80vh", maxWidth: "50vw" }}
+    >
       {messages.map((item: message) => (
         <div
+        ref={messageContainerRef}
           className={
             item.sender.id != clientId
               ? "mt-5 d-flex justify-content-start"
