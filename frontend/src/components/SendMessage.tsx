@@ -12,7 +12,7 @@ const SendMessage = ({socket}:any) => {
     }
   return (
     <form onSubmit={handleSubmit} className='form-group d-flex justify-content-center'>
-        <input className='form-check px-5 py-3 rounded-2' type="text" ref={inputRef} />
+        <input className='form-check col-4 py-3 rounded-2' placeholder='Send a message' type="text" ref={inputRef} />
         <button className='btn btn-danger ms-2 rounded-3' type="submit">Send</button>
     </form>
   )
