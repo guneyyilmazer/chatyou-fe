@@ -7,7 +7,7 @@ const Header = () => {
                 <button className="btn btn-danger">Home</button>
             </div>
             <div className="">
-                <button className="btn btn-danger mx-1">Exit Room</button>
+                <button className="btn btn-danger mx-1" onClick={()=>{localStorage.removeItem("room");window.location.reload()}}>Exit Room</button>
                 <button className="btn btn-danger mx-1">Logout</button>
             </div>
 
