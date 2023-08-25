@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 
-const JoinRoom = ({ socket }: any ) => { //can't find the type
+const JoinRoom = ({ socket,setRoom }: any ) => { //can't find the type
   const roomInputRef = useRef<HTMLInputElement>(null);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -8,6 +8,7 @@ const JoinRoom = ({ socket }: any ) => { //can't find the type
     if (roomInputRef.current?.value) {
       socket.emit("join-room",roomInputRef.current.value);
       localStorage.setItem("room",roomInputRef.current!.value)
+      setRoom(roomInputRef.current!.value)
     } else {
       alert("Room can't be empty!");
     }
