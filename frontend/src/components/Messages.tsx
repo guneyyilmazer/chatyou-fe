@@ -38,7 +38,7 @@ const Messages = ({ socket }: any) => {
   return (
     <div
       className="d-flex flex-column overflow-auto"
-      style={{ maxHeight: "80vh", maxWidth: "50vw" }}
+      style={{ height: "80vh", width: "50vw" }}
     >
       {messages.map((item: message) => (
         <div
