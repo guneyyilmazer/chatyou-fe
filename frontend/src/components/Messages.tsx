@@ -28,7 +28,7 @@ const Messages = ({ socket }: any) => {
   ]);
 
   return (
-    <div className="col-8" style={{}}>
+    <div className="d-flex flex-column overflow-auto" style={{"maxHeight":"80vh","maxWidth":"50vw"}}>
       {messages.map((item: message) => (
         <div
           className={
