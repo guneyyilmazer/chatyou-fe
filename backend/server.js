@@ -3,6 +3,7 @@ const { default: mongoose } = require("mongoose");
 const userRouter = require("./routers/userRouter");
 require("dotenv").config();
 const RoomModel = require("./schemas/roomSchema");
+const withAuth = require("./middleware/withAuth");
 require("mongoose");
 const io = require("socket.io")(3001, {
   maxHttpBufferSize: 1e7,
@@ -12,7 +13,10 @@ const io = require("socket.io")(3001, {
 });
 const app = express();
 app.use(express.json({ limit: "10mb" }));
-app.use("user", userRouter);
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log("db connected"));
+app.use("/user", userRouter);
 
 app.listen(process.env.PORT, () => {
   console.log("listening on port " + process.env.PORT);
@@ -35,7 +39,7 @@ io.on("connection", (socket) => {
         { sender: user, content, pictures },
       ];
       io.to(room).emit("receive-msg", user, content, pictures);
-      roomInDB.save()
+      roomInDB.save();
     } else {
       await RoomModel.create({
         name: room,
@@ -45,7 +49,16 @@ io.on("connection", (socket) => {
     }
   });
 });
+app.use(withAuth)
+app.post("/loadRoom",async(req,res)=>{
+    try{
 
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => console.log("db connected"));
+        const {room} = req.body
+        const {messages} = await RoomModel.findOne({name:room})
+        res.status(200).json({messages})
+    }
+    catch(err){
+        res.status(400).json({error:err.message})
+    }
+    
+})
