@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors")
 const { default: mongoose } = require("mongoose");
 const userRouter = require("./routers/userRouter");
 require("dotenv").config();
@@ -12,6 +13,12 @@ const io = require("socket.io")(3001, {
   },
 });
 const app = express();
+app.use(
+    cors({
+      origin: "http://localhost:3000",
+      optionsSuccessStatus: 200,
+    })
+  );
 app.use(express.json({ limit: "10mb" }));
 mongoose
   .connect(process.env.MONGODB_URI)

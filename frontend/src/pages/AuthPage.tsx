@@ -2,18 +2,18 @@ import Login from "../components/Login";
 import Signup from "../components/Signup";
 import { useState } from "react";
 const AuthPage = () => {
-  const [haveAnAccount, setHaveAnAccount] = useState(false);
+  const [haveAnAccount, setHaveAnAccount] = useState(true);
   return (
-    <div>
+    <div className="">
       {haveAnAccount ? (
-        <div className="col-6">
+        <div className="d-flex flex-column justify-content-center align-items-center">
           <Signup />
-          <button onClick={() => setHaveAnAccount(!haveAnAccount)}>
-            Have an account?
+          <button className="btn btn-dark mt-3" onClick={() => setHaveAnAccount(!haveAnAccount)}>
+            Have an account already?
           </button>
         </div>
       ) : (
-        <div className="col-6">
+        <div className="d-flex justify-content-center align-items-center">
           <Login />
         </div>
       )}
