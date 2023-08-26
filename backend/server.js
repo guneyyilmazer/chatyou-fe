@@ -62,6 +62,7 @@ app.post("/loadRoom",async(req,res)=>{
 
         const {room} = req.body
         const {messages} = await RoomModel.findOne({name:room})
+        console.log(messages)
         res.status(200).json({messages})
     }
     catch(err){

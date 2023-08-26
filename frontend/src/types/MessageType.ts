@@ -1,4 +1,5 @@
 export type message = {
-    sender: { id: String; username: String };
-    content: { message: String; pictures?: String[] };
+    sender:  String;
+    content:  String ;
+    pictures?: String[]
   };

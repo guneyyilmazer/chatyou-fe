@@ -33,7 +33,7 @@ const Signup = () => {
       }
     }
     else{
-        alert("All credential fields must be filled.")
+        alert("All credentials must be filled.")
     }
   };
 const handleSubmit = (e:React.FormEvent) => {
