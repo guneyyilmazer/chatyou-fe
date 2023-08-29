@@ -8,7 +8,7 @@ const Header = () => {
             </div>
             <div className="">
                 <button className="btn btn-danger mx-1" onClick={()=>{localStorage.removeItem("room");window.location.reload()}}>Exit Room</button>
-                <button className="btn btn-danger mx-1">Logout</button>
+                <button className="btn btn-danger mx-1" onClick={()=>{localStorage.removeItem("Auth_Token");window.location.reload()}}>Logout</button>
             </div>
 
         </nav>
