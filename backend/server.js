@@ -70,3 +70,12 @@ app.post("/loadRoom",async(req,res)=>{
     }
     
 })
+app.post("/verify", async (req, res) => {
+    try {
+      const { token } = req.body;
+      const { userId, username } = await jwt.verify(token, process.env.SECRET);
+      res.status(200).json({ valid: true, userId, username });
+    } catch (err) {
+      res.status(401).json({ valid: false, error: err.message });
+    }
+  });
