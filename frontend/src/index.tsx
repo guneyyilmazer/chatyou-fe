@@ -13,7 +13,10 @@ root.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Header />}>
-        <Route index element={<App />} />
+        {
+          //@ts-ignore doesn't have an easy fix
+          <Route index element={<App />} />
+        }
         <Route path="auth">
           <Route index element={<AuthPage />} />
         </Route>

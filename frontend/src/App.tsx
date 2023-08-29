@@ -2,6 +2,7 @@ import {useState} from "react";
 import io from "socket.io-client";
 import Room from "./components/Room";
 import JoinRoom from "./components/JoinRoom";
+import Auth from "./components/Auth"
 
 const App = () => {
   const socket = io("http://localhost:3001");
@@ -19,4 +20,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Auth(App);
