@@ -1,13 +1,13 @@
 import {useRef} from 'react'
+const SendMessage = ({socket,room,username}:any) => {
 
-const SendMessage = ({socket}:any) => {
     const inputRef = useRef<HTMLInputElement>(null)
     const handleSubmit = (e:React.FormEvent) => {
         e.preventDefault()
-        if(inputRef.current?.value)
+        if(inputRef.current?.value && username)
         {
 
-            socket.emit("send-msg","placeholder-userId",localStorage.getItem("room"),inputRef.current!.value)
+            socket.emit("send-msg",username,localStorage.getItem("room"),inputRef.current!.value)
         }
     }
   return (

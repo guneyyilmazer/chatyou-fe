@@ -7,6 +7,7 @@ const genToken = (userId, username) => {
     expiresIn: "7d",
   });
 };
+
 const Signup = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -14,7 +15,7 @@ const Signup = async (req, res) => {
     const token = genToken(userId, username);
     res.status(200).json({ AuthValidation: token });
   } catch (err) {
-    console.log(err.message)
+    console.log(err.message);
     res.status(401).json({ error: err.message });
   }
 };
@@ -33,16 +34,24 @@ const Login = async (req, res) => {
 
 const LoadUser = async (req, res) => {
   try {
-    const { username } = req.body;
-    const inDB = await UserModel.findOne({ username });
-    console.log(inDB);
-    res
-      .status(200)
-      .json({
+    const { username, token } = req.body;
+    if (username) {
+      const inDB = await UserModel.findOne({ username });
+      res.status(200).json({
         username: inDB.username,
         id: inDB._id,
         profilePicture: inDB.profilePicture,
       });
+    } else if (token) {
+      const {username} = await jwt.verify(token, process.env.SECRET);
+
+      const inDB = await UserModel.findOne({ username });
+      res.status(200).json({
+        username: inDB.username,
+        id: inDB._id,
+        profilePicture: inDB.profilePicture,
+      });
+    }
   } catch (err) {
     console.log(err.message);
     res.status(401).json({ error: err.message });

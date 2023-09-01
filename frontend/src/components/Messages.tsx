@@ -2,8 +2,8 @@ import { message } from "../types/MessageType";
 import { useState, useRef, useEffect, useMemo } from "react";
 import Cookies from "js-cookie";
 import "../css/Messages.css";
-const Messages = ({ socket, room }: any) => {
-  const [clientId, setClientId] = useState("user1");
+const Messages = ({ socket, room,username }: any) => {
+ 
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const loadRoom = async () => {
     const res = await fetch("http://localhost:4000/loadRoom", {
@@ -56,14 +56,14 @@ const Messages = ({ socket, room }: any) => {
         <div
           ref={messageContainerRef}
           className={
-            item.sender != clientId
+            item.sender != username
               ? "mt-5 d-flex justify-content-start"
               : "mt-5 d-flex justify-content-end"
           }
         >
           <span
             className={
-              item.sender != clientId
+              item.sender != username
                 ? "message-received text-break"
                 : "message-sent text-break"
             }
