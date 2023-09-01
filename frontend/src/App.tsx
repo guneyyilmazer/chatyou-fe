@@ -9,7 +9,7 @@ const App = () => {
   const [room,setRoom] = useState(localStorage.getItem("room"))
 
   return (
-    <div className="d-flex flex-column mt-5 justify-content-center align-items-center">
+    <div className="d-flex flex-column justify-content-center align-items-center" >
       {room ? (
         //@ts-ignore doesn't have an easy fix
         <Room socket={socket} room={room} />

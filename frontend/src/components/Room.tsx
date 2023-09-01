@@ -2,6 +2,9 @@ import React, { useMemo, useState } from "react";
 import Messages from "./Messages";
 import SendMessage from "./SendMessage";
 import Cookies from "js-cookie";
+//@ts-ignore
+import background from '../images/background.jpeg'
+
 
 const Room = ({socket,room}:any) => {
   
@@ -30,7 +33,8 @@ const Room = ({socket,room}:any) => {
 
   socket.emit("join-room",localStorage.getItem("room"))
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center row col-12">
+    <div className="d-flex flex-column justify-content-center align-items-center row col-12"
+    style={{backgroundImage:`url(${background})`,height:"95vh",backgroundSize:"600px"}}>
         <Messages room={room} socket={socket} />
         <SendMessage username={username} room={room} socket={socket}/>
       </div>
