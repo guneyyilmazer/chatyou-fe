@@ -1,7 +1,8 @@
+import Cookies from "js-cookie";
 import { Outlet } from "react-router-dom";
 const Header = () => {
   return (
-    <div className="bg-danger">
+    <div>
       <nav className="d-flex justify-content-between "
       style={{height:"5vh"}}>
         <div className="btn-group">
@@ -20,7 +21,7 @@ const Header = () => {
           <button
             className="btn btn-danger mx-1"
             onClick={() => {
-              localStorage.removeItem("Auth_Token");
+              Cookies.remove("Auth_Token");
               window.location.reload();
             }}
           >
