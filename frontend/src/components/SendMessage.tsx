@@ -1,4 +1,5 @@
 import {useRef} from 'react'
+const ImageIcon = require( '../images/image-icon.svg')
 const SendMessage = ({socket,room,username}:any) => {
 
     const inputRef = useRef<HTMLInputElement>(null)
@@ -13,6 +14,7 @@ const SendMessage = ({socket,room,username}:any) => {
   return (
     <form onSubmit={handleSubmit} className='form-group d-flex justify-content-center'>
         <input className='form-check col-4 py-3 rounded-2' placeholder='Send a message' type="text" ref={inputRef} />
+        <button className='btn btn-danger ms-2 rounded-3' type="submit"><img src={ImageIcon}/></button>
         <button className='btn btn-danger ms-2 rounded-3' type="submit">Send</button>
     </form>
   )
