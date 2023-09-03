@@ -47,21 +47,21 @@ const Messages = ({ socket, room, username }: any) => {
   return (
     <div
       className="d-flex flex-column overflow-auto"
-      style={{ height: "80vh", width: "50vw" }}
+      style={{ height: "80vh", width: "43vw" }}
     >
       {messages.map((item: message,index:number) => (
         <div
           ref={messageContainerRef}
-          key={index++}
+          key={index}
           className={
-            item.sender != username
+            item.sender == username
               ? "mt-5 d-flex justify-content-start"
               : "mt-5 d-flex justify-content-end"
           }
         >
           <span
             className={
-              item.sender != username
+              item.sender == username
                 ? "message-received text-break"
                 : "message-sent text-break"
             }
