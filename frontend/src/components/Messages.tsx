@@ -66,7 +66,7 @@ const Messages = ({ socket, room, username }: any) => {
                 : "message-sent text-break"
             }
           >
-            {item.content + " " + item.sender}
+            {item.content + " " }<span className="username">{item.sender}</span>
           </span>
         </div>
       ))}
