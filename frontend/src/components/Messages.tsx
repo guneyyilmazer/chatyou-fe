@@ -16,7 +16,6 @@ const Messages = ({ socket, room,username }: any) => {
       body: JSON.stringify({ room }),
     });
     const response = await res.json();
-    console.log(response);
     if (!response.error) {
       setMessages(response.messages);
       scrollDown();
@@ -36,7 +35,7 @@ const Messages = ({ socket, room,username }: any) => {
       setMessages([
         ...messages,
         {
-          sender:user , //will implement right after front end auth implementation
+          sender:user,
           content,
           pictures
         },

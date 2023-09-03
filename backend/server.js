@@ -53,7 +53,7 @@ io.on("connection", (socket) => {
         name: room,
         messages: [{ sender: user, content, pictures }],
       });
-      io.to(room).emit("receive-msg", content, pictures);
+      io.to(room).emit("receive-msg",user, content, pictures);
     }
   });
 });
