@@ -2,8 +2,7 @@ import { message } from "../types/MessageType";
 import { useState, useRef, useEffect, useMemo } from "react";
 import Cookies from "js-cookie";
 import "../css/Messages.css";
-const Messages = ({ socket, room,username }: any) => {
- 
+const Messages = ({ socket, room, username }: any) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const loadRoom = async () => {
     const res = await fetch("http://localhost:4000/loadRoom", {
@@ -35,15 +34,14 @@ const Messages = ({ socket, room,username }: any) => {
       setMessages([
         ...messages,
         {
-          sender:user,
+          sender: user,
           content,
-          pictures
+          pictures,
         },
       ]);
     }
   );
-  const [messages, setMessages] = useState<message[]>([
-  ]);
+  const [messages, setMessages] = useState<message[]>([]);
   useEffect(scrollDown, [messages]);
 
   return (
@@ -51,9 +49,10 @@ const Messages = ({ socket, room,username }: any) => {
       className="d-flex flex-column overflow-auto"
       style={{ height: "80vh", width: "50vw" }}
     >
-      {messages.map((item: message) => (
+      {messages.map((item: message,index:number) => (
         <div
           ref={messageContainerRef}
+          key={index++}
           className={
             item.sender != username
               ? "mt-5 d-flex justify-content-start"
