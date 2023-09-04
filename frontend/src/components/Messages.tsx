@@ -74,8 +74,9 @@ const Messages = ({ socket, room, username }: any) => {
             </span>
             <div className="d-flex flex-wrap">
               {" "}
-              {item.pictures?.map((item) => (
-                <div className="mx-1">
+              {item.pictures?.map((item,index) => (
+                <div className="mx-1"
+                key={index}>
                   <img
                     className="img-fluid"
                     style={{ width: "100px", height: "130px" }}
