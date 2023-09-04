@@ -49,7 +49,7 @@ const Messages = ({ socket, room, username }: any) => {
       className="d-flex flex-column overflow-auto"
       style={{ height: "80vh", width: "43vw" }}
     >
-      {messages.map((item: message,index:number) => (
+      {messages.map((item: message, index: number) => (
         <div
           ref={messageContainerRef}
           key={index}
@@ -66,7 +66,16 @@ const Messages = ({ socket, room, username }: any) => {
                 : "message-sent text-break"
             }
           >
-            {item.content + " " }<span className="username">{item.sender}</span>
+            {item.content + " "}
+            <span className="username">{item.sender}</span>
+          <div className="d-flex flex-wrap">
+            {" "}
+            {item.pictures?.map((item) => (
+              <div className="mx-1">
+                <img className="img-fluid" style={{width:"100px",height:"130px"}} src={item as string} alt="" />
+              </div>
+            ))}
+          </div>
           </span>
         </div>
       ))}

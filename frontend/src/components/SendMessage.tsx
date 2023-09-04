@@ -1,8 +1,19 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
+import getBase64 from "./GetBase64";
 const SendMessage = ({ socket, room, username }: any) => {
+  const [pictures, setPictures] = useState<String[]>();
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const array: String[] = [];
+    for (let i = 0; i < e.target.files!.length; i++) {
+      const res = await getBase64(e.target.files![i]);
+      array.push(res as String);
+    }
+    setPictures(array);
+  };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputRef.current?.value && username) {
@@ -10,7 +21,8 @@ const SendMessage = ({ socket, room, username }: any) => {
         "send-msg",
         username,
         localStorage.getItem("room"),
-        inputRef.current!.value
+        inputRef.current!.value,
+        pictures
       );
     }
   };
@@ -25,12 +37,26 @@ const SendMessage = ({ socket, room, username }: any) => {
         type="text"
         ref={inputRef}
       />
-      <button className="btn btn-danger ms-2 rounded-3" type="submit">
+
+      <button
+        className="btn btn-danger top-0 start-0 ms-2 rounded-3"
+        onClick={() => fileRef.current?.click()}
+        type="submit"
+      >
         <FontAwesomeIcon
           style={{ height: "22px", width: "1.5rem", marginTop: "3px" }}
           icon={faImage}
         ></FontAwesomeIcon>
       </button>
+      <input
+        type="file"
+        ref={fileRef}
+        multiple
+        onChange={handleChange}
+        className="d-none"
+        name=""
+        id=""
+      />
       <button className="btn btn-danger ms-2 rounded-3" type="submit">
         Send
       </button>
