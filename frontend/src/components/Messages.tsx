@@ -30,13 +30,14 @@ const Messages = ({ socket, room, username }: any) => {
 
   socket.on(
     "receive-msg",
-    (user: String, content: String, pictures: String[]) => {
+    (user: String, content: String, pictures: String[], sent: String) => {
       setMessages([
         ...messages,
         {
           sender: user,
           content,
           pictures,
+          sent,
         },
       ]);
     }
@@ -67,15 +68,23 @@ const Messages = ({ socket, room, username }: any) => {
             }
           >
             {item.content + " "}
-            <span className="username">{item.sender}</span>
-          <div className="d-flex flex-wrap">
-            {" "}
-            {item.pictures?.map((item) => (
-              <div className="mx-1">
-                <img className="img-fluid" style={{width:"100px",height:"130px"}} src={item as string} alt="" />
-              </div>
-            ))}
-          </div>
+            <span className="username">
+              {item.sender}{" "}
+              {item.sent}{" "}
+            </span>
+            <div className="d-flex flex-wrap">
+              {" "}
+              {item.pictures?.map((item) => (
+                <div className="mx-1">
+                  <img
+                    className="img-fluid"
+                    style={{ width: "100px", height: "130px" }}
+                    src={item as string}
+                    alt=""
+                  />
+                </div>
+              ))}
+            </div>
           </span>
         </div>
       ))}
