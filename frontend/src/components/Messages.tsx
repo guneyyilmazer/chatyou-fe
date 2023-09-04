@@ -37,7 +37,7 @@ const Messages = ({ socket, room, username }: any) => {
           sender: user,
           content,
           pictures,
-          sent,
+          sent: sent.length==4 ? sent.concat("0"):sent
         },
       ]);
     }
