@@ -7,6 +7,7 @@ const roomSchema = mongoose.Schema({
       content: { required: true, type: String },
       pictures: [String],
       sent: {type:Date,default:Date.now()},
+      seen:{type:Boolean,default:false}
     },
   ],
 });
