@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import NotFound404 from "../pages/NotFound404";
 import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
+import MyProfilePage from "../components/MyProfilePage";
 const ProfilePage = () => {
   const { username } = useParams();
 type user = {
@@ -54,7 +55,7 @@ type client= {
 
   {user.id &&
     (user.id == client.userId ? (
-      <span>MyProfilePage</span>
+      <MyProfilePage/>
     ) : (
       <button
       className="btn btn-dark"

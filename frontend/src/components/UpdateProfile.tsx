@@ -11,13 +11,13 @@ const UpdateProfile = () => {
           style={{ width: "25vw", height: "40vh" }}
         >
           <div className="text-center lead">Update Profile</div>
-          <button onClick={() => setIndex(1)} className="btn btn-dark p-3">
+          <button onClick={() => setIndex(1)} className="btn btn-danger p-3">
             Update Profile Photo
           </button>
-          <button onClick={() => setIndex(2)} className="btn btn-dark p-3">
+          <button onClick={() => setIndex(2)} className="btn btn-danger p-3">
             Update Username
           </button>
-          <button onClick={() => setIndex(3)} className="btn btn-dark p-3">
+          <button onClick={() => setIndex(3)} className="btn btn-danger p-3">
             Change Email
           </button>
         </div>

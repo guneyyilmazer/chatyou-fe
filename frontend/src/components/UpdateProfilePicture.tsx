@@ -35,17 +35,21 @@ const UpdateProfilePicture = () => {
   };
   
   return (
-    <form onSubmit={updateProfilePicture}>
+    <form className="form-group d-flex flex-column justify-content-center text-center align-items-center" onSubmit={updateProfilePicture}>
+      <h2 className="lead my-2">
       UpdateProfilePicture
+        </h2>
+        
       <input
         type="file"
+        className="form-control my-1"
         onChange={async(e) => {
           const base64 = await getBase64(e.target.files![0]);
           setProfilePicture(base64 as string);
         }}
         placeholder="Upload"
       />
-      <button type="submit">Submit</button>
+      <button className="btn btn-danger my-1" type="submit">Submit</button>
     </form>
   );
 };
