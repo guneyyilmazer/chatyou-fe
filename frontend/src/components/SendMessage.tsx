@@ -39,9 +39,9 @@ const SendMessage = ({ socket, room, username }: any) => {
       />
 
       <button
-        className="btn btn-danger top-0 start-0 ms-2 rounded-3"
+        className="btn btn-danger ms-2 rounded-3"
         onClick={() => fileRef.current?.click()}
-        type="submit"
+        type="button"
       >
         <FontAwesomeIcon
           style={{ height: "22px", width: "1.5rem", marginTop: "3px" }}
@@ -54,8 +54,6 @@ const SendMessage = ({ socket, room, username }: any) => {
         multiple
         onChange={handleChange}
         className="d-none"
-        name=""
-        id=""
       />
       <button className="btn btn-danger ms-2 rounded-3" type="submit">
         Send
