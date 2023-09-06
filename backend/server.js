@@ -86,9 +86,14 @@ app.post("/loadRoom", async (req, res) => {
     const { messages } = await RoomModel.findOne({ name: room });
     const list = messages.map((item) => {
       const sentAt =
-        item.sent.getHours().toString() +
-        ":" +
-        item.sent.getMinutes().toString();
+        (item.sent.getHours().toString().length == 1
+          ? "0".concat(item.sent.getHours().toString())
+          : item.sent.getHours().toString()) +
+          ":" +
+          (item.sent.getMinutes().toString().length ==
+        1
+          ? "0".concat(item.sent.getMinutes().toString())
+          : item.sent.getMinutes().toString());
       return {
         sent: sentAt,
         sender: item.sender,
@@ -97,7 +102,7 @@ app.post("/loadRoom", async (req, res) => {
       };
     });
     console.log(list);
-    res.status(200).json({ messages:list });
+    res.status(200).json({ messages: list });
   } catch (err) {
     console.log(err.message);
     res.status(400).json({ error: err.message });

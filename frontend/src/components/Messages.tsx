@@ -30,14 +30,16 @@ const Messages = ({ socket, room, username }: any) => {
 
   socket.on(
     "receive-msg",
-    (user: String, content: String, pictures: String[], sent: String) => {
+    (user: string, content: string, pictures: string[], sent: string) => {
+      const hours = sent.split(":")[0]
+      const minutes  = sent.split(":")[1]
       setMessages([
         ...messages,
         {
           sender: user,
           content,
           pictures,
-          sent: sent.length==4 ? sent.concat("0"):sent
+          sent: (hours.length == 1 ? "0".concat(hours) : hours) +":"+ (minutes.length == 1 ? "0".concat(minutes):minutes)
         },
       ]);
     }
