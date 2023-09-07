@@ -7,10 +7,11 @@ import Auth from "./components/Auth"
 const App = () => {
   const socket = io("http://localhost:3001");
   const [room,setRoom] = useState(localStorage.getItem("room"))
+  const [chattingWith,setChattingWith] = useState(localStorage.getItem("chattingWith"))
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center" >
-      {room ? (
+      {room || chattingWith ? (
         //@ts-ignore doesn't have an easy fix
         <Room socket={socket} room={room} />
       ) : (
