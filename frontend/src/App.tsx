@@ -13,7 +13,7 @@ const App = () => {
     <div className="d-flex flex-column justify-content-center align-items-center" >
       {room || chattingWith ? (
         //@ts-ignore doesn't have an easy fix
-        <Room socket={socket} room={room} />
+        <Room socket={socket} chattingWith={chattingWith} room={room} />
       ) : (
         <JoinRoom socket={socket} setRoom={setRoom} />
       )}
