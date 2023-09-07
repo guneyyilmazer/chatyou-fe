@@ -13,6 +13,7 @@ const Header = () => {
             className="btn btn-danger mx-1"
             onClick={() => {
               localStorage.removeItem("room");
+              localStorage.removeItem("chattingWith");
               window.location.reload();
             }}
           >
