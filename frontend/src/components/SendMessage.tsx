@@ -22,7 +22,8 @@ const SendMessage = ({ socket, room, username }: any) => {
         username,
         localStorage.getItem("room"),
         inputRef.current!.value,
-        pictures
+        pictures,
+        localStorage.getItem("chattingWith")
       );
     }
   };

@@ -12,7 +12,10 @@ const Messages = ({ socket, room, username }: any) => {
       },
 
       method: "POST",
-      body: JSON.stringify({ room }),
+      body: JSON.stringify({
+          room,
+          chattingWith:localStorage.getItem("chattingWith")
+      }),
     });
     const response = await res.json();
     if (!response.error) {
@@ -31,15 +34,18 @@ const Messages = ({ socket, room, username }: any) => {
   socket.on(
     "receive-msg",
     (user: string, content: string, pictures: string[], sent: string) => {
-      const hours = sent.split(":")[0]
-      const minutes  = sent.split(":")[1]
+      const hours = sent.split(":")[0];
+      const minutes = sent.split(":")[1];
       setMessages([
         ...messages,
         {
           sender: user,
           content,
           pictures,
-          sent: (hours.length == 1 ? "0".concat(hours) : hours) +":"+ (minutes.length == 1 ? "0".concat(minutes):minutes)
+          sent:
+            (hours.length == 1 ? "0".concat(hours) : hours) +
+            ":" +
+            (minutes.length == 1 ? "0".concat(minutes) : minutes),
         },
       ]);
     }
@@ -71,14 +77,12 @@ const Messages = ({ socket, room, username }: any) => {
           >
             {item.content + " "}
             <span className="username">
-              {item.sender}{" "}
-              {item.sent}{" "}
+              {item.sender} {item.sent}{" "}
             </span>
             <div className="d-flex flex-wrap">
               {" "}
-              {item.pictures?.map((item,index) => (
-                <div className="m-1"
-                key={index}>
+              {item.pictures?.map((item, index) => (
+                <div className="m-1" key={index}>
                   <img
                     className="img-fluid"
                     style={{ width: "100px", height: "130px" }}

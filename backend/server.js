@@ -35,13 +35,72 @@ io.on("connection", (socket) => {
 
   socket.on("join-room", async (room) => {
     try {
-      socket.join(room);
-      console.log(socket.id + " connected to room " + room);
-    } catch (err) {}
+      const second = room.split(" ")[1] + " " + room.split(" ")[0];
+      console.log(room + "room");
+      const firstTry = await RoomModel.findOne({ name: room });
+      const secondTry = await RoomModel.findOne({ name: second });
+      if (!firstTry && !secondTry) {
+        socket.join(room);
+        console.log(socket.id + " connected to room (0.) " + room);
+      } else if (firstTry) {
+        socket.join(room);
+        console.log(socket.id + " connected to room (1.) " + room);
+      } else if (secondTry) {
+        socket.join(second);
+        console.log(socket.id + " connected to room (2.) " + second);
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
   });
-  socket.on("send-msg", async (user, room, content, pictures) => {
+  socket.on("send-msg", async (user, room, content, pictures, chattingWith) => {
     const date = new Date();
-    if (await RoomModel.findOne({ name: room })) {
+
+    if (chattingWith) {
+      room = user + " " + chattingWith;
+      console.log(room);
+      const second = room.split(" ")[1] + " " + room.split(" ")[0];
+      const firstTry = await RoomModel.findOne({ name: room });
+      const secondTry = await RoomModel.findOne({ name: second });
+      console.log(room);
+      if (firstTry) {
+        io.to(room).emit(
+          "receive-msg",
+          user,
+          content,
+          pictures,
+          date.getHours().toString() + ":" + date.getMinutes().toString()
+        );
+      } else if (secondTry) {
+        io.to(second).emit(
+          "receive-msg",
+          user,
+          content,
+          pictures,
+          date.getHours().toString() + ":" + date.getMinutes().toString()
+        );
+      }
+      const inDB = await RoomModel.findOne({ name: room });
+      const secondInDB = await RoomModel.findOne({ name: second });
+      if (!inDB && !secondInDB) {
+        await RoomModel.create({
+          name: room,
+          messages: [{ sender: user, content, pictures, sent: date }],
+        });
+      } else if (inDB) {
+        inDB.messages = [
+          ...inDB.messages,
+          { sender: user, content, pictures, sent: date },
+        ];
+        await inDB.save();
+      } else if (secondInDB) {
+        secondInDB.messages = [
+          ...secondInDB.messages,
+          { sender: user, content, pictures, sent: date },
+        ];
+        await secondInDB.save();
+      }
+    } else if (await RoomModel.findOne({ name: room })) {
       const roomInDB = await RoomModel.findOne({ name: room });
       roomInDB.messages = [
         ...roomInDB.messages,
@@ -82,16 +141,23 @@ app.post("/verify", async (req, res) => {
 app.use(withAuth);
 app.post("/loadRoom", async (req, res) => {
   try {
-    const { room } = req.body;
-    const { messages } = await RoomModel.findOne({ name: room });
+    const { room, chattingWith } = req.body;
+    const privateRoom = req.username + " " + chattingWith
+    const secondPrivateRoom = chattingWith + " " + req.username;
+    const firstTry = await RoomModel.findOne({ name: privateRoom });
+    const secondTry = await RoomModel.findOne({ name: secondPrivateRoom });
+
+    const { messages } = await RoomModel.findOne({
+      name: firstTry ? privateRoom : secondTry ? secondPrivateRoom : room,
+    });
+
     const list = messages.map((item) => {
       const sentAt =
         (item.sent.getHours().toString().length == 1
           ? "0".concat(item.sent.getHours().toString())
           : item.sent.getHours().toString()) +
-          ":" +
-          (item.sent.getMinutes().toString().length ==
-        1
+        ":" +
+        (item.sent.getMinutes().toString().length == 1
           ? "0".concat(item.sent.getMinutes().toString())
           : item.sent.getMinutes().toString());
       return {
