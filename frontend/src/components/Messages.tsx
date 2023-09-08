@@ -77,6 +77,16 @@ const Messages = ({ socket, room, username }: any) => {
               : "mt-5 d-flex justify-content-start"
           }
         >
+            {item.sender != username &&<Link
+            className="d-flex align-items-center me-2"
+            to={`/users/${item.sender}`}
+          >
+            <img
+              style={{ height: "35px", width: "35px" }}
+              className="rounded-5"
+              src={item.profilePicture ? item.profilePicture : DefaultProfilePicture}
+            />
+          </Link>}
           <div
             className={
               item.sender == username
@@ -102,7 +112,7 @@ const Messages = ({ socket, room, username }: any) => {
               ))}
             </div>
           </div>
-          <Link
+        { item.sender == username && <Link
             className="d-flex align-items-center"
             to={`/users/${item.sender}`}
           >
@@ -111,7 +121,7 @@ const Messages = ({ socket, room, username }: any) => {
               className="ms-2 rounded-5"
               src={item.profilePicture ? item.profilePicture : DefaultProfilePicture}
             />
-          </Link>
+          </Link>}
         </div>
       ))}
     </div>
