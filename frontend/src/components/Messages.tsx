@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import Cookies from "js-cookie";
 import "../css/Messages.css";
 import { Link } from "react-router-dom";
+const DefaultProfilePicture =require( "../images/default.jpeg")
 const Messages = ({ socket, room, username }: any) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const loadRoom = async () => {
@@ -108,7 +109,7 @@ const Messages = ({ socket, room, username }: any) => {
             <img
               style={{ height: "35px", width: "35px" }}
               className="ms-2 rounded-5"
-              src={item.profilePicture}
+              src={item.profilePicture ? item.profilePicture : DefaultProfilePicture}
             />
           </Link>
         </div>
