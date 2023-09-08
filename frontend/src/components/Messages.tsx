@@ -69,17 +69,17 @@ const Messages = ({ socket, room, username }: any) => {
               : "mt-5 d-flex justify-content-end"
           }
         >
-          <span
+          <div
             className={
               item.sender == username
-                ? "message-received text-break"
-                : "message-sent text-break"
+                ? "message-received text-break d-flex"
+                : "message-sent text-break d-flex"
             }
           >
             {item.content + " "}
-            <span className="username">
-              {item.sender} {item.sent}<img style={{height:"35px",width:"35px"}} className="ms-2 rounded-5" src={item.profilePicture}/>{" "}
-            </span>
+            <div className="username ms-1 d-flex align-items-end">
+              {item.sender} {item.sent}{" "}
+            </div>
             <div className="d-flex flex-wrap">
               {" "}
               {item.pictures?.map((item, index) => (
@@ -89,11 +89,12 @@ const Messages = ({ socket, room, username }: any) => {
                     style={{ width: "100px", height: "130px" }}
                     src={item as string}
                     alt=""
-                  />
+                    />
                 </div>
               ))}
             </div>
-          </span>
+          </div>
+              <div className="d-flex align-items-center"><img style={{height:"35px",width:"35px"}} className="ms-2 rounded-5" src={item.profilePicture}/></div>
         </div>
       ))}
     </div>
