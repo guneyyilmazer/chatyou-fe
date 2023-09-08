@@ -72,15 +72,15 @@ const Messages = ({ socket, room, username }: any) => {
           key={index}
           className={
             item.sender == username
-              ? "mt-5 d-flex justify-content-start"
-              : "mt-5 d-flex justify-content-end"
+              ? "mt-5 d-flex justify-content-end"
+              : "mt-5 d-flex justify-content-start"
           }
         >
           <div
             className={
               item.sender == username
-                ? "message-received text-break d-flex"
-                : "message-sent text-break d-flex"
+                ? "message-sent text-break d-flex"
+                : "message-received text-break d-flex"
             }
           >
             {item.content + " "}

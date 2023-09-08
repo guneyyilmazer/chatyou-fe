@@ -30,7 +30,7 @@ const Room = ({ socket, room, chattingWith }: any) => {
     socket.emit(
       "join-room",
       localStorage.getItem("chattingWith")
-        ? username! +" "+ localStorage.getItem("chattingWith")
+        ? username! + " " + localStorage.getItem("chattingWith")
         : localStorage.getItem("room")
     );
   }
@@ -43,13 +43,15 @@ const Room = ({ socket, room, chattingWith }: any) => {
         backgroundSize: "600px",
       }}
     >
-      <Messages room={room} socket={socket} />
+      <Messages username={username} room={room} socket={socket} />
+      
       <SendMessage
         username={username}
         chattingWith={chattingWith}
         room={room}
         socket={socket}
       />
+      
     </div>
   );
 };
