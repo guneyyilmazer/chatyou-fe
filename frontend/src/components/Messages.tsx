@@ -2,6 +2,7 @@ import { message } from "../types/MessageType";
 import { useState, useRef, useEffect, useMemo } from "react";
 import Cookies from "js-cookie";
 import "../css/Messages.css";
+import { Link } from "react-router-dom";
 const Messages = ({ socket, room, username }: any) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const loadRoom = async () => {
@@ -13,8 +14,8 @@ const Messages = ({ socket, room, username }: any) => {
 
       method: "POST",
       body: JSON.stringify({
-          room,
-          chattingWith:localStorage.getItem("chattingWith")
+        room,
+        chattingWith: localStorage.getItem("chattingWith"),
       }),
     });
     const response = await res.json();
@@ -33,7 +34,13 @@ const Messages = ({ socket, room, username }: any) => {
 
   socket.on(
     "receive-msg",
-    (user: string, content: string, pictures: string[], sent: string,profilePicture:string) => {
+    (
+      user: string,
+      content: string,
+      pictures: string[],
+      sent: string,
+      profilePicture: string
+    ) => {
       const hours = sent.split(":")[0];
       const minutes = sent.split(":")[1];
       setMessages([
@@ -46,7 +53,7 @@ const Messages = ({ socket, room, username }: any) => {
             (hours.length == 1 ? "0".concat(hours) : hours) +
             ":" +
             (minutes.length == 1 ? "0".concat(minutes) : minutes),
-            profilePicture
+          profilePicture,
         },
       ]);
     }
@@ -89,12 +96,21 @@ const Messages = ({ socket, room, username }: any) => {
                     style={{ width: "100px", height: "130px" }}
                     src={item as string}
                     alt=""
-                    />
+                  />
                 </div>
               ))}
             </div>
           </div>
-              <div className="d-flex align-items-center"><img style={{height:"35px",width:"35px"}} className="ms-2 rounded-5" src={item.profilePicture}/></div>
+          <Link
+            className="d-flex align-items-center"
+            to={`/users/${item.sender}`}
+          >
+            <img
+              style={{ height: "35px", width: "35px" }}
+              className="ms-2 rounded-5"
+              src={item.profilePicture}
+            />
+          </Link>
         </div>
       ))}
     </div>
