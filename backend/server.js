@@ -4,7 +4,7 @@ const { default: mongoose } = require("mongoose");
 const userRouter = require("./routers/userRouter");
 require("dotenv").config();
 const RoomModel = require("./schemas/roomSchema");
-const UserModel = require("./schemas/userSchema")
+const UserModel = require("./schemas/userSchema");
 const withAuth = require("./middleware/withAuth");
 require("mongoose");
 const jwt = require("jsonwebtoken");
@@ -56,7 +56,7 @@ io.on("connection", (socket) => {
   });
   socket.on("send-msg", async (user, room, content, pictures, chattingWith) => {
     const date = new Date();
-
+    const { profilePicture } = await UserModel.findOne({ username: user });
     if (chattingWith) {
       room = user + " " + chattingWith;
       console.log(room);
@@ -70,7 +70,8 @@ io.on("connection", (socket) => {
           user,
           content,
           pictures,
-          date.getHours().toString() + ":" + date.getMinutes().toString()
+          date.getHours().toString() + ":" + date.getMinutes().toString(),
+          profilePicture
         );
       } else if (secondTry) {
         io.to(second).emit(
@@ -78,7 +79,8 @@ io.on("connection", (socket) => {
           user,
           content,
           pictures,
-          date.getHours().toString() + ":" + date.getMinutes().toString()
+          date.getHours().toString() + ":" + date.getMinutes().toString(),
+          profilePicture
         );
       }
       const inDB = await RoomModel.findOne({ name: room });
@@ -112,7 +114,8 @@ io.on("connection", (socket) => {
         user,
         content,
         pictures,
-        date.getHours().toString() + ":" + date.getMinutes().toString()
+        date.getHours().toString() + ":" + date.getMinutes().toString(),
+        profilePicture
       );
       roomInDB.save();
     } else {
@@ -125,7 +128,8 @@ io.on("connection", (socket) => {
         user,
         content,
         pictures,
-        date.getHours().toString() + ":" + date.getMinutes().toString()
+        date.getHours().toString() + ":" + date.getMinutes().toString(),
+        profilePicture
       );
     }
   });
@@ -181,7 +185,6 @@ app.post("/loadRoom", async (req, res) => {
     } else {
       res.status(404).json({ msg: "room not found / not created" });
     }
-    
   } catch (err) {
     console.log(err.message);
     res.status(400).json({ error: err.message });
