@@ -4,6 +4,7 @@ const { default: mongoose } = require("mongoose");
 const userRouter = require("./routers/userRouter");
 require("dotenv").config();
 const RoomModel = require("./schemas/roomSchema");
+const UserModel = require("./schemas/userSchema")
 const withAuth = require("./middleware/withAuth");
 require("mongoose");
 const jwt = require("jsonwebtoken");
@@ -142,7 +143,7 @@ app.use(withAuth);
 app.post("/loadRoom", async (req, res) => {
   try {
     const { room, chattingWith } = req.body;
-    const privateRoom = req.username + " " + chattingWith
+    const privateRoom = req.username + " " + chattingWith;
     const secondPrivateRoom = chattingWith + " " + req.username;
     const firstTry = await RoomModel.findOne({ name: privateRoom });
     const secondTry = await RoomModel.findOne({ name: secondPrivateRoom });
@@ -151,7 +152,10 @@ app.post("/loadRoom", async (req, res) => {
       name: firstTry ? privateRoom : secondTry ? secondPrivateRoom : room,
     });
 
-    const list = messages.map((item) => {
+    const list = messages.map(async (item) => {
+      const { profilePicture } = await UserModel.findOne({
+        username: item.sender,
+      });
       const sentAt =
         (item.sent.getHours().toString().length == 1
           ? "0".concat(item.sent.getHours().toString())
@@ -165,10 +169,19 @@ app.post("/loadRoom", async (req, res) => {
         sender: item.sender,
         content: item.content,
         pictures: item.pictures,
+        profilePicture,
       };
     });
-    console.log(list);
-    res.status(200).json({ messages: list });
+    if (messages) {
+      Promise.all(list).then(
+        (
+          values //this slows down the loading a bit
+        ) => res.status(200).json({ messages: values })
+      );
+    } else {
+      res.status(404).json({ msg: "room not found / not created" });
+    }
+    
   } catch (err) {
     console.log(err.message);
     res.status(400).json({ error: err.message });

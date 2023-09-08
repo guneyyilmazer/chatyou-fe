@@ -2,5 +2,6 @@ export type message = {
     sender:  String;
     content:  String ;
     pictures?: String[]
-    sent:String
+    sent:String,
+    profilePicture:string
   };

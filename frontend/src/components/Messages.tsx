@@ -33,7 +33,7 @@ const Messages = ({ socket, room, username }: any) => {
 
   socket.on(
     "receive-msg",
-    (user: string, content: string, pictures: string[], sent: string) => {
+    (user: string, content: string, pictures: string[], sent: string,profilePicture:string) => {
       const hours = sent.split(":")[0];
       const minutes = sent.split(":")[1];
       setMessages([
@@ -46,6 +46,7 @@ const Messages = ({ socket, room, username }: any) => {
             (hours.length == 1 ? "0".concat(hours) : hours) +
             ":" +
             (minutes.length == 1 ? "0".concat(minutes) : minutes),
+            profilePicture
         },
       ]);
     }
@@ -77,7 +78,7 @@ const Messages = ({ socket, room, username }: any) => {
           >
             {item.content + " "}
             <span className="username">
-              {item.sender} {item.sent}{" "}
+              {item.sender} {item.sent}<img style={{height:"35px",width:"35px"}} className="ms-2 rounded-5" src={item.profilePicture}/>{" "}
             </span>
             <div className="d-flex flex-wrap">
               {" "}
