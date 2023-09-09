@@ -49,7 +49,7 @@ type client= {
   {(user && client) &&<>
   <img src={user.profilePicture ? user.profilePicture : DefaultProfilePicture} style={{ width: "30vw" }} />
     {user.username ? (
-    <div className="lead">{user.username}</div>
+    <div className="lead mt-2">{user.username}</div>
   ) : (
     <NotFound404 />
   )}
@@ -59,7 +59,7 @@ type client= {
       <MyProfilePage/>
     ) : (
       <button
-      className="btn btn-dark"
+      className="btn btn-danger mt-2"
         onClick={() => {
           localStorage.setItem("chattingWith", user.username);
           localStorage.removeItem("room")
