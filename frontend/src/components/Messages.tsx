@@ -94,7 +94,10 @@ const Messages = ({ socket, room, username }: any) => {
                 : "message-received text-break d-flex flex-column"
             }
           >
+<div className="ms-1">
+
             {item.content + " "}
+</div>
            
             <div className="d-flex flex-wrap">
               {" "}
