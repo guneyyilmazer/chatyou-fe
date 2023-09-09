@@ -3,6 +3,7 @@ import NotFound404 from "../pages/NotFound404";
 import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import MyProfilePage from "../components/MyProfilePage";
+const DefaultProfilePicture = require("../images/default.jpeg")
 const ProfilePage = () => {
   const { username } = useParams();
 type user = {
@@ -46,7 +47,7 @@ type client= {
 
   return <div className="text-white d-flex flex-column justify-content-center align-items-center">
   {(user && client) &&<>
-  <img src={user.profilePicture} style={{ width: "30vw" }} />
+  <img src={user.profilePicture ? user.profilePicture : DefaultProfilePicture} style={{ width: "30vw" }} />
     {user.username ? (
     <div className="lead">{user.username}</div>
   ) : (
