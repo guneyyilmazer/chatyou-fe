@@ -95,9 +95,7 @@ const Messages = ({ socket, room, username }: any) => {
             }
           >
             {item.content + " "}
-            <div className="username ms-1 d-flex justify-content-end align-items-end">
-              {item.sender} {item.sent}{" "}
-            </div>
+           
             <div className="d-flex flex-wrap">
               {" "}
               {item.pictures?.map((item, index) => (
@@ -110,6 +108,9 @@ const Messages = ({ socket, room, username }: any) => {
                   />
                 </div>
               ))}
+            </div>
+            <div className="username ms-1 d-flex justify-content-end align-items-end">
+              {item.sender} {item.sent}{" "}
             </div>
           </div>
         { item.sender == username && <Link
