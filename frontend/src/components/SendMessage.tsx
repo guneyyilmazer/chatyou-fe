@@ -16,12 +16,12 @@ const SendMessage = ({ socket, room, username }: any) => {
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (inputRef.current?.value && username) {
+    if ((inputRef.current?.value || pictures) && username) {
       socket.emit(
         "send-msg",
         username,
         localStorage.getItem("room"),
-        inputRef.current!.value,
+        inputRef.current!.value ? inputRef.current!.value : " ",
         pictures,
         localStorage.getItem("chattingWith")
       );

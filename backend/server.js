@@ -55,6 +55,7 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("send-msg", async (user, room, content, pictures, chattingWith) => {
+
     const date = new Date();
     const { profilePicture } = await UserModel.findOne({ username: user });
     if (chattingWith) {
