@@ -103,7 +103,7 @@ const Messages = ({ socket, room, username }: any) => {
               {item.pictures?.map((item, index) => (
                 <div className="m-1" key={index}>
                   <img
-                    className="img-fluid"
+                    className="img-fluid rounded-2"
                     style={{ width: "100px", height: "130px" }}
                     src={item as string}
                     alt=""
