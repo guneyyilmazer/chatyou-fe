@@ -90,12 +90,12 @@ const Messages = ({ socket, room, username }: any) => {
           <div
             className={
               item.sender == username
-                ? "message-sent text-break d-flex"
-                : "message-received text-break d-flex"
+                ? "message-sent text-break d-flex flex-column"
+                : "message-received text-break d-flex flex-column"
             }
           >
             {item.content + " "}
-            <div className="username ms-1 d-flex align-items-end">
+            <div className="username ms-1 d-flex justify-content-end align-items-end">
               {item.sender} {item.sent}{" "}
             </div>
             <div className="d-flex flex-wrap">
