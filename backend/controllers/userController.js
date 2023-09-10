@@ -90,4 +90,24 @@ const UpdateUsername = async (req,res) => {
         res.status(400).json({error:err.message})
     }
 }
-module.exports = { Signup, Login, LoadUser, UpdateProfilePicture,UpdateUsername };
+const UpdateEmail = async (req,res) => {
+    console.log(req.username)
+    try{
+        const {username,newEmail} = req.body;
+        console.log(username)
+        const doWeHaveUser = await UserModel.findOne({username})
+        if(doWeHaveUser._id == req.userId){
+            console.log(doWeHaveUser._id)
+            console.log(req.userId)
+            console.log("doWeHaveUser")
+
+
+            const response = await UserModel.findOneAndUpdate({username},{email:newEmail},{new:true});
+            res.status(200).json({response})
+        }
+    }
+    catch(err){
+        res.status(400).json({error:err.message})
+    }
+}
+module.exports = { Signup, Login, LoadUser, UpdateProfilePicture,UpdateUsername,UpdateEmail };

@@ -47,7 +47,7 @@ type client= {
 
   return <div className="text-white d-flex flex-column justify-content-center align-items-center">
   {(user && client) &&<>
-  <img src={user.profilePicture ? user.profilePicture : DefaultProfilePicture} style={{ width: "30vw" }} />
+  <img src={user.profilePicture ? user.profilePicture : DefaultProfilePicture} className="rounded-4" style={{ width: "30vw" }} />
     {user.username ? (
     <div className="lead mt-2">{user.username}</div>
   ) : (

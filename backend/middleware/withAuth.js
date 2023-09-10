@@ -16,7 +16,7 @@ const withAuth = async (req, res, next) => {
     if (!inDB) {
       throw new Error(process.env.ERR_NOT_FOUND_USER);
     }
-    req.user = inDB._id;
+    req.userId = inDB._id;
     req.username = inDB.username
     next();
   } catch (err) {
