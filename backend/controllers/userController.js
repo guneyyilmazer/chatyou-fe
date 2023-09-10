@@ -61,7 +61,7 @@ const LoadUser = async (req, res) => {
 const UpdateProfilePicture = async (req, res) => {
   try {
     const { username, profilePicture } = req.body;
-    const auth = await UserModel.findOne({ _id: req.user }); //already verifying the token with middleware
+    const auth = await UserModel.findOne({ _id: req.userId }); //already verifying the token with middleware
     if (!auth) {
       throw new Error("Not verified.");
     }
@@ -79,8 +79,12 @@ const UpdateProfilePicture = async (req, res) => {
 const UpdateUsername = async (req,res) => {
     try{
         const {username,newUsername} = req.body;
-        const response = await UserModel.findOneAndUpdate({username},{username:newUsername},{new:true});
-        res.status(200).json({response})
+        const doWeHaveUser = await UserModel.findOne({username})
+        if(doWeHaveUser._id == req.userId){
+
+            const response = await UserModel.findOneAndUpdate({username},{username:newUsername},{new:true});
+            res.status(200).json({response})
+        }
     }
     catch(err){
         res.status(400).json({error:err.message})
