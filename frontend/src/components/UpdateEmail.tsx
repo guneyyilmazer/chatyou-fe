@@ -45,7 +45,7 @@ const UpdateProfilePicture = () => {
         ref={newEmailInput}
         className="form-control my-1"
        
-        placeholder="Enter new email."
+        placeholder="Enter new email..."
       />
       <button className="btn btn-danger my-1" type="submit">Submit</button>
     </form>

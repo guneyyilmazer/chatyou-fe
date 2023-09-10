@@ -37,7 +37,7 @@ const UpdateProfilePicture = () => {
   return (
     <form className="form-group d-flex flex-column justify-content-center text-center align-items-center" onSubmit={updateProfilePicture}>
       <h2 className="lead my-2">
-      UpdateUsername
+      Update Username
         </h2>
         
       <input
@@ -45,7 +45,7 @@ const UpdateProfilePicture = () => {
         ref={newUsernameInput}
         className="form-control my-1"
        
-        placeholder="Upload"
+        placeholder="Enter new username..."
       />
       <button className="btn btn-danger my-1" type="submit">Submit</button>
     </form>
