@@ -96,7 +96,7 @@ const UpdateEmail = async (req,res) => {
         const {username,newEmail} = req.body;
         console.log(username)
         const doWeHaveUser = await UserModel.findOne({username})
-        if(doWeHaveUser._id == req.userId){
+        if(doWeHaveUser.username == req.username){
             console.log(doWeHaveUser._id)
             console.log(req.userId)
             console.log("doWeHaveUser")
