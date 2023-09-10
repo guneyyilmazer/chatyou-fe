@@ -3,8 +3,9 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import Cookies from "js-cookie";
 import "../css/Messages.css";
 import { Link } from "react-router-dom";
-const DefaultProfilePicture =require( "../images/default.jpeg")
-const Messages = ({ socket, room, username }: any) => {
+import {user} from '../types/UserType'
+const DefaultProfilePicture = require("../images/default.jpeg");
+const Messages = ({ socket, room, user }: any) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const loadRoom = async () => {
     const res = await fetch("http://localhost:4000/loadRoom", {
@@ -36,7 +37,7 @@ const Messages = ({ socket, room, username }: any) => {
   socket.on(
     "receive-msg",
     (
-      user: string,
+      user: user,
       content: string,
       pictures: string[],
       sent: string,
@@ -72,33 +73,36 @@ const Messages = ({ socket, room, username }: any) => {
           ref={messageContainerRef}
           key={index}
           className={
-            item.sender == username
+            item.sender.username == user.username
               ? "mt-5 d-flex justify-content-end"
               : "mt-5 d-flex justify-content-start"
           }
         >
-            {item.sender != username &&<Link
-            className="d-flex align-items-center me-2"
-            to={`/users/${item.sender}`}
-          >
-            <img
-              style={{ height: "35px", width: "35px" }}
-              className="rounded-5"
-              src={item.profilePicture ? item.profilePicture : DefaultProfilePicture}
-            />
-          </Link>}
+          {item.sender.username != user.username && (
+            <Link
+              className="d-flex align-items-center me-2"
+              to={`/users/${item.sender.username}`}
+            >
+              <img
+                style={{ height: "35px", width: "35px" }}
+                className="rounded-5"
+                src={
+                  item.profilePicture
+                    ? item.profilePicture
+                    : DefaultProfilePicture
+                }
+              />
+            </Link>
+          )}
           <div
             className={
-              item.sender == username
+              item.sender.username == user.username
                 ? "message-sent text-break d-flex flex-column"
                 : "message-received text-break d-flex flex-column"
             }
           >
-<div className="ms-1">
+            <div className="ms-1">{item.content + " "}</div>
 
-            {item.content + " "}
-</div>
-           
             <div className="d-flex flex-wrap">
               {" "}
               {item.pictures?.map((item, index) => (
@@ -113,19 +117,25 @@ const Messages = ({ socket, room, username }: any) => {
               ))}
             </div>
             <div className="username ms-1 d-flex justify-content-end align-items-end">
-              {item.sender} {item.sent}{" "}
+              {item.sender.username} {item.sent}{" "}
             </div>
           </div>
-        { item.sender == username && <Link
-            className="d-flex align-items-center"
-            to={`/users/${item.sender}`}
-          >
-            <img
-              style={{ height: "35px", width: "35px" }}
-              className="ms-2 rounded-5"
-              src={item.profilePicture ? item.profilePicture : DefaultProfilePicture}
-            />
-          </Link>}
+          {item.sender.username == user.username && (
+            <Link
+              className="d-flex align-items-center"
+              to={`/users/${item.sender.username}`}
+            >
+              <img
+                style={{ height: "35px", width: "35px" }}
+                className="ms-2 rounded-5"
+                src={
+                  item.profilePicture
+                    ? item.profilePicture
+                    : DefaultProfilePicture
+                }
+              />
+            </Link>
+          )}
         </div>
       ))}
     </div>

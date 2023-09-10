@@ -48,7 +48,7 @@ const LoadUser = async (req, res) => {
       const inDB = await UserModel.findOne({ username });
       res.status(200).json({
         username: inDB.username,
-        id: inDB._id,
+        userId: inDB._id,
         profilePicture: inDB.profilePicture,
       });
     }
@@ -75,4 +75,15 @@ const UpdateProfilePicture = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
-module.exports = { Signup, Login, LoadUser, UpdateProfilePicture };
+
+const UpdateUsername = async (req,res) => {
+    try{
+        const {username,newUsername} = req.body;
+        const response = await UserModel.findOneAndUpdate({username},{username:newUsername},{new:true});
+        res.status(200).json({response})
+    }
+    catch(err){
+        res.status(400).json({error:err.message})
+    }
+}
+module.exports = { Signup, Login, LoadUser, UpdateProfilePicture,UpdateUsername };

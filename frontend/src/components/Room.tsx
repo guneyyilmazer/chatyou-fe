@@ -4,9 +4,10 @@ import SendMessage from "./SendMessage";
 import Cookies from "js-cookie";
 //@ts-ignore
 import background from "../images/background.jpeg";
-
+import {user} from '../types/UserType'
 const Room = ({ socket, room, chattingWith }: any) => {
-  const [username, setUsername] = useState();
+  
+  const [user, setUser] = useState<user>();
 
   const loadUser = async () => {
     const res = await fetch("http://localhost:4000/user/loadUser", {
@@ -21,16 +22,17 @@ const Room = ({ socket, room, chattingWith }: any) => {
     const response = await res.json();
     if (response.error) {
     } else {
-      setUsername(response.username);
+      console.log(response)
+      setUser(response);
     }
   };
   useMemo(loadUser, []);
 
-  if (username) {
+  if (user) {
     socket.emit(
       "join-room",
       localStorage.getItem("chattingWith")
-        ? username! + " " + localStorage.getItem("chattingWith")
+        ? user.username! + " " + localStorage.getItem("chattingWith")
         : localStorage.getItem("room")
     );
   }
@@ -43,10 +45,9 @@ const Room = ({ socket, room, chattingWith }: any) => {
         backgroundSize: "600px",
       }}
     >
-      <Messages username={username} room={room} socket={socket} />
-      
+      <Messages user={user} room={room} socket={socket}/>
       <SendMessage
-        username={username}
+        user={user}
         chattingWith={chattingWith}
         room={room}
         socket={socket}

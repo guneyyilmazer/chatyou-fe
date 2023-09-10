@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import getBase64 from "./GetBase64";
-const SendMessage = ({ socket, room, username }: any) => {
+const SendMessage = ({ socket, room, user }: any) => {
   const [pictures, setPictures] = useState<String[]>();
   const inputRef = useRef<HTMLInputElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -16,10 +16,10 @@ const SendMessage = ({ socket, room, username }: any) => {
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if ((inputRef.current?.value || pictures) && username) {
+    if ((inputRef.current?.value || pictures) && user) {
       socket.emit(
         "send-msg",
-        username,
+        user,
         localStorage.getItem("room"),
         inputRef.current!.value ? inputRef.current!.value : " ",
         pictures,

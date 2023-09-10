@@ -55,11 +55,12 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("send-msg", async (user, room, content, pictures, chattingWith) => {
+    console.log(user)
 
     const date = new Date();
-    const { profilePicture } = await UserModel.findOne({ username: user });
+    const { profilePicture } = await UserModel.findOne({ username: user.username });
     if (chattingWith) {
-      room = user + " " + chattingWith;
+      room = user.username + " " + chattingWith;
       console.log(room);
       const second = room.split(" ")[1] + " " + room.split(" ")[0];
       const firstTry = await RoomModel.findOne({ name: room });
@@ -159,7 +160,7 @@ app.post("/loadRoom", async (req, res) => {
 
     const list = messages.map(async (item) => {
       const { profilePicture } = await UserModel.findOne({
-        username: item.sender,
+        _id: item.sender.userId,
       });
       const sentAt =
         (item.sent.getHours().toString().length == 1

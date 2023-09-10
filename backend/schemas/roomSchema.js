@@ -3,7 +3,10 @@ const roomSchema = mongoose.Schema({
   name: { required: true, type: String },
   messages: [
     {
-      sender: { required: true, type: String }, //userId (GUID)
+      sender: { 
+        username:{type:String,required:true},
+        userId:{type:String,required:true}
+       },
       content: { required: true, type: String },
       pictures: [String],
       sent: {type:Date,default:Date.now()},
