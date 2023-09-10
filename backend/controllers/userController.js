@@ -91,14 +91,10 @@ const UpdateUsername = async (req,res) => {
     }
 }
 const UpdateEmail = async (req,res) => {
-    console.log(req.username)
     try{
         const {username,newEmail} = req.body;
-        console.log(username)
         const doWeHaveUser = await UserModel.findOne({username})
         if(doWeHaveUser.username == req.username){
-            console.log(doWeHaveUser._id)
-            console.log(req.userId)
             console.log("doWeHaveUser")
 
 
