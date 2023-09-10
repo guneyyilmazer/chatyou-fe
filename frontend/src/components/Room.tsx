@@ -10,7 +10,7 @@ const Room = ({ socket, room, chattingWith }: any) => {
   const [user, setUser] = useState<user>();
 
   const loadUser = async () => {
-    const res = await fetch("http://localhost:4000/user/loadUser", {
+    const res = await fetch("http://localhost:4000/verify", {
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${Cookies.get("Auth_Token")}`,

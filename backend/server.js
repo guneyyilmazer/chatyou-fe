@@ -58,7 +58,7 @@ io.on("connection", (socket) => {
     console.log(user)
 
     const date = new Date();
-    const { profilePicture } = await UserModel.findOne({ username: user.username });
+    const { profilePicture } = await UserModel.findOne({ _id: user.userId });
     if (chattingWith) {
       room = user.username + " " + chattingWith;
       console.log(room);
