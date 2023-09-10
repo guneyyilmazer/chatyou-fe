@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import UpdateProfilePicture from "./UpdateProfilePicture";
+import UpdateUsername from './UpdateUsername'
 
 const UpdateProfile = () => {
   const [index, setIndex] = useState(0);
@@ -23,10 +24,18 @@ const UpdateProfile = () => {
         </div>
       )}
       {index == 1 && (
+
+
         <div>
           <UpdateProfilePicture />
         </div>
-      )}{" "}
+
+      )}
+      { index==2 &&
+        <div>
+            <UpdateUsername/>
+        </div>
+        }
       {/* will implement update username and change email */}
     </div>
   );
