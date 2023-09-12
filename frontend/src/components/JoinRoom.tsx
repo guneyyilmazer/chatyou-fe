@@ -31,7 +31,7 @@ const JoinRoom = ({ socket,setRoom }: any ) => { //can't find the type
         </button>
       </div>
     </form>
-    <div className="col-5 mt-1">
+    <div className="col-4 mt-1">
 
     <Rooms/>
     </div>
