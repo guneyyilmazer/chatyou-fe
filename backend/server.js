@@ -55,7 +55,7 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("send-msg", async (user, room, content, pictures, chattingWith) => {
-    console.log(user)
+    console.log(user);
 
     const date = new Date();
     const { profilePicture } = await UserModel.findOne({ _id: user.userId });
@@ -190,5 +190,20 @@ app.post("/loadRoom", async (req, res) => {
   } catch (err) {
     console.log(err.message);
     res.status(400).json({ error: err.message });
+  }
+});
+app.post("/loadRooms", async (req, res) => {
+  try {
+    const { page, amount } = req.body;
+    if(!page || !amount)
+    {
+        throw new Error("You need to specify the page and the amount.")
+    }
+    const rooms = await RoomModel.find()
+      .limit(amount)
+      .skip(page * amount).select("name");
+    res.status(200).json({ rooms });
+  } catch (err) {
+    res.status(400).json({error:err.message})
   }
 });
