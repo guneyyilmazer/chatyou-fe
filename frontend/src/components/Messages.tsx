@@ -3,9 +3,11 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import Cookies from "js-cookie";
 import "../css/Messages.css";
 import { Link } from "react-router-dom";
-import {user} from '../types/UserType'
+import { user } from "../types/UserType";
+import ImagePreview from "./ImagePreview";
 const DefaultProfilePicture = require("../images/default.jpeg");
 const Messages = ({ socket, room, user }: any) => {
+  const [preview, setPreview] = useState(false);
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const loadRoom = async () => {
     const res = await fetch("http://localhost:4000/loadRoom", {
@@ -33,6 +35,7 @@ const Messages = ({ socket, room, user }: any) => {
         behavior: "smooth",
       });
   };
+  useEffect(()=>console.log("first"),[preview])
 
   socket.on(
     "receive-msg",
@@ -106,13 +109,19 @@ const Messages = ({ socket, room, user }: any) => {
             <div className="d-flex flex-wrap">
               {" "}
               {item.pictures?.map((item, index) => (
-                <div className="m-1" key={index}>
+                <div onClick={()=>{setPreview(!preview)}} className="m-1" key={index}>
                   <img
                     className="img-fluid rounded-2"
                     style={{ width: "100px", height: "130px" }}
                     src={item as string}
                     alt=""
                   />
+                  {preview && (
+                    <ImagePreview
+                      setPreview={setPreview}
+                      image={item as string}
+                    />
+                  )}
                 </div>
               ))}
             </div>
