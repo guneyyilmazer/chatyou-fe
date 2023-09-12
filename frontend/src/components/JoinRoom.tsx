@@ -17,7 +17,7 @@ const JoinRoom = ({ socket,setRoom }: any ) => { //can't find the type
   return (
     <div className="d-flex row col-12 justify-content-center align-items-center flex-column">
 
-    <form onSubmit={handleSubmit} className="col-6">
+    <form onSubmit={handleSubmit} className="col-6 my-5">
       <div className="form-group d-flex">
         <input
           type="text"
@@ -31,7 +31,7 @@ const JoinRoom = ({ socket,setRoom }: any ) => { //can't find the type
         </button>
       </div>
     </form>
-    <div className="col-5">
+    <div className="col-5 mt-1">
 
     <Rooms/>
     </div>
