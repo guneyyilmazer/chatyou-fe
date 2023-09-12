@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import Rooms from "./Rooms";
 
 const JoinRoom = ({ socket,setRoom }: any ) => { //can't find the type
   const roomInputRef = useRef<HTMLInputElement>(null);
@@ -14,6 +15,8 @@ const JoinRoom = ({ socket,setRoom }: any ) => { //can't find the type
     }
   };
   return (
+    <div className="d-flex row col-12 justify-content-center align-items-center flex-column">
+
     <form onSubmit={handleSubmit} className="col-6">
       <div className="form-group d-flex">
         <input
@@ -21,13 +24,18 @@ const JoinRoom = ({ socket,setRoom }: any ) => { //can't find the type
           ref={roomInputRef}
           className="form-control p-3"
           placeholder="Enter Room..."
-        />
+          />
         <button type="submit" className="btn btn-danger ms-2 px-4">
           {" "}
           Join
         </button>
       </div>
     </form>
+    <div className="col-5">
+
+    <Rooms/>
+    </div>
+          </div>
   );
 };
 

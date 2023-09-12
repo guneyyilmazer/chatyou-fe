@@ -201,7 +201,7 @@ app.post("/loadRooms", async (req, res) => {
     }
     const rooms = await RoomModel.find()
       .limit(amount)
-      .skip(page * amount).select("name");
+      .skip((page-1) * amount).select("name");
     res.status(200).json({ rooms });
   } catch (err) {
     res.status(400).json({error:err.message})
