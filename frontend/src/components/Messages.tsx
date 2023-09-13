@@ -35,7 +35,6 @@ const Messages = ({ socket, room, user }: any) => {
         behavior: "smooth",
       });
   };
-  useEffect(()=>console.log("first"),[preview])
 
   socket.on(
     "receive-msg",
@@ -109,9 +108,12 @@ const Messages = ({ socket, room, user }: any) => {
             <div className="d-flex flex-wrap">
               {" "}
               {item.pictures?.map((item, index) => (
-                <div onClick={()=>{setPreview(!preview)}} className="m-1" key={index}>
+                <div className="m-1" key={index}>
                   <img
                     className="img-fluid rounded-2"
+                    onClick={() => {
+                      setPreview(true);
+                    }}
                     style={{ width: "100px", height: "130px" }}
                     src={item as string}
                     alt=""
@@ -119,6 +121,7 @@ const Messages = ({ socket, room, user }: any) => {
                   {preview && (
                     <ImagePreview
                       setPreview={setPreview}
+                      preview={preview}
                       image={item as string}
                     />
                   )}
