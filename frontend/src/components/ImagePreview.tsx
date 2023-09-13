@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../css/ImagePreview.css"
+import "../css/ImagePreview.css";
 const ImagePreview = ({
   images,
   setPreview,
@@ -9,11 +9,18 @@ const ImagePreview = ({
   setPreview: any;
   preview: boolean;
 }) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Escape") {
+      setPreview(!preview);
+    }
+  };
   const [index, setIndex] = useState(0);
   return (
     <div
+    tabIndex={0}
       className="bg-dark position-absolute position-relative flex-column d-flex justify-content-center align-items-center top-0 start-0"
       style={{ width: "100vw", height: "100vh" }}
+      onKeyDown={handleKeyDown}
     >
       <img
         className="col-4"
@@ -25,9 +32,8 @@ const ImagePreview = ({
         {images.map((item, index) => (
           <img
             className="mx-1 images"
-            
             onClick={() => setIndex(index)}
-            style={{ height: "50px" ,cursor:"pointer"}}
+            style={{ height: "50px", cursor: "pointer" }}
             src={images[index]}
           />
         ))}
@@ -45,3 +51,6 @@ const ImagePreview = ({
 };
 
 export default ImagePreview;
+function useEffect(arg0: () => () => void, arg1: never[]) {
+  throw new Error("Function not implemented.");
+}
