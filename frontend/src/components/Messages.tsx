@@ -107,7 +107,7 @@ const Messages = ({ socket, room, user }: any) => {
 
             <div className="d-flex flex-wrap">
               {" "}
-              {item.pictures?.map((item, index) => (
+              {item.pictures?.map((picture, index) => (
                 <div className="m-1" key={index}>
                   <img
                     className="img-fluid rounded-2"
@@ -115,14 +115,14 @@ const Messages = ({ socket, room, user }: any) => {
                       setPreview(true);
                     }}
                     style={{ width: "100px", height: "130px" }}
-                    src={item as string}
+                    src={picture as string}
                     alt=""
                   />
                   {preview && (
                     <ImagePreview
                       setPreview={setPreview}
                       preview={preview}
-                      image={item as string}
+                      images={item.pictures as string[]}
                     />
                   )}
                 </div>

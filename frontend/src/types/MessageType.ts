@@ -3,8 +3,8 @@ export type message = {
       username:string,
       userId:string
     };
-    content:  String ;
-    pictures?: String[]
-    sent:String,
+    content:  string ;
+    pictures?: string[]
+    sent:string,
     profilePicture:string
   };
