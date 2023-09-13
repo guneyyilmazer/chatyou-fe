@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faX } from "@fortawesome/free-solid-svg-icons";
 import "../css/ImagePreview.css";
 const ImagePreview = ({
   images,
@@ -17,7 +19,7 @@ const ImagePreview = ({
   const [index, setIndex] = useState(0);
   return (
     <div
-    tabIndex={0}
+      tabIndex={0}
       className="bg-dark position-absolute position-relative flex-column d-flex justify-content-center align-items-center top-0 start-0"
       style={{ width: "100vw", height: "100vh" }}
       onKeyDown={handleKeyDown}
@@ -44,7 +46,7 @@ const ImagePreview = ({
         }}
         className="position-absolute p-3 px-4 top-0 end-0 btn btn-danger"
       >
-        X
+        <FontAwesomeIcon icon={faX}></FontAwesomeIcon>
       </button>
     </div>
   );
