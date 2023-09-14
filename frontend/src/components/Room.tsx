@@ -48,11 +48,9 @@ const Room = ({ socket, chattingWith }: any) => {
         backgroundSize: "600px",
       }}
     >
-      <Messages user={user} socket={socket}/>
+      <Messages socket={socket}/>
       <SendMessage
-        user={user}
         chattingWith={chattingWith}
-        room={room}
         socket={socket}
       />
       
