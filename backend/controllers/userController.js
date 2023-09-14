@@ -43,9 +43,9 @@ const LoadUser = async (req, res) => {
         profilePicture: inDB.profilePicture,
       });
     } else if (token) {
-      const {username} = await jwt.verify(token, process.env.SECRET);
+      const {userId} = await jwt.verify(token, process.env.SECRET);
 
-      const inDB = await UserModel.findOne({ username });
+      const inDB = await UserModel.findOne({ _id:userId });
       res.status(200).json({
         username: inDB.username,
         userId: inDB._id,
