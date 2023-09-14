@@ -7,23 +7,22 @@ const initialState = {
     profilePicture: "",
     isLoggedIn: "",
   },
-  room:localStorage.getItem("room")
+  room: localStorage.getItem("room"),
 };
 const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
     setUser: (state, action) => {
-        console.log(action.payload)
       state.user = action.payload;
     },
-    setRoom:(state,action)=>{
-        state.room=action.payload
+    setRoom: (state, action) => {
+      state.room = action.payload;
     },
     setIsLoggedIn: (state, action) => {
       state.user.isLoggedIn = action.payload;
     },
   },
 });
-export const {setUser,setRoom} = appSlice.actions;
+export const { setUser, setRoom } = appSlice.actions;
 export default appSlice.reducer;

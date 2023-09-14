@@ -2,10 +2,13 @@ import React, { useMemo, useState } from "react";
 import Messages from "./Messages";
 import SendMessage from "./SendMessage";
 import Cookies from "js-cookie";
+import {useSelector} from 'react-redux'
 //@ts-ignore
 import background from "../images/background.jpeg";
 import {user} from '../types/UserType'
-const Room = ({ socket, room, chattingWith }: any) => {
+const Room = ({ socket, chattingWith }: any) => {
+  const room = useSelector((shop:any)=>shop.app.room) //will implement the type later
+
   
   const [user, setUser] = useState<user>();
 
@@ -45,7 +48,7 @@ const Room = ({ socket, room, chattingWith }: any) => {
         backgroundSize: "600px",
       }}
     >
-      <Messages user={user} room={room} socket={socket}/>
+      <Messages user={user} socket={socket}/>
       <SendMessage
         user={user}
         chattingWith={chattingWith}
