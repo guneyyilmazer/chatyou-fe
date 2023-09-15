@@ -86,6 +86,7 @@ io.on("connection", (socket) => {
       if (!inDB && !secondInDB) {
         await RoomModel.create({
           name: room,
+          privateRoom:true,
           messages: [{ sender: user, content, pictures, sent: date }],
         });
       } else if (inDB) {
@@ -195,7 +196,7 @@ app.post("/loadRooms", async (req, res) => {
     {
         throw new Error("You need to specify the page and the amount.")
     }
-    const rooms = await RoomModel.find()
+    const rooms = await RoomModel.find({privateRoom:false})
       .limit(amount)
       .skip((page-1) * amount).select("name");
     res.status(200).json({ rooms });

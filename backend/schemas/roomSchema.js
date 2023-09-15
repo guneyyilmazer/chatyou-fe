@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const roomSchema = mongoose.Schema({
   name: { required: true, type: String },
+  privateRoom:{type:String,default:false},
   messages: [
     {
       sender: { 
