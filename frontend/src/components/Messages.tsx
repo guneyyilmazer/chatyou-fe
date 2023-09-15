@@ -122,7 +122,7 @@ const Messages = () => {
                       setPreview(true);
                       setPreviewPictures(item.pictures);
                     }}
-                    style={{ width: "100px", height: "130px" }}
+                    style={{ maxWidth: "100px", maxHeight: "150px" }}
                     src={picture as string}
                     alt=""
                   />

@@ -25,8 +25,7 @@ const ImagePreview = ({
       onKeyDown={handleKeyDown}
     >
       <img
-        className="col-4"
-        style={{ height: "600px", width: "500px" }}
+        style={{ maxHeight: "600px",minHeight:"300px",maxWidth:"600px" }}
         src={images[index]}
         alt=""
       />
