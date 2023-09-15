@@ -37,7 +37,6 @@ io.on("connection", (socket) => {
   socket.on("join-room", async (room) => {
     try {
       const second = room.split(" ")[1] + " " + room.split(" ")[0];
-      console.log(room + "room");
       const firstTry = await RoomModel.findOne({ name: room });
       const secondTry = await RoomModel.findOne({ name: second });
       if (!firstTry && !secondTry) {
@@ -55,17 +54,14 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("send-msg", async (user, room, content, pictures, chattingWith) => {
-    console.log(user);
 
     const date = new Date();
     const { profilePicture } = await UserModel.findOne({ _id: user.userId });
     if (chattingWith) {
       room = user.username + " " + chattingWith;
-      console.log(room);
       const second = room.split(" ")[1] + " " + room.split(" ")[0];
       const firstTry = await RoomModel.findOne({ name: room });
       const secondTry = await RoomModel.findOne({ name: second });
-      console.log(room);
       if (firstTry) {
         io.to(room).emit(
           "receive-msg",

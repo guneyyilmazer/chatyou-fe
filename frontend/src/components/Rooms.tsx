@@ -15,7 +15,6 @@ const Rooms = () => {
       body: JSON.stringify({ page: 1, amount: 8 }),
     });
     const { rooms } = await response.json();
-    console.log(rooms);
     setRooms(rooms);
   };
   useMemo(loadRooms, []);

@@ -27,7 +27,6 @@ const Room = () => {
     const response = await res.json();
     if (response.error) {
     } else {
-      console.log(response);
       setUser(response);
     }
   };
