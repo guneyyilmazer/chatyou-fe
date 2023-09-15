@@ -5,16 +5,16 @@ import "../css/Messages.css";
 import { Link } from "react-router-dom";
 import { user } from "../types/UserType";
 import ImagePreview from "./ImagePreview";
-import {useSelector} from 'react-redux'
+import { useSelector } from "react-redux";
 const DefaultProfilePicture = require("../images/default.jpeg");
 const Messages = () => {
-  const socket = useSelector((shop:any)=>shop.app.socket) //will implement the type later
+  const socket = useSelector((shop: any) => shop.app.socket); //will implement the type later
 
-  
-  const user = useSelector((shop:any)=>shop.app.user) //will implement the type later
-  const room = useSelector((shop:any)=>shop.app.room) //will implement the type later
+  const user = useSelector((shop: any) => shop.app.user); //will implement the type later
+  const room = useSelector((shop: any) => shop.app.room); //will implement the type later
 
   const [preview, setPreview] = useState(false);
+  const [previewPictures, setPreviewPictures] = useState<string[]>();
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const loadRoom = async () => {
     const res = await fetch("http://localhost:4000/loadRoom", {
@@ -120,18 +120,12 @@ const Messages = () => {
                     className="img-fluid rounded-2"
                     onClick={() => {
                       setPreview(true);
+                      setPreviewPictures(item.pictures);
                     }}
                     style={{ width: "100px", height: "130px" }}
                     src={picture as string}
                     alt=""
                   />
-                  {preview && (
-                    <ImagePreview
-                      setPreview={setPreview}
-                      preview={preview}
-                      images={item.pictures as string[]}
-                    />
-                  )}
                 </div>
               ))}
             </div>
@@ -157,6 +151,13 @@ const Messages = () => {
           )}
         </div>
       ))}
+      {(preview && previewPictures) && (
+        <ImagePreview
+          setPreview={setPreview}
+          preview={preview}
+          images={previewPictures as string[]}
+        />
+      )}
     </div>
   );
 };
