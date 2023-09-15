@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import MyProfilePage from "../components/MyProfilePage";
 const DefaultProfilePicture = require("../images/default.jpeg")
 const ProfilePage = () => {
-  const { username } = useParams();
+  const { userId } = useParams();
 type user = {
     username:string,
     profilePicture:string,
@@ -17,6 +17,7 @@ type client= {
   const [user, setUser] = useState<user>();
   const [client, setClient] = useState<client>();
   const getUserData = async () => {
+    console.log(userId)
     const res = await fetch("http://localhost:4000/user/loadUser", {
       headers: {
         "Content-Type": "application/json",
@@ -24,7 +25,7 @@ type client= {
       },
       method: "POST",
       body: JSON.stringify({
-        username,
+        userId,
       }),
     });
 

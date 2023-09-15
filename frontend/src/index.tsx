@@ -24,7 +24,7 @@ root.render(
             <Route index element={<AuthPage />} />
           </Route>
           <Route path="users">
-            <Route path=":username" element={<ProfilePage />} />
+            <Route path=":userId" element={<ProfilePage />} />
           </Route>
         </Route>
       </Routes>

@@ -90,7 +90,7 @@ const Messages = () => {
           {item.sender.username != user.username && (
             <Link
               className="d-flex align-items-center me-2"
-              to={`/users/${item.sender.username}`}
+              to={`/users/${item.sender.userId}`}
             >
               <img
                 style={{ height: "35px", width: "35px" }}
@@ -142,7 +142,7 @@ const Messages = () => {
           {item.sender.username == user.username && (
             <Link
               className="d-flex align-items-center"
-              to={`/users/${item.sender.username}`}
+              to={`/users/${item.sender.userId}`}
             >
               <img
                 style={{ height: "35px", width: "35px" }}

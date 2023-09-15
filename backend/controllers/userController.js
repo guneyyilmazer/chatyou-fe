@@ -34,9 +34,9 @@ const Login = async (req, res) => {
 
 const LoadUser = async (req, res) => {
   try {
-    const { username, token } = req.body;
-    if (username) {
-      const inDB = await UserModel.findOne({ username });
+    const { userId, token } = req.body;
+    if (userId) {
+      const inDB = await UserModel.findOne({ _id:userId });
       res.status(200).json({
         username: inDB.username,
         id: inDB._id,
