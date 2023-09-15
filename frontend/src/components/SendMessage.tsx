@@ -1,8 +1,13 @@
 import { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
 import getBase64 from "./GetBase64";
-const SendMessage = ({ socket, room, user }: any) => {
+const SendMessage = () => {
+  const socket = useSelector((shop:any)=>shop.app.socket) //will implement the type later
+
+  const room = useSelector((shop: any) => shop.app.room);
+  const user = useSelector((shop: any) => shop.app.user);
   const [pictures, setPictures] = useState<String[]>();
   const inputRef = useRef<HTMLInputElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -20,7 +25,7 @@ const SendMessage = ({ socket, room, user }: any) => {
       socket.emit(
         "send-msg",
         user,
-        localStorage.getItem("room"),
+        room,
         inputRef.current!.value ? inputRef.current!.value : " ",
         pictures,
         localStorage.getItem("chattingWith")

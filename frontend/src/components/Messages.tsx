@@ -5,8 +5,15 @@ import "../css/Messages.css";
 import { Link } from "react-router-dom";
 import { user } from "../types/UserType";
 import ImagePreview from "./ImagePreview";
+import {useSelector} from 'react-redux'
 const DefaultProfilePicture = require("../images/default.jpeg");
-const Messages = ({ socket, room, user }: any) => {
+const Messages = () => {
+  const socket = useSelector((shop:any)=>shop.app.socket) //will implement the type later
+
+  
+  const user = useSelector((shop:any)=>shop.app.user) //will implement the type later
+  const room = useSelector((shop:any)=>shop.app.room) //will implement the type later
+
   const [preview, setPreview] = useState(false);
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const loadRoom = async () => {
