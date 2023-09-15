@@ -7,7 +7,9 @@ import { user } from "../types/UserType";
 import ImagePreview from "./ImagePreview";
 import {useSelector} from 'react-redux'
 const DefaultProfilePicture = require("../images/default.jpeg");
-const Messages = ({ socket}: any) => {
+const Messages = () => {
+  const socket = useSelector((shop:any)=>shop.app.socket) //will implement the type later
+
   
   const user = useSelector((shop:any)=>shop.app.user) //will implement the type later
   const room = useSelector((shop:any)=>shop.app.room) //will implement the type later

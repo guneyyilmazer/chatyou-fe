@@ -6,8 +6,9 @@ import { useSelector } from "react-redux";
 //@ts-ignore
 import background from "../images/background.jpeg";
 import { user } from "../types/UserType";
-const Room = ({ socket }: any) => {
+const Room = () => {
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
+  const socket = useSelector((shop: any) => shop.app.socket); //will implement the type later
 
   const room = useSelector((shop: any) => shop.app.room); //will implement the type later
 
@@ -35,9 +36,7 @@ const Room = ({ socket }: any) => {
   if (user) {
     socket.emit(
       "join-room",
-      chattingWith
-        ? user.username! + " " + chattingWith
-        : room
+      chattingWith ? user.username! + " " + chattingWith : room
     );
   }
   return (
@@ -49,8 +48,8 @@ const Room = ({ socket }: any) => {
         backgroundSize: "600px",
       }}
     >
-      <Messages socket={socket} />
-      <SendMessage socket={socket} />
+      <Messages />
+      <SendMessage />
     </div>
   );
 };

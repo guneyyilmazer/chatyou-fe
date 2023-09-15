@@ -3,7 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import getBase64 from "./GetBase64";
-const SendMessage = ({ socket }: any) => {
+const SendMessage = () => {
+  const socket = useSelector((shop:any)=>shop.app.socket) //will implement the type later
+
   const room = useSelector((shop: any) => shop.app.room);
   const user = useSelector((shop: any) => shop.app.user);
   const [pictures, setPictures] = useState<String[]>();

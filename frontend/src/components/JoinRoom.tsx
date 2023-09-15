@@ -1,8 +1,10 @@
 import React, { useRef } from "react";
 import Rooms from "./Rooms";
 import { setRoom } from "../features/appSlice";
-import { useDispatch } from "react-redux";
-const JoinRoom = ({ socket }: any) => {
+import { useDispatch,useSelector } from "react-redux";
+const JoinRoom = () => {
+  const socket = useSelector((shop:any)=>shop.app.socket) //will implement the type later
+
   //can't find the type
   const dispatch = useDispatch();
   const roomInputRef = useRef<HTMLInputElement>(null);
