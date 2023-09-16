@@ -54,7 +54,6 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("send-msg", async (user, room, content, pictures, chattingWith) => {
-
     const date = new Date();
     const { profilePicture } = await UserModel.findOne({ _id: user.userId });
     if (chattingWith) {
@@ -86,7 +85,7 @@ io.on("connection", (socket) => {
       if (!inDB && !secondInDB) {
         await RoomModel.create({
           name: room,
-          privateRoom:true,
+          privateRoom: true,
           messages: [{ sender: user, content, pictures, sent: date }],
         });
       } else if (inDB) {
@@ -145,16 +144,36 @@ app.post("/verify", async (req, res) => {
 app.use(withAuth);
 app.post("/loadRoom", async (req, res) => {
   try {
-    const { room, chattingWith } = req.body;
+    const { room, chattingWith, userId } = req.body;
     const privateRoom = req.username + " " + chattingWith;
     const secondPrivateRoom = chattingWith + " " + req.username;
     const firstTry = await RoomModel.findOne({ name: privateRoom });
     const secondTry = await RoomModel.findOne({ name: secondPrivateRoom });
 
-    const { messages } = await RoomModel.findOne({
+    const roomInDB = await RoomModel.findOne({
       name: firstTry ? privateRoom : secondTry ? secondPrivateRoom : room,
     });
+    const { messages } = roomInDB;
 
+    const newMessages = messages.map((item) => {
+      const doWeAlreadyHave = item.seenBy.filter(
+        (item) => item.userId == userId
+      );
+      if (doWeAlreadyHave.length == 0) {
+        item.seenBy = [...item.seenBy, { userId }];
+      }
+
+      return {
+        sent: item.sent,
+        sender: item.sender,
+        content: item.content,
+        pictures: item.pictures,
+        profilePicture: item.profilePicture,
+        seenBy: item.seenBy,
+      };
+    });
+    roomInDB.messages = newMessages;
+    await roomInDB.save();
     const list = messages.map(async (item) => {
       const { profilePicture } = await UserModel.findOne({
         _id: item.sender.userId,
@@ -173,13 +192,16 @@ app.post("/loadRoom", async (req, res) => {
         content: item.content,
         pictures: item.pictures,
         profilePicture,
+        seenBy: item.seenBy,
       };
     });
     if (messages) {
       Promise.all(list).then(
         (
           values //this slows down the loading a bit
-        ) => res.status(200).json({ messages: values })
+        ) => {
+          res.status(200).json({ messages: values });
+        }
       );
     } else {
       res.status(404).json({ msg: "room not found / not created" });
@@ -192,15 +214,15 @@ app.post("/loadRoom", async (req, res) => {
 app.post("/loadRooms", async (req, res) => {
   try {
     const { page, amount } = req.body;
-    if(!page || !amount)
-    {
-        throw new Error("You need to specify the page and the amount.")
+    if (!page || !amount) {
+      throw new Error("You need to specify the page and the amount.");
     }
-    const rooms = await RoomModel.find({privateRoom:false})
+    const rooms = await RoomModel.find({ privateRoom: false })
       .limit(amount)
-      .skip((page-1) * amount).select("name");
+      .skip((page - 1) * amount)
+      .select("name");
     res.status(200).json({ rooms });
   } catch (err) {
-    res.status(400).json({error:err.message})
+    res.status(400).json({ error: err.message });
   }
 });

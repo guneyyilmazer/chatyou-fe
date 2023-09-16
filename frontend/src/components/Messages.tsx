@@ -31,6 +31,7 @@ const Messages = () => {
       }),
     });
     const response = await res.json();
+    console.log(response)
     if (!response.error) {
       setMessages(response.messages);
       scrollDown();
