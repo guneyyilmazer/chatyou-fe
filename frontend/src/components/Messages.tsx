@@ -27,6 +27,7 @@ const Messages = () => {
       body: JSON.stringify({
         room,
         chattingWith: localStorage.getItem("chattingWith"),
+        userId:user.userId
       }),
     });
     const response = await res.json();
