@@ -34,9 +34,13 @@ app.listen(process.env.PORT, () => {
 io.on("connection", (socket) => {
   console.log(socket.id + " connected");
 
+  //checking if either username + chattingWith (firstTry) or chattingWith + username (secondTry) exists
+  //This is how private rooms are named
   socket.on("join-room", async (room) => {
     try {
       const second = room.split(" ")[1] + " " + room.split(" ")[0];
+
+      //checking whatever comes from the front end (room), (It's either a room name or username + chattingWith)
       const firstTry = await RoomModel.findOne({ name: room });
       const secondTry = await RoomModel.findOne({ name: second });
       if (!firstTry && !secondTry) {
@@ -54,9 +58,12 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("send-msg", async (user, room, content, pictures, chattingWith) => {
+    //creating a new date to save it in the DB as the sent property
     const date = new Date();
     const { profilePicture } = await UserModel.findOne({ _id: user.userId });
     if (chattingWith) {
+      //if we have a chattingWith property inside our global state which it's inital is a localStorage property called chattingWith
+      //check if either username + chattingWith or chattingWith + username exists to avoid creating new rooms
       room = user.username + " " + chattingWith;
       const second = room.split(" ")[1] + " " + room.split(" ")[0];
       const firstTry = await RoomModel.findOne({ name: room });
@@ -147,14 +154,17 @@ app.post("/loadRoom", async (req, res) => {
     const { room, chattingWith, userId } = req.body;
     const privateRoom = req.username + " " + chattingWith;
     const secondPrivateRoom = chattingWith + " " + req.username;
+    //checking both scenearios to find the privateRoom
     const firstTry = await RoomModel.findOne({ name: privateRoom });
     const secondTry = await RoomModel.findOne({ name: secondPrivateRoom });
 
+    //searching every one of them to find the one
     const roomInDB = await RoomModel.findOne({
       name: firstTry ? privateRoom : secondTry ? secondPrivateRoom : room,
     });
     const { messages } = roomInDB;
 
+    //this checks if the users id is already in the seenBy object, if not it adds it
     const newMessages = messages.map((item) => {
       const doWeAlreadyHave = item.seenBy.filter(
         (item) => item.userId == userId
@@ -174,6 +184,8 @@ app.post("/loadRoom", async (req, res) => {
     });
     roomInDB.messages = newMessages;
     await roomInDB.save();
+
+    //this piece of code adds the sentAt property and formats the date object to properly display the sent hour and minutes
     const list = messages.map(async (item) => {
       const { profilePicture } = await UserModel.findOne({
         _id: item.sender.userId,
