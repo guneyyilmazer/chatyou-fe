@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 import {useState} from "react";
 
 const ListOfSeen = ({ users }: any) => {
+  console.log(users)
 
   
   const [seenList,setSeenList] = useState([{}])
@@ -22,8 +23,9 @@ const ListOfSeen = ({ users }: any) => {
   };
   return( <div>
     {users.map(async(item:any) => {
+      const user = await getUserData(item.userId)
       //@ts-ignore
-      setSeenList(...seenList,await getUserData(item.userId));
+      setSeenList(...seenList,user);
     })}
   </div>);
 };
