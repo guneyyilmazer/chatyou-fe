@@ -6,5 +6,6 @@ export type message = {
     content:  string ;
     pictures?: string[]
     sent:string,
-    profilePicture:string
+    profilePicture:string,
+    seenBy:[{userId:string}]
   };

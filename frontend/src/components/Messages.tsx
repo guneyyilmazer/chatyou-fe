@@ -6,13 +6,14 @@ import { Link } from "react-router-dom";
 import { user } from "../types/UserType";
 import ImagePreview from "./ImagePreview";
 import { useSelector } from "react-redux";
+import ListOfSeen from "./ListOfSeen";
 const DefaultProfilePicture = require("../images/default.jpeg");
 const Messages = () => {
   const socket = useSelector((shop: any) => shop.app.socket); //will implement the type later
 
   const user = useSelector((shop: any) => shop.app.user); //will implement the type later
   const room = useSelector((shop: any) => shop.app.room); //will implement the type later
-
+  const [showSeen, setShowSeen] = useState(false);
   const [preview, setPreview] = useState(false);
   const [previewPictures, setPreviewPictures] = useState<string[]>();
   const messageContainerRef = useRef<HTMLDivElement>(null);
@@ -27,11 +28,11 @@ const Messages = () => {
       body: JSON.stringify({
         room,
         chattingWith: localStorage.getItem("chattingWith"),
-        userId:user.userId
+        userId: user.userId,
       }),
     });
     const response = await res.json();
-    console.log(response)
+    console.log(response);
     if (!response.error) {
       setMessages(response.messages);
       scrollDown();
@@ -67,6 +68,7 @@ const Messages = () => {
             ":" +
             (minutes.length == 1 ? "0".concat(minutes) : minutes),
           profilePicture,
+          seenBy:[{userId:"1"}]
         },
       ]);
     }
@@ -83,6 +85,7 @@ const Messages = () => {
         <div
           ref={messageContainerRef}
           key={index}
+          onClick={() => setShowSeen(true)}
           className={
             item.sender.username == user.username
               ? "mt-5 d-flex justify-content-end"
@@ -151,9 +154,10 @@ const Messages = () => {
               />
             </Link>
           )}
+          {showSeen && <ListOfSeen users = {item.seenBy} />}
         </div>
       ))}
-      {(preview && previewPictures) && (
+      {preview && previewPictures && (
         <ImagePreview
           setPreview={setPreview}
           preview={preview}
