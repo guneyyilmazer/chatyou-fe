@@ -187,6 +187,16 @@ app.post("/loadRoom", async (req, res) => {
 
     //this piece of code adds the sentAt property and formats the date object to properly display the sent hour and minutes
     const list = messages.map(async (item) => {
+      const newList = item.seenBy.map(async (object) => {
+        const { profilePicture, username } = await UserModel.findOne({
+          _id: userId,
+        });
+        return { userId: object.userId, username, profilePicture };
+      });
+      let newValue;
+      Promise.all(newList).then((values) => {
+        newValue = values;
+      });
       const { profilePicture } = await UserModel.findOne({
         _id: item.sender.userId,
       });
@@ -204,7 +214,7 @@ app.post("/loadRoom", async (req, res) => {
         content: item.content,
         pictures: item.pictures,
         profilePicture,
-        seenBy: item.seenBy,
+        seenBy: newValue,
       };
     });
     if (messages) {
@@ -212,6 +222,7 @@ app.post("/loadRoom", async (req, res) => {
         (
           values //this slows down the loading a bit
         ) => {
+          console.log(values)
           res.status(200).json({ messages: values });
         }
       );
