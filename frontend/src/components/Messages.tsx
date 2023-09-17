@@ -85,7 +85,7 @@ const Messages = () => {
         <div
           ref={messageContainerRef}
           key={index}
-          onClick={() => setShowSeen(true)}
+          onClick={() => setShowSeen(!showSeen)}
           className={
             item.sender.username == user.username
               ? "mt-5 d-flex justify-content-end"
@@ -154,7 +154,7 @@ const Messages = () => {
               />
             </Link>
           )}
-          {showSeen && <ListOfSeen users = {item.seenBy} />}
+          {showSeen && <ListOfSeen users = {item.seenBy} showSeen={showSeen} setShowSeen={setShowSeen} />}
         </div>
       ))}
       {preview && previewPictures && (

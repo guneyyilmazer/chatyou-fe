@@ -1,12 +1,11 @@
 import Cookies from "js-cookie";
 import { useState } from "react";
 
-const ListOfSeen = ({ users }: any) => {
-  console.log(users);
+const ListOfSeen = ({ users,showSeen,setShowSeen }: any) => {
   return (
     <div
       style={{ height: "100vh", width: "100vw" }}
-      className="bg-dark text-white position-absolute top-0 start-0"
+      className="bg-dark position-relative text-white position-absolute top-0 start-0"
     >
       {users && (
         <div className="d-flex flex-column">
@@ -25,6 +24,7 @@ const ListOfSeen = ({ users }: any) => {
           ))}
         </div>
       )}
+      <button onClick={()=>setShowSeen(!showSeen)} className="btn btn-danger position-absolute top-0 end-0">X</button>
     </div>
   );
 };
