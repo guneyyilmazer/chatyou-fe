@@ -11,6 +11,7 @@ const ImagePreview = ({
   setPreview: any;
   preview: boolean;
 }) => {
+  console.log(images)
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Escape") {
       setPreview(!preview);
