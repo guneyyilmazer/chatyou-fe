@@ -1,5 +1,5 @@
-import Cookies from "js-cookie";
-import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faX } from "@fortawesome/free-solid-svg-icons";
 
 const ListOfSeen = ({ users,showSeen,setShowSeen }: any) => {
   return (
@@ -24,7 +24,7 @@ const ListOfSeen = ({ users,showSeen,setShowSeen }: any) => {
           ))}
         </div>
       )}
-      <button onClick={()=>setShowSeen(!showSeen)} className="btn btn-danger position-absolute top-0 end-0">X</button>
+      <button onClick={()=>setShowSeen(!showSeen)} className="btn btn-danger position-absolute top-0 end-0"><FontAwesomeIcon icon={faX}/></button>
     </div>
   );
 };
