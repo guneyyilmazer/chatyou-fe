@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 const ListOfSeen = ({ users,showSeen,setShowSeen }: any) => {
   return (
@@ -12,6 +13,10 @@ const ListOfSeen = ({ users,showSeen,setShowSeen }: any) => {
           <span className="lead fs-2 my-4 text-center">Seen By</span>
           {users.map((item: any) => (
             <div className="d-flex flex-wrap justify-content-center align-items-center text-white">
+               <Link
+              className="d-flex text-decoration-none text-white align-items-center"
+              to={`/users/${item.userId}`}
+            >
               <img
                 className="rounded-5"
                 style={{ height: "40px", width: "40px" }}
@@ -19,6 +24,7 @@ const ListOfSeen = ({ users,showSeen,setShowSeen }: any) => {
                 alt=""
               />
               <span className="ms-1">{item.username}</span>{" "}
+              </Link>
             </div>
             //@ts-ignore
           ))}
