@@ -152,8 +152,8 @@ const Messages = () => {
                   item.profilePicture
                     ? item.profilePicture
                     : DefaultProfilePicture
-                }
-              />
+                  }
+                  />
             </Link>
           )}
           {showSeen && <ListOfSeen users = {item.seenBy} showSeen={showSeen} setShowSeen={setShowSeen} />}
