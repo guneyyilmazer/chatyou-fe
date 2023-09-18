@@ -39,7 +39,7 @@ const SendMessage = () => {
     >
       <input
         className="form-check col-4 py-3 rounded-2"
-        placeholder="Send a message"
+        placeholder={"Send a message to room " + room}
         type="text"
         ref={inputRef}
       />

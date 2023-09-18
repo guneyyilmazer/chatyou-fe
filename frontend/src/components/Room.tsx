@@ -47,6 +47,7 @@ const Room = () => {
         backgroundSize: "600px",
       }}
     >
+
       <Messages />
       <SendMessage />
     </div>
