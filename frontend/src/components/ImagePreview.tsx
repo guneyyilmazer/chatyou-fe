@@ -11,7 +11,6 @@ const ImagePreview = ({
   setPreview: any;
   preview: boolean;
 }) => {
-  console.log(images)
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Escape") {
       setPreview(!preview);
@@ -26,7 +25,7 @@ const ImagePreview = ({
       onKeyDown={handleKeyDown}
     >
       <img
-        style={{ maxHeight: "600px",minHeight:"300px",maxWidth:"600px" }}
+        style={{ maxHeight: "600px", minHeight: "300px", maxWidth: "600px" }}
         src={images[index]}
         alt=""
       />
@@ -53,4 +52,3 @@ const ImagePreview = ({
 };
 
 export default ImagePreview;
-

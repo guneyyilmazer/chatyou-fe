@@ -5,8 +5,14 @@ import { useState } from "react";
 
 const ListOfSeen = ({ users, showSeen, setShowSeen }: any) => {
   const [count,setCount] = useState(0)
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Escape") {
+      setShowSeen(!showSeen);
+    }
+  }
   return (
     <div
+    onKeyDown={handleKeyDown}
       style={{ height: "100vh", width: "100vw" }}
       className="bg-dark position-relative text-white position-absolute top-0 start-0"
     >

@@ -8,11 +8,15 @@ const roomSchema = mongoose.Schema({
         username: { type: String, required: true },
         userId: { type: String, required: true },
       },
-      seenBy: [{ userId: { type: String, required: true } }],
+      seenBy: [
+        {
+          userId: { type: String, required: true },
+          time: { type: Date, required: true },
+        },
+      ],
       content: { required: true, type: String },
       pictures: [String],
       sent: { type: Date, default: Date.now() },
-      seen: { type: Boolean, default: false },
     },
   ],
 });
