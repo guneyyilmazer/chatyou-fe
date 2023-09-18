@@ -114,6 +114,8 @@ const Messages = () => {
                 ? "message-sent text-break d-flex flex-column"
                 : "message-received text-break d-flex flex-column"
             }
+          style={{cursor:"pointer"}}
+
           >
             <div className="ms-1">{item.content + " "}</div>
 
