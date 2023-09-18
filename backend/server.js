@@ -193,10 +193,7 @@ app.post("/loadRoom", async (req, res) => {
         });
         return { userId: object.userId, username, profilePicture };
       });
-      let newValue;
-      Promise.all(newList).then((values) => {
-        newValue = values;
-      });
+      item.newSeenBy = await Promise.all(newList);
       const { profilePicture } = await UserModel.findOne({
         _id: item.sender.userId,
       });
@@ -214,7 +211,7 @@ app.post("/loadRoom", async (req, res) => {
         content: item.content,
         pictures: item.pictures,
         profilePicture,
-        seenBy: newValue,
+        seenBy: item.newSeenBy,
       };
     });
     if (messages) {
@@ -222,7 +219,6 @@ app.post("/loadRoom", async (req, res) => {
         (
           values //this slows down the loading a bit
         ) => {
-          console.log(values)
           res.status(200).json({ messages: values });
         }
       );

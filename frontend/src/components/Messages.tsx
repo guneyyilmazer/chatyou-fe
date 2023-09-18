@@ -156,7 +156,7 @@ const Messages = () => {
                   />
             </Link>
           )}
-          {showSeen && <ListOfSeen users = {item.seenBy} showSeen={showSeen} setShowSeen={setShowSeen} />}
+          {(showSeen && item.seenBy) &&<ListOfSeen users = {item.seenBy} showSeen={showSeen} setShowSeen={setShowSeen} />}
         </div>
       ))}
       {preview && previewPictures && (
