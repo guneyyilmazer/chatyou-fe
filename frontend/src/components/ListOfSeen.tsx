@@ -19,7 +19,7 @@ const ListOfSeen = ({ users, showSeen, setShowSeen }: any) => {
       
       {users && (
         <div className="d-flex flex-column">
-          <span className="lead fs-2 my-4 text-center">Seen By {count + 1} Users</span>
+          <span className="lead fs-2 my-4 text-center">Seen By {count + 1} {count==0?"User":"Users"}</span>
           {users.map((item: any,index:number) => {
             count != index && setCount(index);
             return (
