@@ -4,24 +4,24 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 const ListOfSeen = ({ users, showSeen, setShowSeen }: any) => {
-  const [count,setCount] = useState(0)
+  const [count, setCount] = useState(users.length);
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Escape") {
       setShowSeen(!showSeen);
     }
-  }
+  };
   return (
     <div
-    onKeyDown={handleKeyDown}
+      onKeyDown={handleKeyDown}
       style={{ height: "100vh", width: "100vw" }}
       className="bg-dark position-relative text-white position-absolute top-0 start-0"
     >
-      
       {users && (
         <div className="d-flex flex-column">
-          <span className="lead fs-2 my-4 text-center">Seen By {count + 1} {count==0?"User":"Users"}</span>
-          {users.map((item: any,index:number) => {
-            count != index && setCount(index);
+          <span className="lead fs-2 my-4 text-center">
+            Seen By {count} {count == 1 ? "User" : "Users"}
+          </span>
+          {users.map((item: any) => {
             return (
               <div className="d-flex flex-wrap justify-content-center align-items-center text-white">
                 <Link
