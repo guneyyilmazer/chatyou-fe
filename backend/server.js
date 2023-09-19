@@ -209,23 +209,26 @@ app.post("/verify", async (req, res) => {
   }
 });
 app.use(withAuth);
+const findTheRoom = async(username,room,chattingWith) => {
+  const privateRoom = username + " " + chattingWith;
+  const secondPrivateRoom = chattingWith + " " + username;
+  //checking both scenearios to find the privateRoom
+  const firstTry = await RoomModel.findOne({ name: privateRoom });
+  const secondTry = await RoomModel.findOne({ name: secondPrivateRoom });
+
+  //searching every one of them to find the one
+  const roomInDB = await RoomModel.findOne({
+    name: firstTry ? privateRoom : secondTry ? secondPrivateRoom : room,
+  });
+  return roomInDB;
+}
 app.post("/loadRoom", async (req, res) => {
   try {
     const date = new Date();
     const { room, chattingWith, userId } = req.body;
-    const privateRoom = req.username + " " + chattingWith;
-    const secondPrivateRoom = chattingWith + " " + req.username;
-    //checking both scenearios to find the privateRoom
-    const firstTry = await RoomModel.findOne({ name: privateRoom });
-    const secondTry = await RoomModel.findOne({ name: secondPrivateRoom });
-
-    //searching every one of them to find the one
-    const roomInDB = await RoomModel.findOne({
-      name: firstTry ? privateRoom : secondTry ? secondPrivateRoom : room,
-    });
-    const { messages } = roomInDB;
-
+    const roomInDB = await findTheRoom(req.username,room,chattingWith);
     //this checks if the users id is already in the seenBy object, if not it adds it
+    const {messages} = roomInDB
     const newMessages = messages.map((item) => {
       const doWeAlreadyHave = item.seenBy.filter(
         (item) => item.userId == userId
