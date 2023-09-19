@@ -57,14 +57,56 @@ io.on("connection", (socket) => {
       console.log(err.message);
     }
   });
-  socket.on("read-msg", async (room, userId) => { //gotta make this work with private rooms too.
+  socket.on("read-msg", async (room, userId) => {
+    //gotta make this work with private rooms too.
     const date = new Date();
     const roomInDB = await RoomModel.findOne({ name: room });
-    const message = roomInDB.messages[roomInDB.messages.length-1];
-    message.seenBy = message.seenBy
+    const newMessages = roomInDB.messages;
+    const message = newMessages[roomInDB.messages.length - 1];
+    newMessages[roomInDB.messages.length - 1].seenBy = message.seenBy
       ? [...message.seenBy, { userId, time: date }]
       : [{ userId, time: date }];
-    await roomInDB.save();
+    await RoomModel.findOneAndUpdate({ name: room }, { messages: newMessages });
+    const {messages} = await RoomModel.findOne({name:room})
+
+    const list = messages.map(async (item) => {
+      const newList = item.seenBy.map(async (object) => {
+        const { profilePicture, username } = await UserModel.findOne({
+          _id: userId,
+        });
+        return { userId: object.userId, username, profilePicture };
+      });
+      item.newSeenBy = await Promise.all(newList);
+      const { profilePicture } = await UserModel.findOne({
+        _id: item.sender.userId,
+      });
+      const sentAt =
+        (item.sent.getHours().toString().length == 1
+          ? "0".concat(item.sent.getHours().toString())
+          : item.sent.getHours().toString()) +
+        ":" +
+        (item.sent.getMinutes().toString().length == 1
+          ? "0".concat(item.sent.getMinutes().toString())
+          : item.sent.getMinutes().toString());
+      return {
+        sent: sentAt,
+        sender: item.sender,
+        content: item.content,
+        pictures: item.pictures,
+        profilePicture,
+        seenBy: item.newSeenBy,
+      };
+    });
+    if (messages) {
+      Promise.all(list).then(
+        (
+          values //this slows down the loading a bit
+        ) => {
+          socket.emit("update-messages",values)
+        }
+      );
+    }
+
   });
   socket.on("send-msg", async (user, room, content, pictures, chattingWith) => {
     //creating a new date to save it in the DB as the sent property

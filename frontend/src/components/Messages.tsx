@@ -45,7 +45,7 @@ const Messages = () => {
         behavior: "smooth",
       });
   };
-
+  socket.on("update-messages", (messages: any) => setMessages(messages));
   socket.on(
     "receive-msg",
     (
@@ -68,10 +68,9 @@ const Messages = () => {
             ":" +
             (minutes.length == 1 ? "0".concat(minutes) : minutes),
           profilePicture,
-          seenBy:[{userId:"1"}]
         },
       ]);
-      socket.emit("read-msg",room,user.userId)
+      socket.emit("read-msg", room, user.userId);
     }
   );
   const [messages, setMessages] = useState<message[]>([]);
@@ -115,8 +114,7 @@ const Messages = () => {
                 ? "message-sent text-break d-flex flex-column"
                 : "message-received text-break d-flex flex-column"
             }
-          style={{cursor:"pointer"}}
-
+            style={{ cursor: "pointer" }}
           >
             <div className="ms-1">{item.content + " "}</div>
 
@@ -153,11 +151,17 @@ const Messages = () => {
                   item.profilePicture
                     ? item.profilePicture
                     : DefaultProfilePicture
-                  }
-                  />
+                }
+              />
             </Link>
           )}
-          {(showSeen && item.seenBy) &&<ListOfSeen users = {item.seenBy} showSeen={showSeen} setShowSeen={setShowSeen} />}
+          {showSeen && item.seenBy && (
+            <ListOfSeen
+              users={item.seenBy}
+              showSeen={showSeen}
+              setShowSeen={setShowSeen}
+            />
+          )}
         </div>
       ))}
       {preview && previewPictures && (
