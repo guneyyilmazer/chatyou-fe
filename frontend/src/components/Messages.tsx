@@ -85,7 +85,6 @@ const Messages = () => {
         <div
           ref={messageContainerRef}
           key={index}
-          onClick={() => setShowSeen(!showSeen)}
           className={
             item.sender.username == user.username
               ? "mt-5 d-flex justify-content-end"
@@ -109,6 +108,8 @@ const Messages = () => {
             </Link>
           )}
           <div
+          onClick={() => setShowSeen(!showSeen)}
+
             className={
               item.sender.username == user.username
                 ? "message-sent text-break d-flex flex-column"
