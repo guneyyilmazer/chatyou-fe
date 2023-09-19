@@ -57,9 +57,19 @@ io.on("connection", (socket) => {
       console.log(err.message);
     }
   });
+  socket.on("read-msg", async (room, userId) => { //gotta make this work with private rooms too.
+    const date = new Date();
+    const roomInDB = await RoomModel.findOne({ name: room });
+    const message = roomInDB.messages[roomInDB.messages.length-1];
+    message.seenBy = message.seenBy
+      ? [...message.seenBy, { userId, time: date }]
+      : [{ userId, time: date }];
+    await roomInDB.save();
+  });
   socket.on("send-msg", async (user, room, content, pictures, chattingWith) => {
     //creating a new date to save it in the DB as the sent property
     const date = new Date();
+
     const { profilePicture } = await UserModel.findOne({ _id: user.userId });
     if (chattingWith) {
       //if we have a chattingWith property inside our global state which it's inital is a localStorage property called chattingWith
@@ -151,6 +161,7 @@ app.post("/verify", async (req, res) => {
 app.use(withAuth);
 app.post("/loadRoom", async (req, res) => {
   try {
+    const date = new Date();
     const { room, chattingWith, userId } = req.body;
     const privateRoom = req.username + " " + chattingWith;
     const secondPrivateRoom = chattingWith + " " + req.username;
@@ -170,7 +181,7 @@ app.post("/loadRoom", async (req, res) => {
         (item) => item.userId == userId
       );
       if (doWeAlreadyHave.length == 0) {
-        item.seenBy = [...item.seenBy, { userId }];
+        item.seenBy = [...item.seenBy, { userId, time: date }];
       }
 
       return {

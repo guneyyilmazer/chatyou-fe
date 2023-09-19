@@ -71,6 +71,7 @@ const Messages = () => {
           seenBy:[{userId:"1"}]
         },
       ]);
+      socket.emit("read-msg",room,user.userId)
     }
   );
   const [messages, setMessages] = useState<message[]>([]);
