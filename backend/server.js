@@ -31,9 +31,54 @@ app.listen(process.env.PORT, () => {
   console.log("listening on port " + process.env.PORT);
 });
 
+const getMessagesReady = async (messages, cb) => {
+  //this piece of code adds the sentAt property and formats the date object to properly display the sent hour and minutes
+  //this function gets the profile picture and username values from the db and formats the date
+  const list = messages.map(async (item) => {
+    const newList = item.seenBy.map(async (object) => {
+      const { profilePicture, username } = await UserModel.findOne({
+        _id: object.userId,
+      });
+      return { userId: object.userId, username, profilePicture };
+    });
+    item.newSeenBy = await Promise.all(newList);
+    const { profilePicture } = await UserModel.findOne({
+      _id: item.sender.userId,
+    });
+    const sentAt =
+      (item.sent.getHours().toString().length == 1
+        ? "0".concat(item.sent.getHours().toString())
+        : item.sent.getHours().toString()) +
+      ":" +
+      (item.sent.getMinutes().toString().length == 1
+        ? "0".concat(item.sent.getMinutes().toString())
+        : item.sent.getMinutes().toString());
+    return {
+      sent: sentAt,
+      sender: item.sender,
+      content: item.content,
+      pictures: item.pictures,
+      profilePicture,
+      seenBy: item.newSeenBy,
+    };
+  });
+  if (messages) {
+    Promise.all(list).then(
+      (
+        values //this slows down the loading a bit
+      ) => {
+        cb(values);
+      }
+    );
+  }
+};
+
 io.on("connection", (socket) => {
   console.log(socket.id + " connected");
 
+  const cb = (value) => {
+    socket.emit("update-messages", value);
+  };
   //checking if either username + chattingWith (firstTry) or chattingWith + username (secondTry) exists
   //This is how private rooms are named
   socket.on("join-room", async (room) => {
@@ -67,46 +112,9 @@ io.on("connection", (socket) => {
       ? [...message.seenBy, { userId, time: date }]
       : [{ userId, time: date }];
     await RoomModel.findOneAndUpdate({ name: room }, { messages: newMessages });
-    const {messages} = await RoomModel.findOne({name:room})
+    const { messages } = await RoomModel.findOne({ name: room });
 
-    const list = messages.map(async (item) => {
-      const newList = item.seenBy.map(async (object) => {
-        const { profilePicture, username } = await UserModel.findOne({
-          _id: userId,
-        });
-        return { userId: object.userId, username, profilePicture };
-      });
-      item.newSeenBy = await Promise.all(newList);
-      const { profilePicture } = await UserModel.findOne({
-        _id: item.sender.userId,
-      });
-      const sentAt =
-        (item.sent.getHours().toString().length == 1
-          ? "0".concat(item.sent.getHours().toString())
-          : item.sent.getHours().toString()) +
-        ":" +
-        (item.sent.getMinutes().toString().length == 1
-          ? "0".concat(item.sent.getMinutes().toString())
-          : item.sent.getMinutes().toString());
-      return {
-        sent: sentAt,
-        sender: item.sender,
-        content: item.content,
-        pictures: item.pictures,
-        profilePicture,
-        seenBy: item.newSeenBy,
-      };
-    });
-    if (messages) {
-      Promise.all(list).then(
-        (
-          values //this slows down the loading a bit
-        ) => {
-          socket.emit("update-messages",values)
-        }
-      );
-    }
-
+    await getMessagesReady(messages, cb);
   });
   socket.on("send-msg", async (user, room, content, pictures, chattingWith) => {
     //creating a new date to save it in the DB as the sent property
@@ -238,46 +246,10 @@ app.post("/loadRoom", async (req, res) => {
     roomInDB.messages = newMessages;
     await roomInDB.save();
 
-    //this piece of code adds the sentAt property and formats the date object to properly display the sent hour and minutes
-    const list = messages.map(async (item) => {
-      const newList = item.seenBy.map(async (object) => {
-        const { profilePicture, username } = await UserModel.findOne({
-          _id: userId,
-        });
-        return { userId: object.userId, username, profilePicture };
-      });
-      item.newSeenBy = await Promise.all(newList);
-      const { profilePicture } = await UserModel.findOne({
-        _id: item.sender.userId,
-      });
-      const sentAt =
-        (item.sent.getHours().toString().length == 1
-          ? "0".concat(item.sent.getHours().toString())
-          : item.sent.getHours().toString()) +
-        ":" +
-        (item.sent.getMinutes().toString().length == 1
-          ? "0".concat(item.sent.getMinutes().toString())
-          : item.sent.getMinutes().toString());
-      return {
-        sent: sentAt,
-        sender: item.sender,
-        content: item.content,
-        pictures: item.pictures,
-        profilePicture,
-        seenBy: item.newSeenBy,
-      };
-    });
-    if (messages) {
-      Promise.all(list).then(
-        (
-          values //this slows down the loading a bit
-        ) => {
-          res.status(200).json({ messages: values });
-        }
-      );
-    } else {
-      res.status(404).json({ msg: "room not found / not created" });
-    }
+    const cb = (value) => {
+      res.status(200).json({ messages: value });
+    };
+    await getMessagesReady(messages, cb);
   } catch (err) {
     console.log(err.message);
     res.status(400).json({ error: err.message });
