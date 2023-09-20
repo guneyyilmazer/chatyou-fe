@@ -71,7 +71,7 @@ const Messages = () => {
           profilePicture,
         },
       ]);
-      socket.emit("read-msg", room,chattingWith, user);
+      socket.emit("read-msg", room, chattingWith, user);
     }
   );
   const [messages, setMessages] = useState<message[]>([]);
@@ -86,11 +86,11 @@ const Messages = () => {
         <div
           ref={messageContainerRef}
           key={index}
-          className={
+          className={`mt-5 d-flex ${
             item.sender.username == user.username
-              ? "mt-5 d-flex justify-content-end"
-              : "mt-5 d-flex justify-content-start"
-          }
+              ? "justify-content-end"
+              : "justify-content-start"
+          }`}
         >
           {item.sender.username != user.username && (
             <Link
@@ -109,13 +109,13 @@ const Messages = () => {
             </Link>
           )}
           <div
-          onClick={() => setShowSeen(!showSeen)}
-
-            className={
-              item.sender.username == user.username
-                ? "message-sent text-break d-flex flex-column"
-                : "message-received text-break d-flex flex-column"
-            }
+            onClick={() => setShowSeen(!showSeen)}
+            className={`text-break d-flex flex-column
+              ${
+                item.sender.username == user.username
+                  ? "message-sent"
+                  : "message-received"
+              }`}
             style={{ cursor: "pointer" }}
           >
             <div className="ms-1">{item.content + " "}</div>
