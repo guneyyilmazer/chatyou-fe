@@ -102,11 +102,11 @@ io.on("connection", (socket) => {
       console.log(err.message);
     }
   });
-  socket.on("read-msg", async (room,chattingWith, user) => {
-    const {userId,username} = user
+  socket.on("read-msg", async (room, chattingWith, user) => {
+    const { userId, username } = user;
 
     const date = new Date();
-    const roomInDB = await findTheRoom(username,room,chattingWith)
+    const roomInDB = await findTheRoom(username, room, chattingWith);
 
     const newMessages = roomInDB.messages;
     const message = newMessages[roomInDB.messages.length - 1];
@@ -273,5 +273,18 @@ app.post("/loadRooms", async (req, res) => {
     res.status(200).json({ rooms });
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+});
+
+app.post("/findRoom", async (req, res) => {
+  try {
+    const { room } = req.body;
+    const Rooms = await RoomModel.find().limit(20);
+    const includes = Rooms.filter((item) => item.name.includes(room));
+    res.status(200).json({ rooms: includes });
+  } catch (err) {
+    console.log(err.message);
+
+    res.status(401).json({ error: err.message });
   }
 });
