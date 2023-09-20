@@ -1,12 +1,18 @@
 import Cookies from "js-cookie";
 import { Outlet } from "react-router-dom";
+import SearchBar from "./SearchBar";
 const Header = () => {
   return (
     <div>
-      <nav className="d-flex justify-content-between "
+      <nav className="d-flex position-relative justify-content-between "
       style={{height:"5vh"}}>
         <div className="btn-group">
           <button onClick={()=>window.location.replace("/")} className="btn btn-danger">Home</button>
+        </div>
+        <div className="">
+
+
+        <SearchBar/>
         </div>
         <div className="">
           <button
