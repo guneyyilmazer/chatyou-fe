@@ -36,16 +36,16 @@ const LoadUser = async (req, res) => {
   try {
     const { userId, token } = req.body;
     if (userId) {
-      const inDB = await UserModel.findOne({ _id:userId });
+      const inDB = await UserModel.findOne({ _id: userId });
       res.status(200).json({
         username: inDB.username,
         id: inDB._id,
         profilePicture: inDB.profilePicture,
       });
     } else if (token) {
-      const {userId} = await jwt.verify(token, process.env.SECRET);
+      const { userId } = await jwt.verify(token, process.env.SECRET);
 
-      const inDB = await UserModel.findOne({ _id:userId });
+      const inDB = await UserModel.findOne({ _id: userId });
       res.status(200).json({
         username: inDB.username,
         userId: inDB._id,
@@ -54,6 +54,19 @@ const LoadUser = async (req, res) => {
     }
   } catch (err) {
     console.log(err.message);
+    res.status(401).json({ error: err.message });
+  }
+};
+
+const FindUsers = async (req, res) => {
+  try {
+    const {username} = req.body
+    const Users = await UserModel.find().limit(20)
+    const includes = Users.filter((item)=>item.username.includes(username))
+    console.log(includes)
+  } catch (err) {
+    console.log(err.message);
+
     res.status(401).json({ error: err.message });
   }
 };
@@ -76,33 +89,44 @@ const UpdateProfilePicture = async (req, res) => {
   }
 };
 
-const UpdateUsername = async (req,res) => {
-    try{
-        const {username,newUsername} = req.body;
-        const doWeHaveUser = await UserModel.findOne({username})
-        if(doWeHaveUser._id == req.userId){
-
-            const response = await UserModel.findOneAndUpdate({username},{username:newUsername},{new:true});
-            res.status(200).json({response})
-        }
+const UpdateUsername = async (req, res) => {
+  try {
+    const { username, newUsername } = req.body;
+    const doWeHaveUser = await UserModel.findOne({ username });
+    if (doWeHaveUser._id == req.userId) {
+      const response = await UserModel.findOneAndUpdate(
+        { username },
+        { username: newUsername },
+        { new: true }
+      );
+      res.status(200).json({ response });
     }
-    catch(err){
-        res.status(400).json({error:err.message})
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+const UpdateEmail = async (req, res) => {
+  try {
+    const { username, newEmail } = req.body;
+    const doWeHaveUser = await UserModel.findOne({ username });
+    if (doWeHaveUser.username == req.username) {
+      const response = await UserModel.findOneAndUpdate(
+        { username },
+        { email: newEmail },
+        { new: true }
+      );
+      res.status(200).json({ response });
     }
-}
-const UpdateEmail = async (req,res) => {
-    try{
-        const {username,newEmail} = req.body;
-        const doWeHaveUser = await UserModel.findOne({username})
-        if(doWeHaveUser.username == req.username){
-
-
-            const response = await UserModel.findOneAndUpdate({username},{email:newEmail},{new:true});
-            res.status(200).json({response})
-        }
-    }
-    catch(err){
-        res.status(400).json({error:err.message})
-    }
-}
-module.exports = { Signup, Login, LoadUser, UpdateProfilePicture,UpdateUsername,UpdateEmail };
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+module.exports = {
+  Signup,
+  Login,
+  LoadUser,
+  FindUsers,
+  UpdateProfilePicture,
+  UpdateUsername,
+  UpdateEmail,
+};
