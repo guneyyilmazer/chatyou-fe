@@ -102,10 +102,12 @@ io.on("connection", (socket) => {
       console.log(err.message);
     }
   });
-  socket.on("read-msg", async (room, userId) => {
-    //gotta make this work with private rooms too.
+  socket.on("read-msg", async (room,chattingWith, user) => {
+    const {userId,username} = user
+
     const date = new Date();
-    const roomInDB = await RoomModel.findOne({ name: room });
+    const roomInDB = await findTheRoom(username,room,chattingWith)
+
     const newMessages = roomInDB.messages;
     const message = newMessages[roomInDB.messages.length - 1];
     newMessages[roomInDB.messages.length - 1].seenBy = message.seenBy
@@ -209,7 +211,7 @@ app.post("/verify", async (req, res) => {
   }
 });
 app.use(withAuth);
-const findTheRoom = async(username,room,chattingWith) => {
+const findTheRoom = async (username, room, chattingWith) => {
   const privateRoom = username + " " + chattingWith;
   const secondPrivateRoom = chattingWith + " " + username;
   //checking both scenearios to find the privateRoom
@@ -221,14 +223,14 @@ const findTheRoom = async(username,room,chattingWith) => {
     name: firstTry ? privateRoom : secondTry ? secondPrivateRoom : room,
   });
   return roomInDB;
-}
+};
 app.post("/loadRoom", async (req, res) => {
   try {
     const date = new Date();
     const { room, chattingWith, userId } = req.body;
-    const roomInDB = await findTheRoom(req.username,room,chattingWith);
+    const roomInDB = await findTheRoom(req.username, room, chattingWith);
     //this checks if the users id is already in the seenBy object, if not it adds it
-    const {messages} = roomInDB
+    const { messages } = roomInDB;
     const newMessages = messages.map((item) => {
       const doWeAlreadyHave = item.seenBy.filter(
         (item) => item.userId == userId

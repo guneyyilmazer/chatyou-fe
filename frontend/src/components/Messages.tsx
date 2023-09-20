@@ -12,6 +12,7 @@ const Messages = () => {
   const socket = useSelector((shop: any) => shop.app.socket); //will implement the type later
 
   const user = useSelector((shop: any) => shop.app.user); //will implement the type later
+  const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
   const room = useSelector((shop: any) => shop.app.room); //will implement the type later
   const [showSeen, setShowSeen] = useState(false);
   const [preview, setPreview] = useState(false);
@@ -70,7 +71,7 @@ const Messages = () => {
           profilePicture,
         },
       ]);
-      socket.emit("read-msg", room, user.userId);
+      socket.emit("read-msg", room,chattingWith, user);
     }
   );
   const [messages, setMessages] = useState<message[]>([]);
