@@ -47,7 +47,7 @@ const SearchBar = () => {
     }
   };
   return (
-    <div>
+    <div className="bg-danger">
       <form className="form-group d-flex">
         <input
           ref={searchFor == "users" ? usernameInputRef : roomInputRef}
@@ -57,7 +57,6 @@ const SearchBar = () => {
           style={{ outline: "none" }}
           placeholder="Search"
         />
-        Search
       </form>
       <SearchBarResults users={users} rooms={rooms} />
     </div>
