@@ -19,7 +19,7 @@ const SearchBar = () => {
 
       method: "POST",
       body: JSON.stringify({
-        username: usernameInputRef.current!.value,
+        username: usernameInputRef.current!.value != "" && usernameInputRef.current!.value,
       }),
     });
     const response = await res.json();
@@ -37,7 +37,7 @@ const SearchBar = () => {
 
       method: "POST",
       body: JSON.stringify({
-        room: roomInputRef.current!.value,
+        room: roomInputRef.current!.value != "" && roomInputRef.current!.value,
       }),
     });
     const response = await res.json();
@@ -48,20 +48,19 @@ const SearchBar = () => {
   };
   return (
     <div>
-
-
-    <form className="form-group d-flex">
-      <input
-        ref={searchFor == "users" ? usernameInputRef : roomInputRef}
-        onChange={searchFor == "users" ? findUsers : findRoom}
-        type="text"
-        className="form-check p-1 text-center"
-        placeholder="Search"
+      <form className="form-group d-flex">
+        <input
+          ref={searchFor == "users" ? usernameInputRef : roomInputRef}
+          onChange={searchFor == "users" ? findUsers : findRoom}
+          type="text"
+          className="form-check bg-dark text-white p-1 text-center"
+          style={{ outline: "none" }}
+          placeholder="Search"
         />
-      Search
-    </form>
-    <SearchBarResults users={users} rooms={rooms}/>
-        </div>
+        Search
+      </form>
+      <SearchBarResults users={users} rooms={rooms} />
+    </div>
   );
 };
 
