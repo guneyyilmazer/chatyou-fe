@@ -61,7 +61,7 @@ const LoadUser = async (req, res) => {
 const FindUsers = async (req, res) => {
   try {
     const {username} = req.body
-    const Users = await UserModel.find().limit(20)
+    const Users = await UserModel.find().limit(20).select("username").select("profilePicture")
     const includes = Users.filter((item)=>item.username.includes(username))
     res.status(200).json({users:includes})
 
