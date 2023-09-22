@@ -279,7 +279,7 @@ app.post("/loadRooms", async (req, res) => {
 app.post("/findRoom", async (req, res) => {
   try {
     const { room } = req.body;
-    const Rooms = await RoomModel.find().limit(20);
+    const Rooms = await RoomModel.find().limit(20).select("name");
     const includes = Rooms.filter((item) => item.name.includes(room));
     res.status(200).json({ rooms: includes });
   } catch (err) {

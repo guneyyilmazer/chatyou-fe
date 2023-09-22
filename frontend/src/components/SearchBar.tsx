@@ -2,9 +2,13 @@ import Cookies from "js-cookie";
 import { useRef, useState } from "react";
 import SearchBarResults from "./SearchBarResults";
 import { setUser } from "../features/appSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRepeat } from "@fortawesome/free-solid-svg-icons";
 
 const SearchBar = () => {
   const [searchFor, setSearchFor] = useState("users");
+  const [show, setShow] = useState(true);
+
   const usernameInputRef = useRef<HTMLInputElement>(null);
   const roomInputRef = useRef<HTMLInputElement>(null);
   const [rooms, setRooms] = useState([]);
@@ -19,7 +23,9 @@ const SearchBar = () => {
 
       method: "POST",
       body: JSON.stringify({
-        username: usernameInputRef.current!.value != "" && usernameInputRef.current!.value,
+        username:
+          usernameInputRef.current!.value != "" &&
+          usernameInputRef.current!.value,
       }),
     });
     const response = await res.json();
@@ -47,18 +53,39 @@ const SearchBar = () => {
     }
   };
   return (
-    <div className="bg-danger">
+    <div className="">
       <form className="form-group d-flex">
         <input
           ref={searchFor == "users" ? usernameInputRef : roomInputRef}
           onChange={searchFor == "users" ? findUsers : findRoom}
           type="text"
-          className="form-check bg-dark text-white p-1 text-center"
-          style={{ outline: "none" }}
-          placeholder="Search"
+          className="form-check text-white p-1 text-center"
+          style={{
+            outline: "none",
+            background: "none",
+            border: "none",
+            borderBottom: "2px solid",
+            borderColor: "Red",
+          }}
+          placeholder={`Search for ${searchFor}`}
         />
+        <button
+          onClick={(e) => {
+            setSearchFor(searchFor == "users" ? "rooms" : "users");
+            e.preventDefault();
+              searchFor == "users" ? setUsers([]) : setRooms([]);
+          }}
+          className="btn btn-danger rounded-5 ms-2"
+        >
+          <FontAwesomeIcon icon={faRepeat} />
+        </button>
       </form>
-      <SearchBarResults users={users} rooms={rooms} />
+      <SearchBarResults
+        show={show}
+        setShow={setShow}
+        users={users}
+        rooms={rooms}
+      />
     </div>
   );
 };
