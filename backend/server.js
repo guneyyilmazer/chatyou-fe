@@ -23,7 +23,7 @@ app.use(
 );
 app.use(express.json({ limit: "10mb" }));
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect(process.env.MONGODB_URI,{ maxIdleTimeMS: 60000 })
   .then(() => console.log("db connected"));
 app.use("/user", userRouter);
 
@@ -118,20 +118,18 @@ io.on("connection", (socket) => {
 
     await getMessagesReady(messages, cb);
   });
-  socket.on("send-msg", async (user, room, content, pictures, chattingWith) => {
-    //creating a new date to save it in the DB as the sent property
-    const date = new Date();
+  socket.on(
+    "send-msg",
+    async (user, roomName, content, pictures, chattingWith) => {
+      const room = await findTheRoom(user.username, roomName, chattingWith);
+      const privateRoom = user.username + " " + chattingWith;
+      //creating a new date to save it in the DB as the sent property
+      const date = new Date();
 
-    const { profilePicture } = await UserModel.findOne({ _id: user.userId });
-    if (chattingWith) {
-      //if we have a chattingWith property inside our global state which it's inital is a localStorage property called chattingWith
-      //check if either username + chattingWith or chattingWith + username exists to avoid creating new rooms
-      room = user.username + " " + chattingWith;
-      const second = room.split(" ")[1] + " " + room.split(" ")[0];
-      const firstTry = await RoomModel.findOne({ name: room });
-      const secondTry = await RoomModel.findOne({ name: second });
-      if (firstTry) {
-        io.to(room).emit(
+      const { profilePicture } = await UserModel.findOne({ _id: user.userId });
+
+      if (!room && chattingWith) {
+        io.to(privateRoom).emit(
           "receive-msg",
           user,
           content,
@@ -139,73 +137,45 @@ io.on("connection", (socket) => {
           date.getHours().toString() + ":" + date.getMinutes().toString(),
           profilePicture
         );
-      } else if (secondTry) {
-        io.to(second).emit(
-          "receive-msg",
-          user,
-          content,
-          pictures,
-          date.getHours().toString() + ":" + date.getMinutes().toString(),
-          profilePicture
-        );
-      }
-      const inDB = await RoomModel.findOne({ name: room });
-      const secondInDB = await RoomModel.findOne({ name: second });
-      if (!inDB && !secondInDB) {
         await RoomModel.create({
-          name: room,
+          name: privateRoom,
           privateRoom: true,
           messages: [{ sender: user, content, pictures, sent: date }],
         });
-      } else if (inDB) {
-        const newMessages = [
-          ...inDB.messages,
-          { sender: user, content, pictures, sent: date },
-        ];
-        await RoomModel.findOneAndUpdate(
-          { name: inDB.name },
-          { messages: newMessages }
+      } else if (!room) {
+        io.to(roomName).emit(
+          "receive-msg",
+          user,
+          content,
+          pictures,
+          date.getHours().toString() + ":" + date.getMinutes().toString(),
+          profilePicture
         );
-      } else if (secondInDB) {
+        await RoomModel.create({
+          name: roomName,
+          privateRoom: false,
+          messages: [{ sender: user, content, pictures, sent: date }],
+        });
+      } else if (room) {
+        io.to(room.name).emit(
+          "receive-msg",
+          user,
+          content,
+          pictures,
+          date.getHours().toString() + ":" + date.getMinutes().toString(),
+          profilePicture
+        );
         const newMessages = [
-          ...secondInDB.messages,
+          ...room.messages,
           { sender: user, content, pictures, sent: date },
         ];
         await RoomModel.findOneAndUpdate(
-          { name: secondInDB.name },
+          { name: room.name },
           { messages: newMessages }
         );
       }
-    } else if (await RoomModel.findOne({ name: room })) {
-      const roomInDB = await RoomModel.findOne({ name: room });
-      roomInDB.messages = [
-        ...roomInDB.messages,
-        { sender: user, content, pictures, sent: date },
-      ];
-      io.to(room).emit(
-        "receive-msg",
-        user,
-        content,
-        pictures,
-        date.getHours().toString() + ":" + date.getMinutes().toString(),
-        profilePicture
-      );
-      roomInDB.save();
-    } else {
-      await RoomModel.create({
-        name: room,
-        messages: [{ sender: user, content, pictures, sent: date }],
-      });
-      io.to(room).emit(
-        "receive-msg",
-        user,
-        content,
-        pictures,
-        date.getHours().toString() + ":" + date.getMinutes().toString(),
-        profilePicture
-      );
     }
-  });
+  );
 });
 app.post("/verify", async (req, res) => {
   try {
@@ -233,7 +203,7 @@ const findTheRoom = async (username, room, chattingWith) => {
 app.post("/loadRoom", async (req, res) => {
   try {
     const date = new Date();
-    const { room, chattingWith, userId,page } = req.body;
+    const { room, chattingWith, userId, page } = req.body;
     const roomInDB = await findTheRoom(req.username, room, chattingWith);
 
     const { messages } = roomInDB;
@@ -263,7 +233,7 @@ app.post("/loadRoom", async (req, res) => {
       res.status(200).json({ messages: value });
     };
     const amount = 20;
-    const limit = messages.slice((page-1)*amount,page*amount)
+    const limit = messages.slice((page - 1) * amount, page * amount);
     await getMessagesReady(limit, cb);
   } catch (err) {
     console.log(err.message);

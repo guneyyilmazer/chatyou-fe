@@ -15,6 +15,7 @@ const Messages = () => {
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
   const room = useSelector((shop: any) => shop.app.room); //will implement the type later
   const [showSeen, setShowSeen] = useState(false);
+  const [page, setPage] = useState(1);
   const [preview, setPreview] = useState(false);
   const [previewPictures, setPreviewPictures] = useState<string[]>();
   const messageContainerRef = useRef<HTMLDivElement>(null);
@@ -30,21 +31,28 @@ const Messages = () => {
         room,
         chattingWith: localStorage.getItem("chattingWith"),
         userId: user.userId,
+        page
       }),
     });
     const response = await res.json();
     console.log(response);
     if (!response.error) {
-      setMessages(response.messages);
+      let newMessages = [...messages, ...response.messages];
+      setMessages(newMessages);
       scrollDown();
     }
   };
-  useMemo(loadRoom, []);
+  useMemo(loadRoom, [page]);
   const scrollDown = () => {
     messageContainerRef.current &&
       messageContainerRef.current!.scrollIntoView({
         behavior: "smooth",
       });
+  };
+  const handleScroll = (e: React.UIEvent<HTMLElement>) => {
+    if (e.currentTarget.scrollTop === 0) {
+      setPage(page + 1);
+    }
   };
   socket.on("update-messages", (messages: any) => setMessages(messages));
   socket.on(
@@ -79,6 +87,7 @@ const Messages = () => {
 
   return (
     <div
+      onScroll={handleScroll}
       className="d-flex flex-column overflow-auto"
       style={{ height: "80vh", width: "43vw" }}
     >
