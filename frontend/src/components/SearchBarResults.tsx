@@ -10,7 +10,7 @@ const SearchBarResults = ({ users, rooms,searchFor, show, setShow }: any) => {
         searchFor == "users" &&
         users.map((item: any) => (
           <div className="results d-flex py-3 ps-2 align-items-center">
-            <Link onClick={() => setShow(!show)} to={`users/${item._id}`}>
+            <Link className="text-decoration-none" onClick={() => setShow(!show)} to={`users/${item._id}`}>
               <img
                 style={{ height: "40px", width: "40px" }}
                 className="rounded-3"
