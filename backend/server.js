@@ -114,7 +114,7 @@ io.on("connection", (socket) => {
       ? [...message.seenBy, { userId, time: date }]
       : [{ userId, time: date }];
     await RoomModel.findOneAndUpdate({ name: room }, { messages: newMessages });
-    const { messages } = await RoomModel.findOne({ name: room });
+    const { messages } = await findTheRoom(username, room, chattingWith);
 
     await getMessagesReady(messages, cb);
   });
@@ -158,17 +158,23 @@ io.on("connection", (socket) => {
           messages: [{ sender: user, content, pictures, sent: date }],
         });
       } else if (inDB) {
-        inDB.messages = [
+        const newMessages = [
           ...inDB.messages,
           { sender: user, content, pictures, sent: date },
         ];
-        await inDB.save();
+        await RoomModel.findOneAndUpdate(
+          { name: inDB.name },
+          { messages: newMessages }
+        );
       } else if (secondInDB) {
-        secondInDB.messages = [
+        const newMessages = [
           ...secondInDB.messages,
           { sender: user, content, pictures, sent: date },
         ];
-        await secondInDB.save();
+        await RoomModel.findOneAndUpdate(
+          { name: secondInDB.name },
+          { messages: newMessages }
+        );
       }
     } else if (await RoomModel.findOne({ name: room })) {
       const roomInDB = await RoomModel.findOne({ name: room });
@@ -230,6 +236,7 @@ app.post("/loadRoom", async (req, res) => {
     const { room, chattingWith, userId } = req.body;
     const roomInDB = await findTheRoom(req.username, room, chattingWith);
     //this checks if the users id is already in the seenBy object, if not it adds it
+
     const { messages } = roomInDB;
     const newMessages = messages.map((item) => {
       const doWeAlreadyHave = item.seenBy.filter(
@@ -248,8 +255,10 @@ app.post("/loadRoom", async (req, res) => {
         seenBy: item.seenBy,
       };
     });
-    roomInDB.messages = newMessages;
-    await roomInDB.save();
+    await RoomModel.findOneAndUpdate(
+      { name: roomInDB.name },
+      { messages: newMessages }
+    );
 
     const cb = (value) => {
       res.status(200).json({ messages: value });
@@ -280,8 +289,10 @@ app.post("/findRoom", async (req, res) => {
   try {
     const { room } = req.body;
     const Rooms = await RoomModel.find().limit(20).select("name");
-    const includes = Rooms.filter((item) => item.name.includes(room));
-    res.status(200).json({ rooms: includes });
+    const filter = Rooms.filter(
+      (item) => item.name.includes(room) && !item.privateRoom
+    );
+    res.status(200).json({ rooms: filter });
   } catch (err) {
     console.log(err.message);
 
