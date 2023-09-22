@@ -235,7 +235,6 @@ app.post("/loadRoom", async (req, res) => {
     const date = new Date();
     const { room, chattingWith, userId } = req.body;
     const roomInDB = await findTheRoom(req.username, room, chattingWith);
-    //this checks if the users id is already in the seenBy object, if not it adds it
 
     const { messages } = roomInDB;
     const newMessages = messages.map((item) => {
