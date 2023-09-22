@@ -26,7 +26,21 @@ const SearchBarResults = ({ users, rooms, show, setShow }: any) => {
             </Link>
           </div>
         ))}
-     
+      {rooms &&
+        rooms.map((item: any) => (
+          <div className="results d-flex py-3 ps-2 align-items-center">
+            <span
+              style={{
+                textDecoration: "none",
+                background: "none",
+                border: "none",
+              }}
+              className="ms-2 text-white text-decoration-none"
+            >
+              {item.name}
+            </span>
+          </div>
+        ))}
     </div>
   );
 };
