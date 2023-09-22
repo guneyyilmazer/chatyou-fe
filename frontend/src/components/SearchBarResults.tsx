@@ -3,11 +3,11 @@ import "../css/SearchBar.css";
 import { Link } from "react-router-dom";
 const DefaultProfilePicture = require("../images/default.jpeg");
 
-const SearchBarResults = ({ users, rooms, show, setShow }: any) => {
+const SearchBarResults = ({ users, rooms,searchFor, show, setShow }: any) => {
   return (
     <div className="bg-dark">
       {users &&
-        show &&
+        searchFor == "users" &&
         users.map((item: any) => (
           <div className="results d-flex py-3 ps-2 align-items-center">
             <Link onClick={() => setShow(!show)} to={`users/${item._id}`}>
@@ -26,7 +26,7 @@ const SearchBarResults = ({ users, rooms, show, setShow }: any) => {
             </Link>
           </div>
         ))}
-      {rooms &&
+      {(rooms && searchFor == "rooms" ) &&
         rooms.map((item: any) => (
           <div className="results d-flex py-3 ps-2 align-items-center">
             <span

@@ -9,8 +9,7 @@ const SearchBar = () => {
   const [searchFor, setSearchFor] = useState("users");
   const [show, setShow] = useState(true);
 
-  const usernameInputRef = useRef<HTMLInputElement>(null);
-  const roomInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [rooms, setRooms] = useState([]);
   const [users, setUsers] = useState([]);
 
@@ -24,8 +23,8 @@ const SearchBar = () => {
       method: "POST",
       body: JSON.stringify({
         username:
-          usernameInputRef.current!.value != "" &&
-          usernameInputRef.current!.value,
+          inputRef.current!.value != "" &&
+          inputRef.current!.value,
       }),
     });
     const response = await res.json();
@@ -43,7 +42,7 @@ const SearchBar = () => {
 
       method: "POST",
       body: JSON.stringify({
-        room: roomInputRef.current!.value != "" && roomInputRef.current!.value,
+        room: inputRef.current!.value != "" && inputRef.current!.value,
       }),
     });
     const response = await res.json();
@@ -52,12 +51,17 @@ const SearchBar = () => {
       setRooms(response.rooms);
     }
   };
+  const getData = async() => {
+    await findRoom()
+    await findUsers()
+
+  }
   return (
     <div className="">
       <form className="form-group d-flex">
         <input
-          ref={searchFor == "users" ? usernameInputRef : roomInputRef}
-          onChange={searchFor == "users" ? findUsers : findRoom}
+          ref={inputRef}
+          onChange={getData}
           type="text"
           className="form-check text-white p-1 text-center"
           style={{
@@ -73,7 +77,6 @@ const SearchBar = () => {
           onClick={(e) => {
             setSearchFor(searchFor == "users" ? "rooms" : "users");
             e.preventDefault();
-              searchFor == "users" ? setUsers([]) : setRooms([]);
           }}
           className="btn btn-danger rounded-5 ms-2"
         >
@@ -83,6 +86,7 @@ const SearchBar = () => {
       <SearchBarResults
         show={show}
         setShow={setShow}
+        searchFor={searchFor}
         users={users}
         rooms={rooms}
       />
