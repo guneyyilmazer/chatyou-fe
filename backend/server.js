@@ -233,7 +233,7 @@ const findTheRoom = async (username, room, chattingWith) => {
 app.post("/loadRoom", async (req, res) => {
   try {
     const date = new Date();
-    const { room, chattingWith, userId } = req.body;
+    const { room, chattingWith, userId,page } = req.body;
     const roomInDB = await findTheRoom(req.username, room, chattingWith);
 
     const { messages } = roomInDB;
@@ -262,7 +262,9 @@ app.post("/loadRoom", async (req, res) => {
     const cb = (value) => {
       res.status(200).json({ messages: value });
     };
-    await getMessagesReady(messages, cb);
+    const amount = 20;
+    const limit = messages.slice((page-1)*amount,page*amount)
+    await getMessagesReady(limit, cb);
   } catch (err) {
     console.log(err.message);
     res.status(400).json({ error: err.message });
