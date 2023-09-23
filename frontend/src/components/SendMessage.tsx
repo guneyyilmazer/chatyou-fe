@@ -30,6 +30,7 @@ const SendMessage = () => {
         pictures,
         localStorage.getItem("chattingWith")
       );
+      inputRef.current!.value ="";
     }
   };
   return (
