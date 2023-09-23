@@ -114,9 +114,7 @@ io.on("connection", (socket) => {
       ? [...message.seenBy, { userId, time: date }]
       : [{ userId, time: date }];
     await RoomModel.findOneAndUpdate({ name: room }, { messages: newMessages });
-    const { messages } = await findTheRoom(username, room, chattingWith);
 
-    await getMessagesReady(messages, cb);
   });
   socket.on(
     "send-msg",
