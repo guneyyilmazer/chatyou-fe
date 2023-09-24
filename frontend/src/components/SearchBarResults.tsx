@@ -1,16 +1,24 @@
 import React, { useState } from "react";
 import "../css/SearchBar.css";
 import { Link } from "react-router-dom";
+import { setRoom } from "../features/appSlice";
+import { useDispatch, useSelector } from "react-redux";
 const DefaultProfilePicture = require("../images/default.jpeg");
 
-const SearchBarResults = ({ users, rooms,searchFor, show, setShow }: any) => {
+const SearchBarResults = ({ users, rooms, searchFor, show, setShow }: any) => {
+  const dispatch = useDispatch();
+
   return (
     <div className="bg-dark">
       {users &&
         searchFor == "users" &&
         users.map((item: any) => (
           <div className="results d-flex py-3 ps-2 align-items-center">
-            <Link className="text-decoration-none" onClick={() => setShow(!show)} to={`users/${item._id}`}>
+            <Link
+              className="text-decoration-none"
+              onClick={() => setShow(!show)}
+              to={`users/${item._id}`}
+            >
               <img
                 style={{ height: "40px", width: "40px" }}
                 className="rounded-3"
@@ -26,18 +34,28 @@ const SearchBarResults = ({ users, rooms,searchFor, show, setShow }: any) => {
             </Link>
           </div>
         ))}
-      {(rooms && searchFor == "rooms" ) &&
+      {rooms &&
+        searchFor == "rooms" &&
         rooms.map((item: any) => (
           <div className="results d-flex py-3 ps-2 align-items-center">
             <span
-              style={{
-                textDecoration: "none",
-                background: "none",
-                border: "none",
+              className="text-decoration-none"
+              onClick={() => {
+                setShow(!show);
+                dispatch(setRoom(item.name));
+                window.location.reload()
               }}
-              className="ms-2 text-white text-decoration-none"
             >
-              {item.name}
+              <span
+                style={{
+                  textDecoration: "none",
+                  background: "none",
+                  border: "none",
+                }}
+                className="ms-2 text-white text-decoration-none"
+              >
+                {item.name}
+              </span>
             </span>
           </div>
         ))}
