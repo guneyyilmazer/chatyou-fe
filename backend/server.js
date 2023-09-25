@@ -23,7 +23,7 @@ app.use(
 );
 app.use(express.json({ limit: "10mb" }));
 mongoose
-  .connect(process.env.MONGODB_URI,{ maxIdleTimeMS: 60000 })
+  .connect(process.env.MONGODB_URI, { maxIdleTimeMS: 60000 })
   .then(() => console.log("db connected"));
 app.use("/user", userRouter);
 
@@ -32,37 +32,37 @@ app.listen(process.env.PORT, () => {
 });
 
 const getMessagesReady = async (messages, cb) => {
-  //this piece of code adds the sentAt property and formats the date object to properly display the sent hour and minutes
-  //this function gets the profile picture and username values from the db and formats the date
-  const list = messages.map(async (item) => {
-    const newList = item.seenBy.map(async (object) => {
-      const { profilePicture, username } = await UserModel.findOne({
-        _id: object.userId,
+  try {
+    //this piece of code adds the sentAt property and formats the date object to properly display the sent hour and minutes
+    //this function gets the profile picture and username values from the db and formats the date
+    const list = messages.map(async (item) => {
+      const newList = item.seenBy.map(async (object) => {
+        const { profilePicture, username } = await UserModel.findOne({
+          _id: object.userId,
+        });
+        return { userId: object.userId, username, profilePicture };
       });
-      return { userId: object.userId, username, profilePicture };
+      item.newSeenBy = await Promise.all(newList);
+      const { profilePicture } = await UserModel.findOne({
+        _id: item.sender.userId,
+      });
+      const sentAt =
+        (item.sent.getHours().toString().length == 1
+          ? "0".concat(item.sent.getHours().toString())
+          : item.sent.getHours().toString()) +
+        ":" +
+        (item.sent.getMinutes().toString().length == 1
+          ? "0".concat(item.sent.getMinutes().toString())
+          : item.sent.getMinutes().toString());
+      return {
+        sent: sentAt,
+        sender: item.sender,
+        content: item.content,
+        pictures: item.pictures,
+        profilePicture,
+        seenBy: item.newSeenBy,
+      };
     });
-    item.newSeenBy = await Promise.all(newList);
-    const { profilePicture } = await UserModel.findOne({
-      _id: item.sender.userId,
-    });
-    const sentAt =
-      (item.sent.getHours().toString().length == 1
-        ? "0".concat(item.sent.getHours().toString())
-        : item.sent.getHours().toString()) +
-      ":" +
-      (item.sent.getMinutes().toString().length == 1
-        ? "0".concat(item.sent.getMinutes().toString())
-        : item.sent.getMinutes().toString());
-    return {
-      sent: sentAt,
-      sender: item.sender,
-      content: item.content,
-      pictures: item.pictures,
-      profilePicture,
-      seenBy: item.newSeenBy,
-    };
-  });
-  if (messages) {
     Promise.all(list).then(
       (
         values //this slows down the loading a bit
@@ -70,6 +70,8 @@ const getMessagesReady = async (messages, cb) => {
         cb(values);
       }
     );
+  } catch (err) {
+    console.log(err.message);
   }
 };
 
@@ -114,7 +116,6 @@ io.on("connection", (socket) => {
       ? [...message.seenBy, { userId, time: date }]
       : [{ userId, time: date }];
     await RoomModel.findOneAndUpdate({ name: room }, { messages: newMessages });
-
   });
   socket.on(
     "send-msg",
@@ -205,6 +206,7 @@ app.post("/loadRoom", async (req, res) => {
     const roomInDB = await findTheRoom(req.username, room, chattingWith);
 
     const { messages } = roomInDB;
+
     const newMessages = messages.map((item) => {
       const doWeAlreadyHave = item.seenBy.filter(
         (item) => item.userId == userId
@@ -230,8 +232,11 @@ app.post("/loadRoom", async (req, res) => {
     const cb = (value) => {
       res.status(200).json({ messages: value });
     };
-    const amount = 20;
-    const limit = messages.slice((page - 1) * amount, page * amount);
+    const amount = 5;
+    const limit = messages.slice(
+      messages.length - page * amount,
+      messages.length - (page - 1) * amount
+    );
     await getMessagesReady(limit, cb);
   } catch (err) {
     console.log(err.message);

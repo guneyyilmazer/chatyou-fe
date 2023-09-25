@@ -31,13 +31,13 @@ const Messages = () => {
         room,
         chattingWith: localStorage.getItem("chattingWith"),
         userId: user.userId,
-        page
+        page,
       }),
     });
     const response = await res.json();
     console.log(response);
     if (!response.error) {
-      let newMessages = [...messages, ...response.messages];
+      let newMessages = [...response.messages, ...messages];
       setMessages(newMessages);
       scrollDown();
     }
