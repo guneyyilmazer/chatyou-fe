@@ -31,6 +31,7 @@ const UpdateProfilePicture = () => {
     });
     const data:data = await res.json();
     if(data.error) {setError(data.error as String)}
+    window.location.reload()
 
   };
   
@@ -49,7 +50,7 @@ const UpdateProfilePicture = () => {
         }}
         placeholder="Upload"
       />
-      <button className="btn btn-danger my-1" type="submit">Submit</button>
+      <button className="btn btn-danger my-1"  type="submit">Submit</button>
     </form>
   );
 };
