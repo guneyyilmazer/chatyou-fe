@@ -46,7 +46,7 @@ type client= {
 
   useMemo(getUserData, []);
 
-  return <div className="text-white d-flex flex-column justify-content-center align-items-center">
+  return <div className="text-white mt-5 d-flex flex-column justify-content-center align-items-center">
   {(user && client) &&<>
   <img src={user.profilePicture ? user.profilePicture : DefaultProfilePicture} className="rounded-4" style={{ width: "30vw" }} />
     {user.username ? (
