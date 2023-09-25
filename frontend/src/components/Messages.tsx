@@ -50,7 +50,7 @@ const Messages = () => {
       });
   };
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
-    if (e.currentTarget.scrollTop === 0) {
+    if (e.currentTarget.scrollTop == 0) {
       setPage(page + 1);
     }
   };
@@ -79,11 +79,11 @@ const Messages = () => {
           profilePicture,
         },
       ]);
+      scrollDown()
       socket.emit("read-msg", room, chattingWith, user);
     }
   );
   const [messages, setMessages] = useState<message[]>([]);
-  useEffect(scrollDown, [messages]);
 
   return (
     <div
