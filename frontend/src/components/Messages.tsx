@@ -16,6 +16,7 @@ const Messages = () => {
   const room = useSelector((shop: any) => shop.app.room); //will implement the type later
   const [showSeen, setShowSeen] = useState(false);
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(false);
   const [previewPictures, setPreviewPictures] = useState<string[]>();
   const messageContainerRef = useRef<HTMLDivElement>(null);
@@ -35,23 +36,27 @@ const Messages = () => {
       }),
     });
     const response = await res.json();
-    console.log(response);
     if (!response.error) {
       let newMessages = [...response.messages, ...messages];
       setMessages(newMessages);
-      scrollDown();
+      setLoading(false)
     }
+    page == 1 && scrollDown()
   };
   useMemo(loadRoom, [page]);
-  const scrollDown = () => {
+  useEffect(() => console.log(page), [page]);
+  const scrollDown = (to?: any) => {
     messageContainerRef.current &&
-      messageContainerRef.current!.scrollIntoView({
-        behavior: "smooth",
-      });
+    messageContainerRef.current!.scrollIntoView({
+      behavior: "smooth",
+    });
   };
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     if (e.currentTarget.scrollTop == 0) {
-      setPage(page + 1);
+      if (!loading) {
+        setPage(page + 1);
+        setLoading(true);
+      }
     }
   };
   socket.on("update-messages", (messages: any) => setMessages(messages));
@@ -79,7 +84,7 @@ const Messages = () => {
           profilePicture,
         },
       ]);
-      scrollDown()
+      scrollDown();
       socket.emit("read-msg", room, chattingWith, user);
     }
   );

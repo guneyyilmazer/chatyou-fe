@@ -11,13 +11,12 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  /*  <React.StrictMode> */ //to prevent double api calls
+  //@ts-ignore doesn't have an easy fix
   <BrowserRouter>
     <Provider store={store}>
       <Routes>
         <Route path="/" element={<Header />}>
           {
-            //@ts-ignore doesn't have an easy fix
             <Route index element={<App />} />
           }
           <Route path="auth">
@@ -30,5 +29,4 @@ root.render(
       </Routes>
     </Provider>
   </BrowserRouter>
-  /*   </React.StrictMode> */
 );
