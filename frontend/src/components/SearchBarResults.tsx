@@ -1,12 +1,9 @@
-import React, { useState } from "react";
-import "../css/SearchBar.css";
 import { Link } from "react-router-dom";
-import { setRoom } from "../features/appSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, } from "react-redux";
+import "../css/SearchBar.css";
 const DefaultProfilePicture = require("../images/default.jpeg");
 
 const SearchBarResults = ({ users, rooms, searchFor, show, setShow }: any) => {
-  const dispatch = useDispatch();
 
   return (
     <div className="bg-dark">
@@ -42,8 +39,9 @@ const SearchBarResults = ({ users, rooms, searchFor, show, setShow }: any) => {
               className="text-decoration-none"
               onClick={() => {
                 setShow(!show);
-                dispatch(setRoom(item.name));
-                window.location.reload()
+                localStorage.setItem("room", item.name);
+
+                window.location.reload();
               }}
             >
               <span
