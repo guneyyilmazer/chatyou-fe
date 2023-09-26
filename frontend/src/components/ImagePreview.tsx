@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import "../css/ImagePreview.css";
@@ -11,18 +11,24 @@ const ImagePreview = ({
   setPreview: any;
   preview: boolean;
 }) => {
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Escape") {
+  const handleUserKeyPress = (event: KeyboardEvent) => {
+    if (event.key == "Escape") {
       setPreview(!preview);
     }
   };
+  useEffect(() => {
+    window.addEventListener("keydown", handleUserKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleUserKeyPress);
+    };
+  }, [handleUserKeyPress]);
+
   const [index, setIndex] = useState(0);
   return (
     <div
       tabIndex={0}
       className="bg-dark position-absolute position-relative flex-column d-flex justify-content-center align-items-center top-0 start-0"
       style={{ width: "100vw", height: "100vh" }}
-      onKeyDown={handleKeyDown}
     >
       <img
         style={{ maxHeight: "600px", minHeight: "300px", maxWidth: "600px" }}

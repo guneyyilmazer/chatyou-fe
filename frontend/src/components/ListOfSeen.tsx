@@ -1,18 +1,25 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import {useEffect, useState } from "react";
 
 const ListOfSeen = ({ users, showSeen, setShowSeen }: any) => {
   const [count, setCount] = useState(users.length);
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Escape") {
+
+  const handleUserKeyPress = (event: KeyboardEvent) => {
+    if (event.key == "Escape") {
       setShowSeen(!showSeen);
     }
   };
+  useEffect(() => {
+    window.addEventListener("keydown", handleUserKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleUserKeyPress);
+    };
+  }, [handleUserKeyPress]);
+
   return (
     <div
-      onKeyDown={handleKeyDown}
       style={{ height: "100vh", width: "100vw" }}
       className="bg-dark position-relative text-white position-absolute top-0 start-0"
     >
