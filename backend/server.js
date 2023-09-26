@@ -112,10 +112,15 @@ io.on("connection", (socket) => {
 
     const newMessages = roomInDB.messages;
     const message = newMessages[roomInDB.messages.length - 1];
-    newMessages[roomInDB.messages.length - 1].seenBy = message.seenBy
-      ? [...message.seenBy, { userId, time: date }]
-      : [{ userId, time: date }];
-    await RoomModel.findOneAndUpdate({ name: room }, { messages: newMessages });
+    if (message.seenBy.filter((item) => item.userId == user.userId).length!=0) {
+      newMessages[roomInDB.messages.length - 1].seenBy = message.seenBy
+        ? [...message.seenBy, { userId, time: date }]
+        : [{ userId, time: date }];
+      await RoomModel.findOneAndUpdate(
+        { name: room },
+        { messages: newMessages }
+      );
+    }
   });
   socket.on(
     "send-msg",
@@ -233,10 +238,8 @@ app.post("/loadRoom", async (req, res) => {
       res.status(200).json({ messages: value });
     };
     const amount = 5;
-    if (
-      messages.length - page * amount < 0
-    ) {
-      throw new Error ("Don't have any messages left." );
+    if (messages.length - page * amount < 0) {
+      throw new Error("Don't have any messages left.");
     }
     const limit = messages.slice(
       messages.length - page * amount,
