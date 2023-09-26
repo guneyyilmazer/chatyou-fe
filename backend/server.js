@@ -233,15 +233,15 @@ app.post("/loadRoom", async (req, res) => {
       res.status(200).json({ messages: value });
     };
     const amount = 5;
-    if (page * amount - messages.length > messages.length) {
-      res.status(200).json({ error: "Don't have any messages left." });
+    if (
+      messages.length - page * amount < 0
+    ) {
+      res.status(400).json({ error: "Don't have any messages left." });
     }
-    const limit =
-      page * amount - messages.length < messages.length &&
-      messages.slice(
-        messages.length - page * amount,
-        messages.length - (page - 1) * amount
-      );
+    const limit = messages.slice(
+      messages.length - page * amount,
+      messages.length - (page - 1) * amount
+    );
     await getMessagesReady(limit, cb);
   } catch (err) {
     console.log(err.message);
