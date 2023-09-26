@@ -20,6 +20,8 @@ const Messages = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [loadedAllMessages, setLoadedAllMessages] = useState(false);
+  const [loadedFirstMessages, setLoadedFirstMessages] = useState(false);
   const [previewPictures, setPreviewPictures] = useState<string[]>();
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const loadRoom = async () => {
@@ -41,23 +43,26 @@ const Messages = () => {
     if (!response.error) {
       let newMessages = [...response.messages, ...messages];
       setMessages(newMessages);
-      setLoading(false)
+      setLoadedFirstMessages(true);
+    } else {
+      setLoadedAllMessages(true);
     }
-    page == 1 && scrollDown()
+    setLoading(false);
+    page == 1 && scrollDown();
   };
   useMemo(loadRoom, [page]);
   useEffect(() => console.log(page), [page]);
   const scrollDown = (to?: any) => {
     messageContainerRef.current &&
-    messageContainerRef.current!.scrollIntoView({
-      behavior: "smooth",
-    });
+      messageContainerRef.current!.scrollIntoView({
+        behavior: "smooth",
+      });
   };
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     if (e.currentTarget.scrollTop == 0) {
       if (!loading) {
-        setPage(page + 1);
         setLoading(true);
+        setPage(page + 1);
       }
     }
   };
@@ -92,13 +97,31 @@ const Messages = () => {
   );
   const [messages, setMessages] = useState<message[]>([]);
 
-  return (
+  return !loadedFirstMessages ? (
+    <div className="d-flex m-5 justify-content-center">
+      <FontAwesomeIcon
+        className="text-white text-center d-block"
+        spin
+        style={{ height: "60px", width: "60px" }}
+        icon={faCircleNotch}
+      />
+    </div>
+  ) : (
     <div
       onScroll={handleScroll}
       className="d-flex flex-column overflow-auto"
       style={{ height: "80vh", width: "43vw" }}
     >
-      {loading && <FontAwesomeIcon className="text-white" icon={faCircleNotch} />}
+      {loading && !loadedAllMessages && (
+        <div className="d-flex justify-content-center">
+          <FontAwesomeIcon
+            className="text-white text-center d-block"
+            spin
+            style={{ height: "25px", width: "25px" }}
+            icon={faCircleNotch}
+          />
+        </div>
+      )}
       {messages.map((item: message, index: number) => (
         <div
           ref={messageContainerRef}
@@ -128,11 +151,11 @@ const Messages = () => {
           <div
             onClick={() => setShowSeen(!showSeen)}
             className={`text-break d-flex flex-column
-              ${
-                item.sender.username == user.username
-                  ? "message-sent"
-                  : "message-received"
-              }`}
+            ${
+              item.sender.username == user.username
+                ? "message-sent"
+                : "message-received"
+            }`}
             style={{ cursor: "pointer" }}
           >
             <div className="ms-1">{item.content + " "}</div>
