@@ -7,6 +7,8 @@ import { user } from "../types/UserType";
 import ImagePreview from "./ImagePreview";
 import { useSelector } from "react-redux";
 import ListOfSeen from "./ListOfSeen";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 const DefaultProfilePicture = require("../images/default.jpeg");
 const Messages = () => {
   const socket = useSelector((shop: any) => shop.app.socket); //will implement the type later
@@ -96,6 +98,7 @@ const Messages = () => {
       className="d-flex flex-column overflow-auto"
       style={{ height: "80vh", width: "43vw" }}
     >
+      {loading && <FontAwesomeIcon className="text-white" icon={faCircleNotch} />}
       {messages.map((item: message, index: number) => (
         <div
           ref={messageContainerRef}

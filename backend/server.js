@@ -236,7 +236,7 @@ app.post("/loadRoom", async (req, res) => {
     if (
       messages.length - page * amount < 0
     ) {
-      res.status(400).json({ error: "Don't have any messages left." });
+      throw new Error ("Don't have any messages left." );
     }
     const limit = messages.slice(
       messages.length - page * amount,
