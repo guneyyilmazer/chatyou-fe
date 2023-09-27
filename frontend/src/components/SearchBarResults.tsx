@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
-import { useDispatch, } from "react-redux";
+import { useDispatch } from "react-redux";
 import "../css/SearchBar.css";
 const DefaultProfilePicture = require("../images/default.jpeg");
 
 const SearchBarResults = ({ users, rooms, searchFor, show, setShow }: any) => {
-
   return (
     <div className="bg-dark">
       {users &&
@@ -34,16 +33,16 @@ const SearchBarResults = ({ users, rooms, searchFor, show, setShow }: any) => {
       {rooms &&
         searchFor == "rooms" &&
         rooms.map((item: any) => (
-          <div className="results d-flex py-3 ps-2 align-items-center">
-            <span
-              className="text-decoration-none"
-              onClick={() => {
-                setShow(!show);
-                localStorage.setItem("room", item.name);
+          <div
+            onClick={() => {
+              setShow(!show);
+              localStorage.setItem("room", item.name);
 
-                window.location.reload();
-              }}
-            >
+              window.location.reload();
+            }}
+            className="results d-flex py-3 ps-2 align-items-center"
+          >
+            <span className="text-decoration-none">
               <span
                 style={{
                   textDecoration: "none",
