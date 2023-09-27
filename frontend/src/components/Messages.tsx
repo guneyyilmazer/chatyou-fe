@@ -20,6 +20,7 @@ const Messages = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [roomExists, setRoomExists] = useState(true);
   const [loadedAllMessages, setLoadedAllMessages] = useState(false);
   const [loadedFirstMessages, setLoadedFirstMessages] = useState(false);
   const [previewPictures, setPreviewPictures] = useState<string[]>();
@@ -41,10 +42,16 @@ const Messages = () => {
     });
     const response = await res.json();
     if (!response.error) {
+      setRoomExists(true);
+
       let newMessages = [...response.messages, ...messages];
       setMessages(newMessages);
       setLoadedFirstMessages(true);
+    } else if (response.roomIsEmpty) {
+      setRoomExists(false);
     } else {
+      setRoomExists(true);
+
       setLoadedAllMessages(true);
     }
     setLoading(false);
@@ -62,7 +69,7 @@ const Messages = () => {
     if (e.currentTarget.scrollTop == 0) {
       if (!loading) {
         setLoading(true);
-        setPage(page + 1);
+        !loadedAllMessages && setPage(page + 1);
       }
     }
   };
@@ -97,7 +104,11 @@ const Messages = () => {
   );
   const [messages, setMessages] = useState<message[]>([]);
 
-  return !loadedFirstMessages ? (
+  return !roomExists ? (
+    <div className="d-flex m-5 fs-2 text-white justify-content-center">
+      Room is empty.
+    </div>
+  ) : !loadedFirstMessages ? (
     <div className="d-flex m-5 justify-content-center">
       <FontAwesomeIcon
         className="text-white text-center d-block"

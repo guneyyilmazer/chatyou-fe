@@ -112,7 +112,9 @@ io.on("connection", (socket) => {
 
     const newMessages = roomInDB.messages;
     const message = newMessages[roomInDB.messages.length - 1];
-    if (message.seenBy.filter((item) => item.userId == user.userId).length!=0) {
+    if (
+      message.seenBy.filter((item) => item.userId == user.userId).length != 0
+    ) {
       newMessages[roomInDB.messages.length - 1].seenBy = message.seenBy
         ? [...message.seenBy, { userId, time: date }]
         : [{ userId, time: date }];
@@ -209,6 +211,9 @@ app.post("/loadRoom", async (req, res) => {
     const date = new Date();
     const { room, chattingWith, userId, page } = req.body;
     const roomInDB = await findTheRoom(req.username, room, chattingWith);
+    if (!roomInDB) {
+      throw new Error("Room is empty.");
+    }
 
     const { messages } = roomInDB;
 
@@ -238,17 +243,32 @@ app.post("/loadRoom", async (req, res) => {
       res.status(200).json({ messages: value });
     };
     const amount = 5;
+    console.log(messages.length - page * amount);
     if (messages.length - page * amount < 0) {
-      throw new Error("Don't have any messages left.");
+      if (!(Math.abs(messages.length - page * amount) > amount)) {
+        console.log("cal");
+        const limit = messages.slice( 
+          0,
+          messages.length - (page - 1) * amount
+        );
+        await getMessagesReady(limit, cb);
+      } else {
+        throw new Error("Don't have any messages left.");
+      }
+    } else {
+      const limit = messages.slice(
+        messages.length - page * amount,
+        messages.length - (page - 1) * amount
+      );
+      await getMessagesReady(limit, cb);
     }
-    const limit = messages.slice(
-      messages.length - page * amount,
-      messages.length - (page - 1) * amount
-    );
-    await getMessagesReady(limit, cb);
   } catch (err) {
     console.log(err.message);
-    res.status(400).json({ error: err.message });
+    if (err.message == "Room is empty.") {
+      res.status(400).json({ error: err.message, roomIsEmpty: true });
+    } else {
+      res.status(400).json({ error: err.message });
+    }
   }
 });
 app.post("/loadRooms", async (req, res) => {
