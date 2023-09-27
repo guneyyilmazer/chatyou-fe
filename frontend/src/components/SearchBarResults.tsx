@@ -36,7 +36,7 @@ const SearchBarResults = ({ users, rooms, searchFor, show, setShow }: any) => {
               setShow(!show);
               localStorage.setItem("room", item.name);
 
-              window.location.reload();
+              window.location.replace("/");
             }}
             className="results d-flex py-3 ps-2 align-items-center"
           >
