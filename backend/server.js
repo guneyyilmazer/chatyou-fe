@@ -247,10 +247,7 @@ app.post("/loadRoom", async (req, res) => {
     if (messages.length - page * amount < 0) {
       if (!(Math.abs(messages.length - page * amount) > amount)) {
         console.log("cal");
-        const limit = messages.slice( 
-          0,
-          messages.length - (page - 1) * amount
-        );
+        const limit = messages.slice(0, messages.length - (page - 1) * amount);
         await getMessagesReady(limit, cb);
       } else {
         throw new Error("Don't have any messages left.");

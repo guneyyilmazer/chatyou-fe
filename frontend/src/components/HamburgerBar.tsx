@@ -1,18 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import SearchBar from "./SearchBar";
 import { useSelector, useDispatch } from "react-redux";
 import { setRoom, setChattingWith } from "../features/appSlice";
 import Cookies from "js-cookie";
 import withAuth from "./Auth";
-import '../css/Navbar.css'
-
-const Navbar = () => {
+import "../css/HamburgerBar.css";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+const HamburgerBar = () => {
   const dispatch = useDispatch();
+  const [collapsed, setCollapsed] = useState(true);
   const room = useSelector((shop: any) => shop.app.room); //will implement the type later
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
-  return (
-    <div className="nav" style={{ height: "5vh" }}>
-      <div className="btn-group">
+  return collapsed ? (
+      <div className="collapsed">
+        {" "}
+        <button onClick={() => setCollapsed(!collapsed)}>
+          <FontAwesomeIcon icon={faBars} />
+        </button>
+    </div>
+  ) : (
+    <nav className="hamburger-bar">
+      <button onClick={() => setCollapsed(!collapsed)} className="exit-button">
+        X
+      </button>
+      <div className="button-group">
         <button
           onClick={() => {
             room && dispatch(setRoom(""));
@@ -21,20 +33,11 @@ const Navbar = () => {
             localStorage.setItem("chattingWith", "");
             window.location.replace("/");
           }}
-          className="btn btn-danger"
         >
           Home
         </button>
-      </div>
-      <div
-        className="position-absolute start-50 "
-        style={{ transform: "translate(-50%,0%)" }}
-      >
-        <SearchBar />
-      </div>
-      <div className="">
+        <div></div>
         <button
-          className="btn btn-danger mx-1"
           onClick={() => {
             Cookies.remove("Auth_Token");
             window.location.reload();
@@ -43,8 +46,8 @@ const Navbar = () => {
           Logout
         </button>
       </div>
-    </div>
+    </nav>
   );
 };
 
-export default withAuth(Navbar);
+export default withAuth(HamburgerBar);

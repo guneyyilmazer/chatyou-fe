@@ -16,9 +16,8 @@ root.render(
     <Provider store={store}>
       <Routes>
         <Route path="/" element={<Header />}>
-          {
-            <Route index element={<App />} />
-          }
+          <Route index element={<App />} />
+
           <Route path="auth">
             <Route index element={<AuthPage />} />
           </Route>
