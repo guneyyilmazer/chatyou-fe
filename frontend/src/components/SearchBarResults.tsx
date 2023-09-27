@@ -9,26 +9,24 @@ const SearchBarResults = ({ users, rooms, searchFor, show, setShow }: any) => {
       {users &&
         searchFor == "users" &&
         users.map((item: any) => (
-          <div className="results d-flex py-3 ps-2 align-items-center">
-            <Link
-              className="text-decoration-none"
-              onClick={() => setShow(!show)}
-              to={`users/${item._id}`}
-            >
-              <img
-                style={{ height: "40px", width: "40px" }}
-                className="rounded-3"
-                src={
-                  item.profilePicture
-                    ? item.profilePicture
-                    : DefaultProfilePicture
-                }
-              />
-              <span className="ms-2 text-white text-decoration-none">
-                {item.username}
-              </span>
-            </Link>
-          </div>
+          <Link
+            className=" results d-flex py-3 ps-2 align-items-center text-decoration-none"
+            onClick={() => setShow(!show)}
+            to={`users/${item._id}`}
+          >
+            <img
+              style={{ height: "40px", width: "40px" }}
+              className="rounded-3"
+              src={
+                item.profilePicture
+                  ? item.profilePicture
+                  : DefaultProfilePicture
+              }
+            />
+            <span className="ms-2 text-white text-decoration-none">
+              {item.username}
+            </span>
+          </Link>
         ))}
       {rooms &&
         searchFor == "rooms" &&
