@@ -22,21 +22,21 @@ const JoinRoom = () => {
   };
   return (
     <div className="d-flex row col-12 justify-content-center align-items-center flex-column">
-      <form onSubmit={handleSubmit} className="col-6 my-5">
-        <div className="form-group d-flex">
+      <form onSubmit={handleSubmit} className="col-10 col-md-6 col-lg-4 my-5">
+        <div className="form-group d-flex flex-column flex-md-row">
           <input
             type="text"
             ref={roomInputRef}
             className="form-control p-3"
             placeholder="Enter Room..."
           />
-          <button type="submit" className="btn btn-danger ms-2 px-4">
+          <button type="submit" className="btn btn-danger text-center mt-4 mt-md-0 ms-md-2 px-4">
             {" "}
             Join
           </button>
         </div>
       </form>
-      <div className="col-4 mt-1">
+      <div className="col-10 col-md-6 col-lg-4 mt-1">
         <Rooms />
       </div>
     </div>

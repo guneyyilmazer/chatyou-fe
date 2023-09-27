@@ -11,9 +11,9 @@ button {
   border: none;
 }
 .collapsed {
-    display: block;
-  }
-  
+  display: block;
+}
+
 .hamburger-bar {
   height: 100vh;
   max-width: 50vw;
@@ -42,12 +42,12 @@ button {
   padding-right: 20px;
   color: white;
 }
-.collapsed button {
+.hamburger-button {
   color: white;
   background-color: tomato;
   padding: 1rem;
 }
-.collapsed button:hover {
+.hamburger-button:hover {
   color: white;
 
   background-color: black;

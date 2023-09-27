@@ -13,11 +13,17 @@ const HamburgerBar = () => {
   const room = useSelector((shop: any) => shop.app.room); //will implement the type later
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
   return collapsed ? (
-      <div className="collapsed">
-        {" "}
-        <button onClick={() => setCollapsed(!collapsed)}>
-          <FontAwesomeIcon icon={faBars} />
-        </button>
+    <div className="collapsed">
+      {" "}
+      <button
+        className="position-absolute hamburger-button top-0 start-0"
+        onClick={() => setCollapsed(!collapsed)}
+      >
+        <FontAwesomeIcon icon={faBars} />
+      </button>
+      <div className="d-flex my-2 justify-content-center">
+        <SearchBar />
+      </div>
     </div>
   ) : (
     <nav className="hamburger-bar">
