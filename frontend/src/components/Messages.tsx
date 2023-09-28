@@ -126,7 +126,7 @@ const Messages = () => {
   ) : (
     <div
       onScroll={handleScroll}
-      className="d-flex flex-column overflow-auto col-8 col-md-6 col-lg-5"
+      className="d-flex flex-column overflow-auto col-10 col-md-6 col-lg-5"
       style={{ height: "80vh" }}
     >
       {loading && !loadedAllMessages && (

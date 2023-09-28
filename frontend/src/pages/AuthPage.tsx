@@ -4,20 +4,18 @@ import { useState } from "react";
 const AuthPage = () => {
   const [haveAnAccount, setHaveAnAccount] = useState(true);
   return (
-    <>
-      {haveAnAccount ? (
-        <div style={{height:"95vh"}} className="d-flex flex-column justify-content-center align-items-center">
+      haveAnAccount ? (
+        <div style={{height:"100vh"}} className="d-flex flex-column justify-content-center align-items-center">
           <Signup />
           <button className="btn btn-dark mt-3" onClick={() => setHaveAnAccount(!haveAnAccount)}>
             Have an account already?
           </button>
         </div>
       ) : (
-        <div className="d-flex justify-content-center align-items-center">
+        <div style={{height:"100vh"}} className="d-flex justify-content-center align-items-center">
           <Login />
         </div>
-      )}
-    </>
+      )
   );
 };
 

@@ -17,7 +17,6 @@ root.render(
       <Routes>
         <Route path="/" element={<Header />}>
           <Route index element={<App />} />
-
           <Route path="auth">
             <Route index element={<AuthPage />} />
           </Route>

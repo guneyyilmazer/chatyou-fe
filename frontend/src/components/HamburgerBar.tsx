@@ -3,7 +3,6 @@ import SearchBar from "./SearchBar";
 import { useSelector, useDispatch } from "react-redux";
 import { setRoom, setChattingWith } from "../features/appSlice";
 import Cookies from "js-cookie";
-import withAuth from "./Auth";
 import "../css/HamburgerBar.css";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -56,4 +55,4 @@ const HamburgerBar = () => {
   );
 };
 
-export default withAuth(HamburgerBar);
+export default HamburgerBar;

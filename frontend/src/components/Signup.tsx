@@ -44,7 +44,7 @@ const handleSubmit = (e:React.FormEvent) => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   return (
-    <form className="form-group col-4 d-flex flex-column" onSubmit={handleSubmit}>
+    <form className="form-group col-10 col-md-4 col-lg-3 d-flex flex-column" onSubmit={handleSubmit}>
       <h2 className="lead fs-1 text-white text-center">Signup</h2>
       <input
         type="text"

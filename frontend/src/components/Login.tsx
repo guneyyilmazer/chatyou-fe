@@ -33,7 +33,7 @@ const Login = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="form-group col-4 d-flex flex-column justify-content-center"
+      className="form-group col-10 col-md-4 col-lg-3 d-flex flex-column justify-content-center"
     >
       <h2 className="lead text-white text-center fs-1">Login</h2>
       <input

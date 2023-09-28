@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 import AuthPage from "../pages/AuthPage";
 import { setUser } from "../features/appSlice";
 import { useDispatch } from "react-redux";
+import { redirect } from "react-router-dom";
 type verified = {
   valid: boolean;
   userId: string;
@@ -48,7 +49,9 @@ const withAuth = (HocComponent: any) => {
     useMemo(async () => {
       const res = await verify();
       if (!res.valid) {
+        console.log(res)
         setState(1);
+        redirect("/auth");
       } else {
         await logUserIn(dispatch);
 
