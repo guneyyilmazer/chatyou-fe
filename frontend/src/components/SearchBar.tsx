@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SearchBarResults from "./SearchBarResults";
 import { setUser } from "../features/appSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,7 +12,22 @@ const SearchBar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [rooms, setRooms] = useState([]);
   const [users, setUsers] = useState([]);
-
+  const onClickOutside = () => {
+   show && setShow(false);
+  };
+  const ref = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      //@ts-ignore
+      if (ref.current && !ref.current.contains(event.target)) {
+         onClickOutside();
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [onClickOutside]);
   const findUsers = async () => {
     const res = await fetch("http://localhost:4000/user/findUsers", {
       headers: {
@@ -22,9 +37,7 @@ const SearchBar = () => {
 
       method: "POST",
       body: JSON.stringify({
-        username:
-          inputRef.current!.value != "" &&
-          inputRef.current!.value,
+        username: inputRef.current!.value != "" && inputRef.current!.value,
       }),
     });
     const response = await res.json();
@@ -51,13 +64,12 @@ const SearchBar = () => {
       setRooms(response.rooms);
     }
   };
-  const getData = async() => {
-    await findRoom()
-    await findUsers()
-
-  }
+  const getData = async () => {
+    await findRoom();
+    await findUsers();
+  };
   return (
-    <div className="">
+    <div onClick={()=>setShow(true)}>
       <form className="form-group d-flex">
         <input
           ref={inputRef}
@@ -83,13 +95,15 @@ const SearchBar = () => {
           <FontAwesomeIcon icon={faRepeat} />
         </button>
       </form>
-      <SearchBarResults
-        show={show}
-        setShow={setShow}
-        searchFor={searchFor}
-        users={users}
-        rooms={rooms}
-      />
+      <div ref={ref}>
+        <SearchBarResults
+          show={show}
+          setShow={setShow}
+          searchFor={searchFor}
+          users={users}
+          rooms={rooms}
+        />
+      </div>
     </div>
   );
 };

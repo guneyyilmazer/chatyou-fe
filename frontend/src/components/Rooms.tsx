@@ -34,7 +34,7 @@ const Rooms = () => {
   useMemo(loadRooms, [page]);
   return rooms ? (
     <div>
-      <div className="text-white lead text-center"> Select A Room </div>
+      <div className="text-white lead text-center mt-lg-5"> Select A Room </div>
       {rooms!.map((item) => (
         <div
           style={{ cursor: "pointer" }}
@@ -53,13 +53,13 @@ const Rooms = () => {
             setPage(!(page - 1 < 1) ? page - 1 : page);
             setLoadedAll(false);
           }}
-          className="btn btn-danger mx-2"
+          className="btn btn-light mx-2"
         >
           <FontAwesomeIcon icon={faAngleLeft} />
         </button>
         <button
           onClick={() => setPage(!loadedAll ? page + 1 : page)}
-          className="btn btn-danger mx-2"
+          className="btn btn-light mx-2"
         >
 
           <FontAwesomeIcon icon={faAngleRight} />
