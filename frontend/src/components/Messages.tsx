@@ -29,6 +29,7 @@ const Messages = () => {
   ); //will implement the type later
 
   const [previewPictures, setPreviewPictures] = useState<string[]>();
+  const [previewPicturesIndex, setPreviewPicturesIndex] = useState(0);
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
   const loadRoom = async () => {
@@ -186,6 +187,7 @@ const Messages = () => {
                     onClick={() => {
                       setPreview(true);
                       setPreviewPictures(item.pictures);
+                      setPreviewPicturesIndex(index);
                     }}
                     style={{ maxWidth: "100px", maxHeight: "150px" }}
                     src={picture as string}
@@ -227,6 +229,7 @@ const Messages = () => {
         <ImagePreview
           setPreview={setPreview}
           preview={preview}
+          previewPicturesIndex={previewPicturesIndex}
           images={previewPictures as string[]}
         />
       )}

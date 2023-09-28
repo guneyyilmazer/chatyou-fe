@@ -6,10 +6,12 @@ const ImagePreview = ({
   images,
   setPreview,
   preview,
+  previewPicturesIndex
 }: {
   images: string[];
   setPreview: any;
   preview: boolean;
+  previewPicturesIndex:number
 }) => {
   const handleUserKeyPress = (event: KeyboardEvent) => {
     if (event.key == "Escape") {
@@ -23,10 +25,9 @@ const ImagePreview = ({
     };
   }, [handleUserKeyPress]);
 
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(previewPicturesIndex);
   return (
     <div
-      tabIndex={0}
       className="bg-dark position-absolute position-relative flex-column d-flex justify-content-center align-items-center top-0 start-0"
       style={{ width: "100vw", height: "100vh" }}
     >
