@@ -7,6 +7,7 @@ const SendMessage = () => {
   const socket = useSelector((shop:any)=>shop.app.socket) //will implement the type later
 
   const room = useSelector((shop: any) => shop.app.room);
+  const loadedFirstMessages = useSelector((shop: any) => shop.app.loadedFirstMessages);
   const user = useSelector((shop: any) => shop.app.user);
   const [pictures, setPictures] = useState<String[]>();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -34,12 +35,13 @@ const SendMessage = () => {
     }
   };
   return (
+    loadedFirstMessages&&
     <form
       onSubmit={handleSubmit}
       className="form-group d-flex justify-content-center"
     >
       <input
-        className="form-check col-4 py-3 rounded-2"
+        className="form-check col-7 col-md-4 col-lg-3 py-3 rounded-2"
         placeholder={"Send a message to room " + room}
         type="text"
         ref={inputRef}

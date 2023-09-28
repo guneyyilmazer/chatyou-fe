@@ -21,7 +21,7 @@ const HamburgerBar = () => {
       >
         <FontAwesomeIcon icon={faBars} />
       </button>
-      <div className="d-flex my-2 justify-content-center">
+      <div className="d-flex justify-content-center">
         <SearchBar />
       </div>
     </div>

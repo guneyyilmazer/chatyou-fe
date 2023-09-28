@@ -9,6 +9,8 @@ import { useSelector } from "react-redux";
 import ListOfSeen from "./ListOfSeen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { setLoading, setLoadedFirstMessages } from "../features/appSlice";
+import { useDispatch } from "react-redux";
 const DefaultProfilePicture = require("../images/default.jpeg");
 const Messages = () => {
   const socket = useSelector((shop: any) => shop.app.socket); //will implement the type later
@@ -18,13 +20,17 @@ const Messages = () => {
   const room = useSelector((shop: any) => shop.app.room); //will implement the type later
   const [showSeen, setShowSeen] = useState(false);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const loading = useSelector((shop: any) => shop.app.loading);
   const [preview, setPreview] = useState(false);
   const [roomExists, setRoomExists] = useState(true);
   const [loadedAllMessages, setLoadedAllMessages] = useState(false);
-  const [loadedFirstMessages, setLoadedFirstMessages] = useState(false);
+  const loadedFirstMessages = useSelector(
+    (shop: any) => shop.app.loadedFirstMessages
+  ); //will implement the type later
+
   const [previewPictures, setPreviewPictures] = useState<string[]>();
   const messageContainerRef = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch();
   const loadRoom = async () => {
     const res = await fetch("http://localhost:4000/loadRoom", {
       headers: {
@@ -46,7 +52,7 @@ const Messages = () => {
 
       let newMessages = [...response.messages, ...messages];
       setMessages(newMessages);
-      setLoadedFirstMessages(true);
+      dispatch(setLoadedFirstMessages(true));
     } else if (response.roomIsEmpty) {
       setRoomExists(false);
     } else {
@@ -54,7 +60,7 @@ const Messages = () => {
 
       setLoadedAllMessages(true);
     }
-    setLoading(false);
+    dispatch(setLoading(false));
     page == 1 && scrollDown();
   };
   useMemo(loadRoom, [page]);
@@ -68,7 +74,7 @@ const Messages = () => {
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     if (e.currentTarget.scrollTop == 0) {
       if (!loading) {
-        setLoading(true);
+        dispatch(setLoading(true));
         !loadedAllMessages && setPage(page + 1);
       }
     }
@@ -109,7 +115,7 @@ const Messages = () => {
       Room is empty.
     </div>
   ) : !loadedFirstMessages ? (
-    <div className="d-flex m-5 justify-content-center">
+    <div className="d-flex justify-content-center">
       <FontAwesomeIcon
         className="text-white text-center d-block"
         spin
@@ -120,8 +126,8 @@ const Messages = () => {
   ) : (
     <div
       onScroll={handleScroll}
-      className="d-flex flex-column overflow-auto"
-      style={{ height: "80vh", width: "43vw" }}
+      className="d-flex flex-column overflow-auto col-8 col-md-6 col-lg-5"
+      style={{ height: "80vh" }}
     >
       {loading && !loadedAllMessages && (
         <div className="d-flex justify-content-center">

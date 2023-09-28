@@ -11,7 +11,7 @@ const Navbar = () => {
   const room = useSelector((shop: any) => shop.app.room); //will implement the type later
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
   return (
-    <div className="nav" style={{ height: "5vh" }}>
+    <nav className="nav" >
       <div className="btn-group">
         <button
           onClick={() => {
@@ -43,7 +43,7 @@ const Navbar = () => {
           Logout
         </button>
       </div>
-    </div>
+    </nav>
   );
 };
 

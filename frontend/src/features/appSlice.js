@@ -7,6 +7,8 @@ const initialState = {
     profilePicture: "",
     isLoggedIn: "",
   },
+  loading: true,
+  loadedFirstMessages: false,
   socket: "",
   chattingWith: localStorage.getItem("chattingWith"),
   room: localStorage.getItem("room"),
@@ -21,6 +23,12 @@ const appSlice = createSlice({
     setRoom: (state, action) => {
       state.room = action.payload;
     },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    setLoadedFirstMessages: (state, action) => {
+      state.loadedFirstMessages = action.payload;
+    },
     setChattingWith: (state, action) => {
       state.chattingWith = action.payload;
     },
@@ -32,5 +40,6 @@ const appSlice = createSlice({
     },
   },
 });
-export const { setUser, setRoom, setChattingWith,setSocket } = appSlice.actions;
+export const { setUser, setRoom, setChattingWith, setSocket, setLoading,setLoadedFirstMessages } =
+  appSlice.actions;
 export default appSlice.reducer;
