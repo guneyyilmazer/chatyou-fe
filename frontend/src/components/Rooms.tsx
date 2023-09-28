@@ -1,3 +1,5 @@
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Cookies from "js-cookie";
 import { useMemo, useState } from "react";
 
@@ -53,15 +55,15 @@ const Rooms = () => {
           }}
           className="btn btn-danger mx-2"
         >
-          {" "}
-          prev{" "}
+          <FontAwesomeIcon icon={faAngleLeft} />
         </button>
         <button
           onClick={() => setPage(!loadedAll ? page + 1 : page)}
           className="btn btn-danger mx-2"
         >
-          {" "}
-          next{" "}
+
+          <FontAwesomeIcon icon={faAngleRight} />
+
         </button>
       </div>
     </div>
