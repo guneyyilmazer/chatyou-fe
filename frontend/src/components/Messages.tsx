@@ -9,13 +9,18 @@ import { useSelector } from "react-redux";
 import ListOfSeen from "./ListOfSeen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { setLoading, setLoadedFirstMessages } from "../features/appSlice";
+import {
+  setLoading,
+  setLoadedFirstMessages,
+  setEmptyRoom,
+} from "../features/appSlice";
 import { useDispatch } from "react-redux";
 const DefaultProfilePicture = require("../images/default.jpeg");
 const Messages = () => {
   const socket = useSelector((shop: any) => shop.app.socket); //will implement the type later
 
   const user = useSelector((shop: any) => shop.app.user); //will implement the type later
+  const emptyRoom = useSelector((shop: any) => shop.app.emptyRoom); //will implement the type later
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
   const room = useSelector((shop: any) => shop.app.room); //will implement the type later
   const [showSeen, setShowSeen] = useState(false);
@@ -49,15 +54,15 @@ const Messages = () => {
     });
     const response = await res.json();
     if (!response.error) {
-      setRoomExists(true);
+      dispatch(setEmptyRoom(false));
 
       let newMessages = [...response.messages, ...messages];
       setMessages(newMessages);
       dispatch(setLoadedFirstMessages(true));
     } else if (response.roomIsEmpty) {
-      setRoomExists(false);
+      dispatch(setEmptyRoom(true));
     } else {
-      setRoomExists(true);
+      dispatch(setEmptyRoom(false));
 
       setLoadedAllMessages(true);
     }
@@ -92,6 +97,8 @@ const Messages = () => {
     ) => {
       const hours = sent.split(":")[0];
       const minutes = sent.split(":")[1];
+      dispatch(setEmptyRoom(false));
+      dispatch(setLoadedFirstMessages(true));
       setMessages([
         ...messages,
         {
@@ -111,7 +118,7 @@ const Messages = () => {
   );
   const [messages, setMessages] = useState<message[]>([]);
 
-  return !roomExists ? (
+  return emptyRoom ? (
     <div className="d-flex m-5 fs-2 text-white justify-content-center">
       Room is empty.
     </div>

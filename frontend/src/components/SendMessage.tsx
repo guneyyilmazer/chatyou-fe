@@ -10,6 +10,7 @@ const SendMessage = () => {
   const loadedFirstMessages = useSelector(
     (shop: any) => shop.app.loadedFirstMessages
   );
+  const emptyRoom = useSelector((shop: any) => shop.app.emptyRoom);
   const user = useSelector((shop: any) => shop.app.user);
   const [pictures, setPictures] = useState<String[]>();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -37,7 +38,7 @@ const SendMessage = () => {
     }
   };
   return (
-    loadedFirstMessages && (
+    (loadedFirstMessages || emptyRoom) && (
       <form
         onSubmit={handleSubmit}
         className="form-group d-flex justify-content-center"
