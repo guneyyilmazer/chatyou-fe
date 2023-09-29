@@ -51,7 +51,7 @@ const Rooms = () => {
         <button
           onClick={() => {
             setPage(!(page - 1 < 1) ? page - 1 : page);
-            setLoadedAll(false);
+            page != 1 && setLoadedAll(false);
           }}
           className="btn btn-light mx-2"
         >
