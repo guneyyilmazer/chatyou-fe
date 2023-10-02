@@ -12,9 +12,15 @@ const SendMessage = () => {
   );
   const emptyRoom = useSelector((shop: any) => shop.app.emptyRoom);
   const user = useSelector((shop: any) => shop.app.user);
+  const chattingWith = useSelector((shop: any) => shop.app.chattingWith);
   const [pictures, setPictures] = useState<String[]>();
+  const [inputState, setInputState] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const typing = (e: any) => {
+    setInputState(e.target.value);
+    socket.emit("typing",user,room,chattingWith)
+  };
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const array: String[] = [];
     for (let i = 0; i < e.target.files!.length; i++) {
@@ -47,6 +53,8 @@ const SendMessage = () => {
           className="form-check col-7 col-md-4 col-lg-3 py-3 rounded-2"
           placeholder={"Send a message to room " + room}
           type="text"
+          onChange={typing}
+          value={inputState}
           ref={inputRef}
         />
 

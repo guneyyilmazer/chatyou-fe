@@ -104,6 +104,11 @@ io.on("connection", (socket) => {
       console.log(err.message);
     }
   });
+  socket.on("typing",async(user,room,chattingWith)=>{
+
+    const roomInDB = await findTheRoom(user.username,room,chattingWith)
+    roomInDB && io.to(roomInDB.name).emit("typing-to-client",user)
+  })
   socket.on("read-msg", async (room, chattingWith, user) => {
     const { userId, username } = user;
 
@@ -274,11 +279,13 @@ app.post("/loadRooms", async (req, res) => {
     if (!page || !amount) {
       throw new Error("You need to specify the page and the amount.");
     }
+    
     const rooms = await RoomModel.find({ privateRoom: false })
       .limit(amount)
       .skip((page - 1) * amount)
       .select("name");
-    res.status(200).json({ rooms });
+      const allRooms = await RoomModel.find({privateRoom:false}).limit(amount+1).select("name")
+    res.status(200).json({ rooms,loadedAll:(allRooms.length==amount) ? true : false });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

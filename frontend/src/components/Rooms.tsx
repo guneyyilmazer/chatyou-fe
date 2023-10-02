@@ -21,6 +21,7 @@ const Rooms = () => {
       body: JSON.stringify({ page, amount }),
     });
     const res = await response.json();
+    if(res.loadedAll){ setLoadedAll(true)}
     if (res.rooms.length < amount) {
       if (res.rooms.length == 0) {
         setLoadedAll(true);

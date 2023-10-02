@@ -27,6 +27,7 @@ const Messages = () => {
   const [page, setPage] = useState(1);
   const loading = useSelector((shop: any) => shop.app.loading);
   const [preview, setPreview] = useState(false);
+  const [typing, setTyping] = useState<any>([]);
   const [roomExists, setRoomExists] = useState(true);
   const [loadedAllMessages, setLoadedAllMessages] = useState(false);
   const loadedFirstMessages = useSelector(
@@ -85,7 +86,19 @@ const Messages = () => {
       }
     }
   };
+  useEffect(()=>console.log(typing),[typing])
   socket.on("update-messages", (messages: any) => setMessages(messages));
+
+  socket.on("typing-to-client", (user: user) => {
+    if (typing.length != 0) {
+      console.log(typing)
+      const doWeAlreadyHave = typing.filter( // şu // acaba typing in bir onceki halini mi alıyor
+        (item: user) => item.userId == user.userId // şu
+      );
+      doWeAlreadyHave.length != 0 && setTyping([...typing, user]); // ve şu satırlar hatalı
+    }
+    else{setTyping([user])}
+  });
   socket.on(
     "receive-msg",
     (
@@ -147,6 +160,9 @@ const Messages = () => {
           />
         </div>
       )}
+      <div className="position-absolute w-100 bottom-0 bg-danger text-white d-flex justify-content-center align-items-center">
+        {typing.map((item: user) => item.username)}
+      </div>
       {messages.map((item: message, index: number) => (
         <div
           ref={messageContainerRef}
