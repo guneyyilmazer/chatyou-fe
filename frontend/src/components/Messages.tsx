@@ -86,18 +86,27 @@ const Messages = () => {
       }
     }
   };
-  useEffect(()=>console.log(typing),[typing])
+  useEffect(() => console.log(typing), [typing]);
   socket.on("update-messages", (messages: any) => setMessages(messages));
-
+  socket.on("stopped-typing-to-client", (user: user) => {
+    const doWeHaveUser = typing.filter(
+      (item: user) => item.userId == user.userId
+    );
+    if (doWeHaveUser.length != 0) {
+      const newList = typing.filter((item: user) => item.userId != user.userId);
+      setTyping(newList);
+    }
+  });
   socket.on("typing-to-client", (user: user) => {
     if (typing.length != 0) {
-      console.log(typing)
-      const doWeAlreadyHave = typing.filter( // şu // acaba typing in bir onceki halini mi alıyor
-        (item: user) => item.userId == user.userId // şu
+      console.log(typing);
+      const doWeAlreadyHave = typing.filter(
+        (item: user) => item.userId == user.userId
       );
-      doWeAlreadyHave.length != 0 && setTyping([...typing, user]); // ve şu satırlar hatalı
+      doWeAlreadyHave.length == 0 && setTyping([...typing, user]);
+    } else {
+      setTyping([user]);
     }
-    else{setTyping([user])}
   });
   socket.on(
     "receive-msg",
@@ -160,8 +169,29 @@ const Messages = () => {
           />
         </div>
       )}
-      <div className="position-absolute w-100 bottom-0 bg-danger text-white d-flex justify-content-center align-items-center">
-        {typing.map((item: user) => item.username)}
+      <div className="position-absolute mb-1 w-100 bottom-0 start-0 text-white d-flex justify-content-center align-items-center">
+        {typing && typing.length == 1 && typing[0].username + " is typing..."}
+        {typing &&
+          typing.length == 2 &&
+          typing[0].username + ", " + typing[1].username + " are typing..."}
+        {typing &&
+          typing.length == 3 &&
+          typing[0].username +
+            ", " +
+            typing[1].username +
+            " and " +
+            typing[2].username +
+            " are typing..."}
+        {typing &&
+          typing.length > 3 &&
+          typing[0].username +
+            ", " +
+            typing[1].username +
+            ", " +
+            typing[2].username +
+            "and " +
+            (typing.length - 3) +
+            " users are typing..."}
       </div>
       {messages.map((item: message, index: number) => (
         <div

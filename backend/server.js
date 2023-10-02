@@ -104,6 +104,10 @@ io.on("connection", (socket) => {
       console.log(err.message);
     }
   });
+  socket.on("stopped-typing",async(user,room,chattingWith)=>{
+    const roomInDB = await findTheRoom(user.username,room,chattingWith)
+    roomInDB && io.to(roomInDB.name).emit("stopped-typing-to-client",user)
+  })
   socket.on("typing",async(user,room,chattingWith)=>{
 
     const roomInDB = await findTheRoom(user.username,room,chattingWith)
