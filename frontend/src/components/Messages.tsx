@@ -17,12 +17,12 @@ import {
 import { useDispatch } from "react-redux";
 const DefaultProfilePicture = require("../images/default.jpeg");
 const Messages = () => {
-  const socket = useSelector((shop: any) => shop.app.socket); //will implement the type later
+  const socket = useSelector((shop: any) => shop.app.socket);
 
-  const user = useSelector((shop: any) => shop.app.user); //will implement the type later
-  const emptyRoom = useSelector((shop: any) => shop.app.emptyRoom); //will implement the type later
-  const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
-  const room = useSelector((shop: any) => shop.app.room); //will implement the type later
+  const user = useSelector((shop: any) => shop.app.user);
+  const emptyRoom = useSelector((shop: any) => shop.app.emptyRoom);
+  const chattingWith = useSelector((shop: any) => shop.app.chattingWith);
+  const room = useSelector((shop: any) => shop.app.room);
   const [showSeen, setShowSeen] = useState(false);
   const [page, setPage] = useState(1);
   const loading = useSelector((shop: any) => shop.app.loading);
@@ -32,7 +32,7 @@ const Messages = () => {
   const [loadedAllMessages, setLoadedAllMessages] = useState(false);
   const loadedFirstMessages = useSelector(
     (shop: any) => shop.app.loadedFirstMessages
-  ); //will implement the type later
+  );
 
   const [previewPictures, setPreviewPictures] = useState<string[]>();
   const [previewPicturesIndex, setPreviewPicturesIndex] = useState(0);
@@ -68,11 +68,9 @@ const Messages = () => {
       setLoadedAllMessages(true);
     }
     dispatch(setLoading(false));
-    page == 1 && scrollDown();
   };
   useMemo(loadRoom, [page]);
-  useEffect(() => console.log(page), [page]);
-  const scrollDown = (to?: any) => {
+  const scrollDown = () => {
     messageContainerRef.current &&
       messageContainerRef.current!.scrollIntoView({
         behavior: "smooth",
@@ -86,7 +84,6 @@ const Messages = () => {
       }
     }
   };
-  useEffect(() => console.log(typing), [typing]);
   socket.on("update-messages", (messages: any) => setMessages(messages));
   socket.on("stopped-typing-to-client", (user: user) => {
     const doWeHaveUser = typing.filter(
@@ -99,7 +96,6 @@ const Messages = () => {
   });
   socket.on("typing-to-client", (user: user) => {
     if (typing.length != 0) {
-      console.log(typing);
       const doWeAlreadyHave = typing.filter(
         (item: user) => item.userId == user.userId
       );
@@ -139,6 +135,7 @@ const Messages = () => {
     }
   );
   const [messages, setMessages] = useState<message[]>([]);
+  useEffect(scrollDown, [messages]);
 
   return emptyRoom ? (
     <div className="d-flex m-5 fs-2 text-white justify-content-center">

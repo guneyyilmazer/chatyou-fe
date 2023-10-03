@@ -122,7 +122,7 @@ io.on("connection", (socket) => {
     const newMessages = roomInDB.messages;
     const message = newMessages[roomInDB.messages.length - 1];
     if (
-      message.seenBy.filter((item) => item.userId == user.userId).length != 0
+      message.seenBy.filter((item) => item.userId == user.userId).length == 0
     ) {
       newMessages[roomInDB.messages.length - 1].seenBy = message.seenBy
         ? [...message.seenBy, { userId, time: date }]
@@ -302,7 +302,7 @@ app.post("/findRoom", async (req, res) => {
     const filter = Rooms.filter(
       (item) => item.name.includes(room) && !item.privateRoom
     );
-    res.status(200).json({ rooms: filter });
+    res.status(200).json({ rooms: filter,notFound: filter.length==0 && true });
   } catch (err) {
     console.log(err.message);
 

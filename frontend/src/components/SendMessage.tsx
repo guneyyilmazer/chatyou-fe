@@ -44,8 +44,9 @@ const SendMessage = () => {
         inputRef.current!.value ? inputRef.current!.value : " ",
         pictures,
         localStorage.getItem("chattingWith")
-      );
-      inputRef.current!.value = "";
+        );
+        inputRef.current!.value = "";
+        socket.emit("stopped-typing",user,room,chattingWith)
     }
   };
   return (

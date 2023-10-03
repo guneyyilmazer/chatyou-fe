@@ -49,7 +49,6 @@ const withAuth = (HocComponent: any) => {
     useMemo(async () => {
       const res = await verify();
       if (!res.valid) {
-        console.log(res)
         setState(1);
         redirect("/auth");
       } else {

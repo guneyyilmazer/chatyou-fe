@@ -8,6 +8,8 @@ import { faRepeat } from "@fortawesome/free-solid-svg-icons";
 const SearchBar = () => {
   const [searchFor, setSearchFor] = useState("users");
   const [show, setShow] = useState(true);
+  const [roomNotFound,setRoomNotFound] = useState(false)
+  const [userNotFound,setUserNotFound] = useState(false)
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [rooms, setRooms] = useState([]);
@@ -41,10 +43,10 @@ const SearchBar = () => {
       }),
     });
     const response = await res.json();
-    console.log(response);
     if (!response.error) {
       setUsers(response.users);
     }
+    if(response.notFound) setUserNotFound(true)
   };
   const findRoom = async () => {
     const res = await fetch("http://localhost:4000/findRoom", {
@@ -59,10 +61,10 @@ const SearchBar = () => {
       }),
     });
     const response = await res.json();
-    console.log(response);
     if (!response.error) {
       setRooms(response.rooms);
     }
+    if (response.notFound ) setRoomNotFound(true)
   };
   const getData = async () => {
     await findRoom();
@@ -73,7 +75,7 @@ const SearchBar = () => {
       <form className="form-group d-flex">
         <input
           ref={inputRef}
-          onChange={getData}
+          onChange={searchFor == "users" ? findUsers : findRoom}
           type="text"
           className="form-check text-white p-1 text-center"
           style={{
@@ -88,6 +90,9 @@ const SearchBar = () => {
         <button
           onClick={(e) => {
             setSearchFor(searchFor == "users" ? "rooms" : "users");
+            inputRef.current!.value=""
+            setRoomNotFound(false)
+            setUserNotFound(false)
             e.preventDefault();
           }}
           className="btn btn-danger rounded-5 ms-2"
@@ -99,6 +104,8 @@ const SearchBar = () => {
         <SearchBarResults
           show={show}
           setShow={setShow}
+          userNotFound={userNotFound}
+          roomNotFound={roomNotFound}
           searchFor={searchFor}
           users={users}
           rooms={rooms}

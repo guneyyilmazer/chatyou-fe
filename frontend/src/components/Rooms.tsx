@@ -10,7 +10,6 @@ const Rooms = () => {
   const [rooms, setRooms] = useState<rooms>();
   const [loadedAll, setLoadedAll] = useState(false);
   const loadRooms = async () => {
-    console.log(page);
     const response = await fetch("http://localhost:4000/loadRooms", {
       headers: {
         "Content-Type": "application/json",
@@ -36,8 +35,9 @@ const Rooms = () => {
   return rooms ? (
     <div>
       <div className="text-white lead text-center mt-lg-5"> Select A Room </div>
-      {rooms!.map((item) => (
+      {rooms!.map((item,index) => (
         <div
+        key={index}
           style={{ cursor: "pointer" }}
           className="text-white bg-danger my-2 rounded-1 py-2 text-center"
           onClick={() => {

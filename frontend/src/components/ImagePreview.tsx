@@ -39,6 +39,7 @@ const ImagePreview = ({
       <div className="mt-3">
         {images.map((item, index) => (
           <img
+          key={index}
             className="mx-1 images"
             onClick={() => setIndex(index)}
             style={{ height: "50px", cursor: "pointer" }}

@@ -17,7 +17,6 @@ type client= {
   const [user, setUser] = useState<user>();
   const [client, setClient] = useState<client>();
   const getUserData = async () => {
-    console.log(userId)
     const res = await fetch("http://localhost:4000/user/loadUser", {
       headers: {
         "Content-Type": "application/json",
