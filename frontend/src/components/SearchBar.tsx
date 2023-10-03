@@ -47,6 +47,7 @@ const SearchBar = () => {
       setUsers(response.users);
     }
     if(response.notFound) setUserNotFound(true)
+    if(!response.notFound) setUserNotFound(false)
   };
   const findRoom = async () => {
     const res = await fetch("http://localhost:4000/findRoom", {
@@ -65,11 +66,9 @@ const SearchBar = () => {
       setRooms(response.rooms);
     }
     if (response.notFound ) setRoomNotFound(true)
+    if (!response.notFound ) setRoomNotFound(false)
   };
-  const getData = async () => {
-    await findRoom();
-    await findUsers();
-  };
+ 
   return (
     <div onClick={()=>setShow(true)}>
       <form className="form-group d-flex">

@@ -66,7 +66,7 @@ const FindUsers = async (req, res) => {
       .select("username")
       .select("profilePicture");
     const includes = Users.filter((item) => item.username.includes(username));
-    res.status(200).json({ users: includes, notFound: includes.length==0 && true });
+    res.status(200).json({ users: includes, notFound: includes.length==0 ? true:false });
   } catch (err) {
     console.log(err.message);
 
