@@ -8,21 +8,21 @@ import { faRepeat } from "@fortawesome/free-solid-svg-icons";
 const SearchBar = () => {
   const [searchFor, setSearchFor] = useState("users");
   const [show, setShow] = useState(true);
-  const [roomNotFound,setRoomNotFound] = useState(false)
-  const [userNotFound,setUserNotFound] = useState(false)
+  const [roomNotFound, setRoomNotFound] = useState(false);
+  const [userNotFound, setUserNotFound] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [rooms, setRooms] = useState([]);
   const [users, setUsers] = useState([]);
   const onClickOutside = () => {
-   show && setShow(false);
+    show && setShow(false);
   };
   const ref = useRef(null);
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       //@ts-ignore
       if (ref.current && !ref.current.contains(event.target)) {
-         onClickOutside();
+        onClickOutside();
       }
     };
     document.addEventListener("click", handleClickOutside, true);
@@ -30,6 +30,12 @@ const SearchBar = () => {
       document.removeEventListener("click", handleClickOutside, true);
     };
   }, [onClickOutside]);
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current!.value == "" && setRoomNotFound(false);
+      inputRef.current!.value == "" && setUserNotFound(false);
+    }
+  }, [inputRef.current?.value]);
   const findUsers = async () => {
     const res = await fetch("http://localhost:4000/user/findUsers", {
       headers: {
@@ -46,8 +52,8 @@ const SearchBar = () => {
     if (!response.error) {
       setUsers(response.users);
     }
-    if(response.notFound) setUserNotFound(true)
-    if(!response.notFound) setUserNotFound(false)
+    if (response.notFound) setUserNotFound(true);
+    if (!response.notFound) setUserNotFound(false);
   };
   const findRoom = async () => {
     const res = await fetch("http://localhost:4000/findRoom", {
@@ -65,12 +71,12 @@ const SearchBar = () => {
     if (!response.error) {
       setRooms(response.rooms);
     }
-    if (response.notFound ) setRoomNotFound(true)
-    if (!response.notFound ) setRoomNotFound(false)
+    if (response.notFound) setRoomNotFound(true);
+    if (!response.notFound) setRoomNotFound(false);
   };
- 
+
   return (
-    <div onClick={()=>setShow(true)}>
+    <div onClick={() => setShow(true)}>
       <form className="form-group d-flex">
         <input
           ref={inputRef}
@@ -89,9 +95,9 @@ const SearchBar = () => {
         <button
           onClick={(e) => {
             setSearchFor(searchFor == "users" ? "rooms" : "users");
-            inputRef.current!.value=""
-            setRoomNotFound(false)
-            setUserNotFound(false)
+            inputRef.current!.value = "";
+            setRoomNotFound(false);
+            setUserNotFound(false);
             e.preventDefault();
           }}
           className="btn btn-danger rounded-5 ms-2"
