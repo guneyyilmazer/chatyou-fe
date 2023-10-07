@@ -27,6 +27,11 @@ const Messages = () => {
   const [page, setPage] = useState(1);
   const loading = useSelector((shop: any) => shop.app.loading);
   const [preview, setPreview] = useState(false);
+  type seenByUser = {
+    userId:string,
+    time?:Date
+  }
+  const [seenBy,setSeenBy] = useState<seenByUser[]>()
   const [typing, setTyping] = useState<any>([]);
   const [loadedAllMessages, setLoadedAllMessages] = useState(false);
   const loadedFirstMessages = useSelector(
@@ -194,6 +199,7 @@ const Messages = () => {
         <div
           ref={messageContainerRef}
           key={index}
+          onClick={()=>setSeenBy(item.seenBy)}
           className={`mt-5 d-flex ${
             item.sender.username == user.username
               ? "justify-content-end"
@@ -266,13 +272,7 @@ const Messages = () => {
               />
             </Link>
           )}
-          {showSeen && item.seenBy && (
-            <ListOfSeen
-              users={item.seenBy}
-              showSeen={showSeen}
-              setShowSeen={setShowSeen}
-            />
-          )}
+         
         </div>
       ))}
       {preview && previewPictures && (
@@ -283,6 +283,13 @@ const Messages = () => {
           images={previewPictures as string[]}
         />
       )}
+       {showSeen && seenBy&& (
+            <ListOfSeen
+              users={seenBy}
+              showSeen={showSeen}
+              setShowSeen={setShowSeen}
+            />
+          )}
     </div>
   );
 };
