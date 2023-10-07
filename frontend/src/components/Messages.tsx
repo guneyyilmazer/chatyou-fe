@@ -28,7 +28,6 @@ const Messages = () => {
   const loading = useSelector((shop: any) => shop.app.loading);
   const [preview, setPreview] = useState(false);
   const [typing, setTyping] = useState<any>([]);
-  const [roomExists, setRoomExists] = useState(true);
   const [loadedAllMessages, setLoadedAllMessages] = useState(false);
   const loadedFirstMessages = useSelector(
     (shop: any) => shop.app.loadedFirstMessages
@@ -130,12 +129,13 @@ const Messages = () => {
           profilePicture,
         },
       ]);
-      scrollDown();
+      setTimeout(scrollDown,50)
       socket.emit("read-msg", room, chattingWith, user);
     }
   );
   const [messages, setMessages] = useState<message[]>([]);
-  useEffect(scrollDown, [messages]);
+  useEffect(()=> {page == 1 && scrollDown()}, [messages]);
+  useEffect(()=>console.log(messageContainerRef.current?.scrollTop) )
 
   return emptyRoom ? (
     <div className="d-flex m-5 fs-2 text-white justify-content-center">
