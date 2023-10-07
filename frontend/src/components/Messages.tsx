@@ -27,11 +27,12 @@ const Messages = () => {
   const [page, setPage] = useState(1);
   const loading = useSelector((shop: any) => shop.app.loading);
   const [preview, setPreview] = useState(false);
+
   type seenByUser = {
-    userId:string,
-    time?:Date
-  }
-  const [seenBy,setSeenBy] = useState<seenByUser[]>()
+    userId: string;
+    time?: Date;
+  };
+  const [seenBy, setSeenBy] = useState<seenByUser[]>();
   const [typing, setTyping] = useState<any>([]);
   const [loadedAllMessages, setLoadedAllMessages] = useState(false);
   const loadedFirstMessages = useSelector(
@@ -90,23 +91,35 @@ const Messages = () => {
   };
   socket.on("update-messages", (messages: any) => setMessages(messages));
   socket.on("stopped-typing-to-client", (user: user) => {
-    const doWeHaveUser = typing.filter(
-      (item: user) => item.userId == user.userId
-    );
-    if (doWeHaveUser.length != 0) {
-      const newList = typing.filter((item: user) => item.userId != user.userId);
-      setTyping(newList);
-    }
+    setTyping((typing: any) => {
+      if (typing) {
+        const doWeHaveUser = typing.filter(
+          (item: user) => item.userId == user.userId
+        );
+        if (doWeHaveUser.length != 0) {
+          const newList = typing.filter(
+            (item: user) => item.userId != user.userId
+          );
+          return newList;
+        }
+      }
+    });
   });
   socket.on("typing-to-client", (user: user) => {
-    if (typing.length != 0) {
-      const doWeAlreadyHave = typing.filter(
-        (item: user) => item.userId == user.userId
-      );
-      doWeAlreadyHave.length == 0 && setTyping([...typing, user]);
-    } else {
-      setTyping([user]);
-    }
+    const updateState = () => {
+      setTyping((typing: any) => {
+        if (!typing || typing.length == 0) return [user];
+        else {
+          const doWeAlreadyHave = typing.filter(
+            (item: user) => item.userId == user.userId
+          );
+          if (doWeAlreadyHave.length == 0) return [...typing, user];
+          else return typing;
+        }
+      });
+    };
+
+    updateState();
   });
   socket.on(
     "receive-msg",
@@ -134,13 +147,14 @@ const Messages = () => {
           profilePicture,
         },
       ]);
-      setTimeout(scrollDown,50)
+      setTimeout(scrollDown, 50); //waiting for setState to happen
       socket.emit("read-msg", room, chattingWith, user);
     }
   );
   const [messages, setMessages] = useState<message[]>([]);
-  useEffect(()=> {page == 1 && scrollDown()}, [messages]);
-  useEffect(()=>console.log(messageContainerRef.current?.scrollTop) )
+  useEffect(() => {
+    page == 1 && scrollDown();
+  }, [messages]);
 
   return emptyRoom ? (
     <div className="d-flex m-5 fs-2 text-white justify-content-center">
@@ -199,7 +213,7 @@ const Messages = () => {
         <div
           ref={messageContainerRef}
           key={index}
-          onClick={()=>setSeenBy(item.seenBy)}
+          onClick={() => setSeenBy(item.seenBy)}
           className={`mt-5 d-flex ${
             item.sender.username == user.username
               ? "justify-content-end"
@@ -272,7 +286,6 @@ const Messages = () => {
               />
             </Link>
           )}
-         
         </div>
       ))}
       {preview && previewPictures && (
@@ -283,13 +296,13 @@ const Messages = () => {
           images={previewPictures as string[]}
         />
       )}
-       {showSeen && seenBy&& (
-            <ListOfSeen
-              users={seenBy}
-              showSeen={showSeen}
-              setShowSeen={setShowSeen}
-            />
-          )}
+      {showSeen && seenBy && (
+        <ListOfSeen
+          users={seenBy}
+          showSeen={showSeen}
+          setShowSeen={setShowSeen}
+        />
+      )}
     </div>
   );
 };

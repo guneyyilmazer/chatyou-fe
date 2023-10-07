@@ -21,7 +21,7 @@ const SendMessage = () => {
   const handleTyping = (e: any) => {
     clearTimeout(timer)
     socket.emit("typing",user,room,chattingWith)
-    const newTimer = setTimeout(()=>socket.emit("stopped-typing",user,room,chattingWith),1000)
+    const newTimer = setTimeout(()=>socket.emit("stopped-typing",user,room,chattingWith),5000)
     setTimer(newTimer)
 
     setInputState(e.target.value);
