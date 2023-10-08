@@ -19,6 +19,7 @@ const DefaultProfilePicture = require("../images/default.jpeg");
 const Messages = () => {
   const socket = useSelector((shop: any) => shop.app.socket);
 
+  const [messages, setMessages] = useState<message[]>([]);
   const user = useSelector((shop: any) => shop.app.user);
   const emptyRoom = useSelector((shop: any) => shop.app.emptyRoom);
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith);
@@ -89,7 +90,11 @@ const Messages = () => {
       }
     }
   };
-  socket.on("update-messages", (messages: any) => setMessages(messages));
+  socket.on("update-message", (message: any) => {
+    const newList = messages;
+    newList[newList.length - 1] = message[0];
+    setMessages(newList);
+  });
   socket.on("stopped-typing-to-client", (user: user) => {
     setTyping((typing: any) => {
       if (typing) {
@@ -151,7 +156,6 @@ const Messages = () => {
       socket.emit("read-msg", room, chattingWith, user);
     }
   );
-  const [messages, setMessages] = useState<message[]>([]);
   useEffect(() => {
     page == 1 && scrollDown();
   }, [messages]);
@@ -213,7 +217,6 @@ const Messages = () => {
         <div
           ref={messageContainerRef}
           key={index}
-          onClick={() => setSeenBy(item.seenBy)}
           className={`mt-5 d-flex ${
             item.sender.username == user.username
               ? "justify-content-end"
@@ -237,7 +240,10 @@ const Messages = () => {
             </Link>
           )}
           <div
-            onClick={() => setShowSeen(!showSeen)}
+            onClick={() => {
+              setShowSeen(true);
+              setSeenBy(item.seenBy);
+            }}
             className={`text-break d-flex flex-column
             ${
               item.sender.username == user.username

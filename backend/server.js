@@ -35,6 +35,7 @@ const getMessagesReady = async (messages, cb) => {
   try {
     //this piece of code adds the sentAt property and formats the date object to properly display the sent hour and minutes
     //this function gets the profile picture and username values from the db and formats the date
+
     const list = messages.map(async (item) => {
       const newList = item.seenBy.map(async (object) => {
         const { profilePicture, username } = await UserModel.findOne({
@@ -79,7 +80,7 @@ io.on("connection", (socket) => {
   console.log(socket.id + " connected");
 
   const cb = (value) => {
-    socket.emit("update-messages", value);
+    socket.emit("update-message", value);
   };
   //checking if either username + chattingWith (firstTry) or chattingWith + username (secondTry) exists
   //This is how private rooms are named
@@ -104,22 +105,21 @@ io.on("connection", (socket) => {
       console.log(err.message);
     }
   });
-  socket.on("stopped-typing",async(user,room,chattingWith)=>{
-    const roomInDB = await findTheRoom(user.username,room,chattingWith)
-    roomInDB && io.to(roomInDB.name).emit("stopped-typing-to-client",user)
-  })
-  socket.on("typing",async(user,room,chattingWith)=>{
-
-    const roomInDB = await findTheRoom(user.username,room,chattingWith)
-    roomInDB && io.to(roomInDB.name).emit("typing-to-client",user)
-  })
+  socket.on("stopped-typing", async (user, room, chattingWith) => {
+    const roomInDB = await findTheRoom(user.username, room, chattingWith);
+    roomInDB && io.to(roomInDB.name).emit("stopped-typing-to-client", user);
+  });
+  socket.on("typing", async (user, room, chattingWith) => {
+    const roomInDB = await findTheRoom(user.username, room, chattingWith);
+    roomInDB && io.to(roomInDB.name).emit("typing-to-client", user);
+  });
   socket.on("read-msg", async (room, chattingWith, user) => {
     const { userId, username } = user;
 
     const date = new Date();
     const roomInDB = await findTheRoom(username, room, chattingWith);
 
-    const newMessages = roomInDB.messages;
+    const newMessages = roomInDB && roomInDB.messages;
     const message = newMessages[roomInDB.messages.length - 1];
     if (
       message.seenBy.filter((item) => item.userId == user.userId).length == 0
@@ -132,6 +132,11 @@ io.on("connection", (socket) => {
         { messages: newMessages }
       );
     }
+    const theRoom = await RoomModel.findOne({ name: roomInDB.name });
+
+    //passing it as an array because that's how the function works
+    //adding that logic is unnecessarry as it would take more space.
+    await getMessagesReady([theRoom.messages[theRoom.messages.length - 1]], cb);
   });
   socket.on(
     "send-msg",
@@ -155,6 +160,7 @@ io.on("connection", (socket) => {
         await RoomModel.create({
           name: privateRoom,
           privateRoom: true,
+          users:[{username:user.username},{username:chattingWith}],
           messages: [{ sender: user, content, pictures, sent: date }],
         });
       } else if (!room) {
@@ -283,13 +289,17 @@ app.post("/loadRooms", async (req, res) => {
     if (!page || !amount) {
       throw new Error("You need to specify the page and the amount.");
     }
-    
+
     const rooms = await RoomModel.find({ privateRoom: false })
       .limit(amount)
       .skip((page - 1) * amount)
       .select("name");
-      const allRooms = await RoomModel.find({privateRoom:false}).limit(amount+1).select("name")
-    res.status(200).json({ rooms,loadedAll:(allRooms.length==amount) ? true : false });
+    const allRooms = await RoomModel.find({ privateRoom: false })
+      .limit(amount + 1)
+      .select("name");
+    res
+      .status(200)
+      .json({ rooms, loadedAll: allRooms.length == amount ? true : false });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -302,10 +312,13 @@ app.post("/findRoom", async (req, res) => {
     const filter = Rooms.filter(
       (item) => item.name.includes(room) && !item.privateRoom
     );
-    res.status(200).json({ rooms: filter,notFound: filter.length==0 && true });
+    res
+      .status(200)
+      .json({ rooms: filter, notFound: filter.length == 0 ? true : false });
   } catch (err) {
     console.log(err.message);
 
     res.status(401).json({ error: err.message });
   }
 });
+
