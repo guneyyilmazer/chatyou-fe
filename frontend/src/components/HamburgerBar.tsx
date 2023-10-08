@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import "../css/HamburgerBar.css";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "react-router-dom";
 const HamburgerBar = () => {
   const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(true);
@@ -41,6 +42,11 @@ const HamburgerBar = () => {
         >
           Home
         </button>
+        <Link 
+          className="btn btn-danger ms-1"
+        
+        to={"direct-messages"}>Direct Messages</Link>
+
         <div></div>
         <button
           onClick={() => {

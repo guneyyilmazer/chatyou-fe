@@ -7,6 +7,7 @@ import Header from "./components/Header";
 import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
 import { store } from "./app/store";
+import DirectMessages from "./pages/DirectMessages";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
@@ -19,6 +20,9 @@ root.render(
           <Route index element={<App />} />
           <Route path="auth">
             <Route index element={<AuthPage />} />
+          </Route>
+          <Route path="direct-messages">
+            <Route index element={<DirectMessages/>}/>
           </Route>
           <Route path="users">
             <Route path=":userId" element={<ProfilePage />} />

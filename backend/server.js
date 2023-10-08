@@ -322,12 +322,12 @@ app.post("/findRoom", async (req, res) => {
   }
 });
 
-app.post("/loadDirectMessages", async (req, res) => {
+app.post("/loadPrivateRooms", async (req, res) => {
   try {
     const limit = 10;
     const rooms = await RoomModel.find({ "users.username": req.username })
       .limit(limit)
-      .select("name users"); // will be userId when chattingWith becomes a user object
+      .select("name users messages"); // will be userId when chattingWith becomes a user object
     const newList = rooms.map(async (item) => {
       const withProfilePictures = item.users.map(async (item) => {
         const { profilePicture } = await UserModel.findOne({
@@ -339,9 +339,25 @@ app.post("/loadDirectMessages", async (req, res) => {
         };
       });
       const usersWithProfilePictures = await Promise.all(withProfilePictures);
-
+      const lastMessage = item.messages[item.messages.length - 1];
+      const formattedSentTime =
+        (lastMessage.sent.getHours().toString().length == 1
+          ? "0".concat(lastMessage.sent.getHours().toString())
+          : lastMessage.sent.getHours().toString()) +
+        ":" +
+        (lastMessage.sent.getMinutes().toString().length == 1
+          ? "0".concat(lastMessage.sent.getMinutes().toString())
+          : lastMessage.sent.getMinutes().toString());
+      lastMessage.sent = formattedSentTime;
+      console.log(formattedSentTime);
       return {
         name: item.name,
+        lastMessage: {
+          sender: lastMessage.sender,
+          content: lastMessage.content,
+          sent: formattedSentTime,
+          seenBy:lastMessage.seenBy.map((item)=>item.userId)
+        },
         users: usersWithProfilePictures,
       };
     });

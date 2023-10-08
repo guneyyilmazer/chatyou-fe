@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setRoom, setChattingWith } from "../features/appSlice";
 import Cookies from "js-cookie";
 import '../css/Navbar.css'
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -11,7 +12,7 @@ const Navbar = () => {
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
   return (
     <nav className="nav" >
-      <div className="btn-group">
+      <div>
         <button
           onClick={() => {
             room && dispatch(setRoom(""));
@@ -24,6 +25,10 @@ const Navbar = () => {
         >
           Home
         </button>
+        <Link 
+          className="btn btn-danger ms-1"
+        
+        to={"direct-messages"}>Direct Messages</Link>
       </div>
       <div
         className="position-absolute start-50 "
