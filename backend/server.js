@@ -160,7 +160,7 @@ io.on("connection", (socket) => {
         await RoomModel.create({
           name: privateRoom,
           privateRoom: true,
-          users:[{username:user.username},{username:chattingWith}],
+          users: [{ username: user.username }, { username: chattingWith }],
           messages: [{ sender: user, content, pictures, sent: date }],
         });
       } else if (!room) {
@@ -322,3 +322,32 @@ app.post("/findRoom", async (req, res) => {
   }
 });
 
+app.post("/loadDirectMessages", async (req, res) => {
+  try {
+    const limit = 10;
+    const rooms = await RoomModel.find({ "users.username": req.username })
+      .limit(limit)
+      .select("name users"); // will be userId when chattingWith becomes a user object
+    const newList = rooms.map(async (item) => {
+      const withProfilePictures = item.users.map(async (item) => {
+        const { profilePicture } = await UserModel.findOne({
+          username: item.username,
+        }).select("profilePicture");
+        return {
+          username: item.username,
+          profilePicture,
+        };
+      });
+      const usersWithProfilePictures = await Promise.all(withProfilePictures);
+
+      return {
+        name: item.name,
+        users: usersWithProfilePictures,
+      };
+    });
+    const roomsWithProfilePictures = await Promise.all(newList);
+    res.status(200).json({ rooms: roomsWithProfilePictures });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
