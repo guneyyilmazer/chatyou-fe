@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import "../css/SearchBar.css";
-
+import { setRoom } from "../features/appSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate,useLocation } from "react-router-dom";
+import { useEffect } from "react";
 const DefaultProfilePicture = require("../images/default.jpeg");
 
 const SearchBarResults = ({
@@ -12,17 +15,22 @@ const SearchBarResults = ({
   userNotFound,
   roomNotFound,
 }: any) => {
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  useEffect(()=>setShow(false),[location])
   return (
     show && (
       <div className="bg-dark text-white">
         {searchFor == "users" &&
           (!userNotFound ? (
             users.map((item: any, index: number) => (
-              <Link
+              <div
                 key={index}
-                reloadDocument
                 className=" results d-flex py-3 ps-2 align-items-center text-decoration-none"
-                to={`users/${item._id}`}
+                onClick={() => {
+                  navigate(`users/${item._id}`);
+                }}
               >
                 <img
                   style={{ height: "40px", width: "40px" }}
@@ -36,7 +44,7 @@ const SearchBarResults = ({
                 <span className="ms-2 text-white text-decoration-none">
                   {item.username}
                 </span>
-              </Link>
+              </div>
             ))
           ) : (
             <div className="text-center py-2">No results.</div>
@@ -47,10 +55,8 @@ const SearchBarResults = ({
               <div
                 key={index}
                 onClick={() => {
-                  setShow(!show);
-                  localStorage.setItem("room", item.name);
-
-                  window.location.replace("/");
+                  dispatch(setRoom(item.name));
+                  navigate("/");
                 }}
                 className="results d-flex py-3 ps-2 align-items-center"
               >

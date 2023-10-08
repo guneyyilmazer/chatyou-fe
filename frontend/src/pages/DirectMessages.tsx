@@ -3,8 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Cookies from "js-cookie";
 import React, { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import { setChattingWith } from "../features/appSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const DirectMessages = () => {
+    const navigate = useNavigate()
+  const dispatch = useDispatch();
   const user = useSelector((shop: any) => shop.app.user);
   const [rooms, setRooms] = useState([]);
   const loadRoom = async () => {
@@ -24,26 +29,47 @@ const DirectMessages = () => {
   useMemo(loadRoom, []);
   return (
     <div className="text-white d-flex justify-content-center align-items-center flex-column">
-      DirectMessages
+      <span className="lead">Direct Messages</span>
       {rooms &&
         rooms.map((item: any) => {
           const chattingWith = item.users.filter(
             (object: any) => object.username != user.username
           )[0];
 
-          const isTheMessageSeen = item.lastMessage.seenBy.filter((item:string)=>item==user.userId).length == 0 ? false : true
+          const isTheMessageSeen =
+            item.lastMessage.seenBy.filter(
+              (item: string) => item == user.userId
+            ).length == 0
+              ? false
+              : true;
           return (
-            <div style={{cursor:"pointer"}} onClick={()=>{localStorage.setItem("chattingWith",chattingWith.username);window.location.replace("/")}} className={"d-flex align-items-center ".concat(isTheMessageSeen ?" text-secondary " : " text-white " )}>
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                dispatch(setChattingWith(chattingWith.username))
+
+                navigate("/")
+              }}
+              className={"d-flex align-items-center mt-2 ".concat(
+                isTheMessageSeen ? " text-secondary " : " text-white "
+              )}
+            >
               <img
-                style={{ height: "50px", width: "50px" }}
+                style={{ height: "30px", width: "30px" }}
                 className="rounded-5"
                 src={chattingWith.profilePicture}
                 alt=""
-                />
+              />
               <span className="mx-1">{chattingWith.username}:</span>
-              <span >{item.lastMessage.content}</span>
+              <span>{item.lastMessage.content}</span>
               <span className="mx-1">{item.lastMessage.sent}</span>
-              {!isTheMessageSeen && <FontAwesomeIcon title="You have unread messages!" className="bg-danger p-2 rounded-5" icon={faBell} />}
+              {!isTheMessageSeen && (
+                <FontAwesomeIcon
+                  title="You have unread messages!"
+                  className="bg-danger p-2 rounded-5"
+                  icon={faBell}
+                />
+              )}
             </div>
           );
         })}

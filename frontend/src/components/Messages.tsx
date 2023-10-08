@@ -54,7 +54,7 @@ const Messages = () => {
       method: "POST",
       body: JSON.stringify({
         room,
-        chattingWith: localStorage.getItem("chattingWith"),
+        chattingWith,
         userId: user.userId,
         page,
       }),

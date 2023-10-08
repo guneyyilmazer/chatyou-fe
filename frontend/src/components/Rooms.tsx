@@ -2,10 +2,11 @@ import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Cookies from "js-cookie";
 import { useMemo, useState } from "react";
-
-
+import { useDispatch } from "react-redux"; 
+import { setRoom } from "../features/appSlice";
 type rooms = [{ name: string }];
 const Rooms = () => {
+  const dispatch = useDispatch()
   const [page, setPage] = useState(1);
   const [amount, setAmount] = useState(8);
   const [rooms, setRooms] = useState<rooms>();
@@ -42,8 +43,7 @@ const Rooms = () => {
           style={{ cursor: "pointer" }}
           className="text-white bg-danger my-2 rounded-1 py-2 text-center"
           onClick={() => {
-            localStorage.setItem("room", item.name);
-            window.location.reload();
+            dispatch(setRoom(item.name))
           }}
         >
           {item.name}

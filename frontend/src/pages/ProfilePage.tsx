@@ -1,10 +1,15 @@
 import { useState, useMemo } from "react";
 import NotFound404 from "../pages/NotFound404";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import MyProfilePage from "../components/MyProfilePage";
+import { useDispatch } from "react-redux";
+import { setChattingWith,setRoom } from "../features/appSlice";
 const DefaultProfilePicture = require("../images/default.jpeg")
+
 const ProfilePage = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
   const { userId } = useParams();
 type user = {
     username:string,
@@ -43,7 +48,7 @@ type client= {
     setClient(client);
   };
 
-  useMemo(getUserData, []);
+  useMemo(getUserData, [userId]);
 
   return <div className="text-white mt-5 d-flex flex-column justify-content-center align-items-center">
   {(user && client) &&<>
@@ -61,9 +66,9 @@ type client= {
       <button
       className="btn btn-danger mt-2"
         onClick={() => {
-          localStorage.setItem("chattingWith", user.username);
-          localStorage.removeItem("room")
-          window.location.replace("/")
+          dispatch(setChattingWith(user.username));
+          dispatch(setRoom(""));
+          navigate("/")
         }}
       >
         Send a message

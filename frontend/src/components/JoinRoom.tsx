@@ -13,7 +13,7 @@ const JoinRoom = () => {
 
     if (roomInputRef.current?.value) {
       socket.emit("join-room", roomInputRef.current.value);
-      localStorage.setItem("room", roomInputRef.current!.value);
+
 
       dispatch(setRoom(roomInputRef.current!.value));
     } else {

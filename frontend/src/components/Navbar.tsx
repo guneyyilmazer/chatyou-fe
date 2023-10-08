@@ -3,15 +3,16 @@ import SearchBar from "./SearchBar";
 import { useSelector, useDispatch } from "react-redux";
 import { setRoom, setChattingWith } from "../features/appSlice";
 import Cookies from "js-cookie";
-import '../css/Navbar.css'
+import "../css/Navbar.css";
 import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 const Navbar = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const room = useSelector((shop: any) => shop.app.room); //will implement the type later
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
   return (
-    <nav className="nav" >
+    <nav className="nav">
       <div>
         <button
           onClick={() => {
@@ -19,16 +20,15 @@ const Navbar = () => {
             localStorage.setItem("room", "");
             chattingWith && dispatch(setChattingWith(""));
             localStorage.setItem("chattingWith", "");
-            window.location.replace("/");
+            navigate("/");
           }}
           className="btn btn-danger"
         >
           Home
         </button>
-        <Link 
-          className="btn btn-danger ms-1"
-        
-        to={"direct-messages"}>Direct Messages</Link>
+        <Link className="btn btn-danger ms-1" to={"direct-messages"}>
+          Direct Messages
+        </Link>
       </div>
       <div
         className="position-absolute start-50 "

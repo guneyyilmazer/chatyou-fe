@@ -43,7 +43,7 @@ const SendMessage = () => {
         room,
         inputRef.current!.value ? inputRef.current!.value : " ",
         pictures,
-        localStorage.getItem("chattingWith")
+chattingWith
         );
         inputRef.current!.value = "";
         socket.emit("stopped-typing",user,room,chattingWith)
