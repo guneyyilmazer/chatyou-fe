@@ -1,9 +1,9 @@
 import React, { useRef } from "react";
 import Rooms from "./Rooms";
 import { setRoom } from "../features/appSlice";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 const JoinRoom = () => {
-  const socket = useSelector((shop:any)=>shop.app.socket) //will implement the type later
+  const socket = useSelector((shop: any) => shop.app.socket); //will implement the type later
 
   //can't find the type
   const dispatch = useDispatch();
@@ -11,13 +11,17 @@ const JoinRoom = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (roomInputRef.current?.value) {
+    if (
+      roomInputRef.current?.value &&
+      roomInputRef.current.value.length <= 40
+    ) {
       socket.emit("join-room", roomInputRef.current.value);
-
 
       dispatch(setRoom(roomInputRef.current!.value));
     } else {
-      alert("Room can't be empty!");
+      if (roomInputRef.current && roomInputRef.current.value.length > 40)
+        alert("Room name must be a maximum of 40 characters long.");
+      else alert("Room can't be empty!");
     }
   };
   return (
@@ -30,7 +34,10 @@ const JoinRoom = () => {
             className="form-control p-3"
             placeholder="Enter Room..."
           />
-          <button type="submit" className="btn btn-danger text-center mt-4 mt-md-0 ms-md-2 px-4">
+          <button
+            type="submit"
+            className="btn btn-danger text-center mt-4 mt-md-0 ms-md-2 px-4"
+          >
             {" "}
             Join
           </button>

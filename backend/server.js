@@ -86,21 +86,24 @@ io.on("connection", (socket) => {
   //This is how private rooms are named
   socket.on("join-room", async (room) => {
     try {
-      const second = room.split(" ")[1] + " " + room.split(" ")[0];
+      if (room.length < 40) {
+        const second = room.split(" ")[1] + " " + room.split(" ")[0];
 
-      //checking whatever comes from the front end (room), (It's either a room name or userId + chattingWith)
-      const firstTry = await RoomModel.findOne({ name: room });
-      const secondTry = await RoomModel.findOne({ name: second });
-      if (!firstTry && !secondTry) {
-        socket.join(room);
-        console.log(socket.id + " connected to room (0.) " + room);
-      } else if (firstTry) {
-        socket.join(room);
-        console.log(socket.id + " connected to room (1.) " + room);
-      } else if (secondTry) {
-        socket.join(second);
-        console.log(socket.id + " connected to room (2.) " + second);
+        //checking whatever comes from the front end (room), (It's either a room name or userId + chattingWith)
+        const firstTry = await RoomModel.findOne({ name: room });
+        const secondTry = await RoomModel.findOne({ name: second });
+        if (!firstTry && !secondTry) {
+          socket.join(room);
+          console.log(socket.id + " connected to room (0.) " + room);
+        } else if (firstTry) {
+          socket.join(room);
+          console.log(socket.id + " connected to room (1.) " + room);
+        } else if (secondTry) {
+          socket.join(second);
+          console.log(socket.id + " connected to room (2.) " + second);
+        }
       }
+      else throw new Error("Room name must be a maximum of 40 characters long.")
     } catch (err) {
       console.log(err.message);
     }
@@ -160,7 +163,7 @@ io.on("connection", (socket) => {
         await RoomModel.create({
           name: privateRoom,
           privateRoom: true,
-          users: [{ userId: user.userId }, { userId:chattingWith }],
+          users: [{ userId: user.userId }, { userId: chattingWith }],
           messages: [{ sender: user, content, pictures, sent: date }],
         });
       } else if (!room) {
@@ -356,7 +359,7 @@ app.post("/loadPrivateRooms", async (req, res) => {
           sender: lastMessage.sender,
           content: lastMessage.content,
           sent: formattedSentTime,
-          seenBy:lastMessage.seenBy.map((item)=>item.userId)
+          seenBy: lastMessage.seenBy.map((item) => item.userId),
         },
         users: usersWithProfilePictures,
       };
