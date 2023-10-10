@@ -280,9 +280,10 @@ const Messages = () => {
             <Link
               className="d-flex align-items-center"
               to={`/users/${item.sender.userId}`}
+              style={{cursor:"default"}}
             >
               <img
-                style={{ height: "35px", width: "35px" }}
+                style={{ height: "35px", width: "35px",cursor:"pointer"}}
                 className="ms-2 rounded-5"
                 src={
                   item.profilePicture
