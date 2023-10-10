@@ -35,6 +35,7 @@ type client= {
 
     const user = await res.json();
     setUser(user);
+    console.log(user)
 
     const response = await fetch("http://localhost:4000/verify", {
       headers: {

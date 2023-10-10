@@ -142,7 +142,7 @@ io.on("connection", (socket) => {
     "send-msg",
     async (user, roomName, content, pictures, chattingWith) => {
       const room = await findTheRoom(user.userId, roomName, chattingWith);
-      const privateRoom = user.username + " " + chattingWith;
+      const privateRoom = user.userId + " " + chattingWith;
       //creating a new date to save it in the DB as the sent property
       const date = new Date();
 

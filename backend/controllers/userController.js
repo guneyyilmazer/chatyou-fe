@@ -10,12 +10,20 @@ const genToken = (userId, username) => {
 
 const Signup = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
-    const userId = await UserModel.signup(username, email, password);
-    const token = genToken(userId, username);
-    res.status(200).json({ AuthValidation: token });
-  } catch (err) {
-    console.log(err.message);
+    if(username.length>=4)
+    {
+
+      const { username, email, password } = req.body;
+      const userId = await UserModel.signup(username, email, password);
+      const token = genToken(userId, username);
+      res.status(200).json({ AuthValidation: token });
+    }
+    else{
+    res.status(401).json({ error: "Username must be atleast 4 characters long." });
+
+    }
+    } catch (err) {
+      console.log(err.message);
     res.status(401).json({ error: err.message });
   }
 };
@@ -39,7 +47,7 @@ const LoadUser = async (req, res) => {
       const inDB = await UserModel.findOne({ _id: userId });
       res.status(200).json({
         username: inDB.username,
-        id: inDB._id,
+        userId: inDB._id,
         profilePicture: inDB.profilePicture,
       });
     } else if (token) {
@@ -61,12 +69,13 @@ const LoadUser = async (req, res) => {
 const FindUsers = async (req, res) => {
   try {
     const { username } = req.body;
-    const Users = await UserModel.find()
-      .limit(20)
-      .select("username")
-      .select("profilePicture");
-    const includes = Users.filter((item) => item.username.includes(username));
-    res.status(200).json({ users: includes, notFound: includes.length==0 ? true:false });
+
+      const Users = await UserModel.find({ "username": { "$regex": username, "$options": "i" } })
+        .limit(50)
+        .select("username")
+        .select("profilePicture");
+      const includes = Users.filter((item) => item.username.includes(username));
+      res.status(200).json({ users: includes, notFound: includes.length==0 ? true:false });
   } catch (err) {
     console.log(err.message);
 
@@ -76,13 +85,13 @@ const FindUsers = async (req, res) => {
 
 const UpdateProfilePicture = async (req, res) => {
   try {
-    const { username, profilePicture } = req.body;
-    const auth = await UserModel.findOne({ _id: req.userId }); //already verifying the token with middleware
+    const { userId, profilePicture } = req.body;
+    const auth = await UserModel.findOne({ _id: req.userId }); //already verifying the token with middleware, this is extra
     if (!auth) {
       throw new Error("Not verified.");
     }
     const inDB = await UserModel.findOneAndUpdate(
-      { username },
+      { _id:userId },
       { profilePicture },
       { new: true }
     );
@@ -110,11 +119,11 @@ const UpdateUsername = async (req, res) => {
 };
 const UpdateEmail = async (req, res) => {
   try {
-    const { username, newEmail } = req.body;
-    const doWeHaveUser = await UserModel.findOne({ username });
-    if (doWeHaveUser.username == req.username) {
+    const { userId, newEmail } = req.body;
+    const doWeHaveUser = await UserModel.findOne({ userId });
+    if (doWeHaveUser._id == req.userId) {
       const response = await UserModel.findOneAndUpdate(
-        { username },
+        { userId },
         { email: newEmail },
         { new: true }
       );

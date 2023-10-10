@@ -35,7 +35,7 @@ const Room = () => {
   if (user) {
     socket.emit(
       "join-room",
-      chattingWith ? user.username! + " " + chattingWith : room
+      chattingWith ? user.userId! + " " + chattingWith : room
     );
   }
   return (

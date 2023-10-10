@@ -17,7 +17,7 @@ const UpdateProfilePicture = () => {
       method: "POST",
       body: JSON.stringify({ token: Cookies.get("Auth_Token") }),
     });
-    const {username} = await response.json()
+    const {userId} = await response.json()
     const res = await fetch("http://localhost:4000/user/updateProfilePicture", {
       headers: {
         "Content-Type": "application/json",
@@ -25,7 +25,7 @@ const UpdateProfilePicture = () => {
       },
       method: "POST",
       body: JSON.stringify({
-        username,
+        userId,
         profilePicture,
       }),
     });
