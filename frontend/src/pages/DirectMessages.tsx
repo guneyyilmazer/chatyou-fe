@@ -33,7 +33,7 @@ const DirectMessages = () => {
       {rooms &&
         rooms.map((item: any) => {
           const chattingWith = item.users.filter(
-            (object: any) => object.username != user.username
+            (object: any) => object.userId != user.userId
           )[0];
 
           const isTheMessageSeen =
@@ -46,7 +46,7 @@ const DirectMessages = () => {
             <div
               style={{ cursor: "pointer" }}
               onClick={() => {
-                dispatch(setChattingWith(chattingWith.username))
+                dispatch(setChattingWith(chattingWith.userId))
 
                 navigate("/")
               }}
@@ -60,7 +60,7 @@ const DirectMessages = () => {
                 src={chattingWith.profilePicture}
                 alt=""
               />
-              <span className="mx-1">{chattingWith.username}:</span>
+              <span className="mx-1">{chattingWith.userId}:</span>
               <span>{item.lastMessage.content}</span>
               <span className="mx-1">{item.lastMessage.sent}</span>
               {!isTheMessageSeen && (

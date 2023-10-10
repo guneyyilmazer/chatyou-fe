@@ -14,7 +14,7 @@ const ProfilePage = () => {
 type user = {
     username:string,
     profilePicture:string,
-    id:string
+    userId:string
 }
 type client= {
     userId:string
@@ -49,7 +49,7 @@ type client= {
   };
 
   useMemo(getUserData, [userId]);
-
+console.log(user?.userId)
   return <div className="text-white mt-5 d-flex flex-column justify-content-center align-items-center">
   {(user && client) &&<>
   <img src={user.profilePicture ? user.profilePicture : DefaultProfilePicture} className="rounded-4" style={{ width: "30vw" }} />
@@ -59,14 +59,14 @@ type client= {
     <NotFound404 />
   )}
 
-  {user.id &&
-    (user.id == client.userId ? (
+  {user.userId &&
+    (user.userId == client.userId ? (
       <MyProfilePage/>
     ) : (
       <button
       className="btn btn-danger mt-2"
         onClick={() => {
-          dispatch(setChattingWith(user.username));
+          dispatch(setChattingWith(user.userId));
           dispatch(setRoom(""));
           navigate("/")
         }}

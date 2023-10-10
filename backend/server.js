@@ -82,13 +82,13 @@ io.on("connection", (socket) => {
   const cb = (value) => {
     socket.emit("update-message", value);
   };
-  //checking if either username + chattingWith (firstTry) or chattingWith + username (secondTry) exists
+  //checking if either userId + chattingWith (firstTry) or chattingWith + userId (secondTry) exists
   //This is how private rooms are named
   socket.on("join-room", async (room) => {
     try {
       const second = room.split(" ")[1] + " " + room.split(" ")[0];
 
-      //checking whatever comes from the front end (room), (It's either a room name or username + chattingWith)
+      //checking whatever comes from the front end (room), (It's either a room name or userId + chattingWith)
       const firstTry = await RoomModel.findOne({ name: room });
       const secondTry = await RoomModel.findOne({ name: second });
       if (!firstTry && !secondTry) {
@@ -106,18 +106,18 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("stopped-typing", async (user, room, chattingWith) => {
-    const roomInDB = await findTheRoom(user.username, room, chattingWith);
+    const roomInDB = await findTheRoom(user.userId, room, chattingWith);
     roomInDB && io.to(roomInDB.name).emit("stopped-typing-to-client", user);
   });
   socket.on("typing", async (user, room, chattingWith) => {
-    const roomInDB = await findTheRoom(user.username, room, chattingWith);
+    const roomInDB = await findTheRoom(user.userId, room, chattingWith);
     roomInDB && io.to(roomInDB.name).emit("typing-to-client", user);
   });
   socket.on("read-msg", async (room, chattingWith, user) => {
     const { userId, username } = user;
 
     const date = new Date();
-    const roomInDB = await findTheRoom(username, room, chattingWith);
+    const roomInDB = await findTheRoom(userId, room, chattingWith);
 
     const newMessages = roomInDB && roomInDB.messages;
     const message = newMessages[roomInDB.messages.length - 1];
@@ -141,7 +141,7 @@ io.on("connection", (socket) => {
   socket.on(
     "send-msg",
     async (user, roomName, content, pictures, chattingWith) => {
-      const room = await findTheRoom(user.username, roomName, chattingWith);
+      const room = await findTheRoom(user.userId, roomName, chattingWith);
       const privateRoom = user.username + " " + chattingWith;
       //creating a new date to save it in the DB as the sent property
       const date = new Date();
@@ -160,7 +160,7 @@ io.on("connection", (socket) => {
         await RoomModel.create({
           name: privateRoom,
           privateRoom: true,
-          users: [{ username: user.username }, { username: chattingWith }],
+          users: [{ userId: user.userId }, { userId:chattingWith }],
           messages: [{ sender: user, content, pictures, sent: date }],
         });
       } else if (!room) {
@@ -202,20 +202,20 @@ app.post("/verify", async (req, res) => {
   try {
     const { token } = req.body;
     const { userId, username } = await jwt.verify(token, process.env.SECRET);
-    res.status(200).json({ valid: true, userId, username });
+    res.status(200).json({ valid: true, userId });
   } catch (err) {
     res.status(401).json({ valid: false, error: err.message });
   }
 });
 app.use(withAuth);
-const findTheRoom = async (username, room, chattingWith) => {
-  const privateRoom = username + " " + chattingWith;
-  const secondPrivateRoom = chattingWith + " " + username;
+const findTheRoom = async (userId, room, chattingWith) => {
+  const privateRoom = userId + " " + chattingWith;
+  const secondPrivateRoom = chattingWith + " " + userId;
   //checking both scenearios to find the privateRoom
   const firstTry = await RoomModel.findOne({ name: privateRoom });
   const secondTry = await RoomModel.findOne({ name: secondPrivateRoom });
 
-  //searching every one of them to find the one
+  //querying every one of them to find the right one
   const roomInDB = await RoomModel.findOne({
     name: firstTry ? privateRoom : secondTry ? secondPrivateRoom : room,
   });
@@ -225,7 +225,7 @@ app.post("/loadRoom", async (req, res) => {
   try {
     const date = new Date();
     const { room, chattingWith, userId, page } = req.body;
-    const roomInDB = await findTheRoom(req.username, room, chattingWith);
+    const roomInDB = await findTheRoom(req.userId, room, chattingWith);
     if (!roomInDB) {
       throw new Error("Room is empty.");
     }
@@ -325,16 +325,16 @@ app.post("/findRoom", async (req, res) => {
 app.post("/loadPrivateRooms", async (req, res) => {
   try {
     const limit = 10;
-    const rooms = await RoomModel.find({ "users.username": req.username })
+    const rooms = await RoomModel.find({ "users.userId": req.userId })
       .limit(limit)
       .select("name users messages"); // will be userId when chattingWith becomes a user object
     const newList = rooms.map(async (item) => {
       const withProfilePictures = item.users.map(async (item) => {
         const { profilePicture } = await UserModel.findOne({
-          username: item.username,
+          _id: item.userId,
         }).select("profilePicture");
         return {
-          username: item.username,
+          userId: item.userId,
           profilePicture,
         };
       });
