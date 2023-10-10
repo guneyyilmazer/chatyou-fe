@@ -75,7 +75,7 @@ const getMessagesReady = async (messages, cb) => {
     console.log(err.message);
   }
 };
-
+app.use(withAuth);
 io.on("connection", (socket) => {
   console.log(socket.id + " connected");
 
@@ -86,24 +86,26 @@ io.on("connection", (socket) => {
   //This is how private rooms are named
   socket.on("join-room", async (room) => {
     try {
-      if (room.length < 40) {
-        const second = room.split(" ")[1] + " " + room.split(" ")[0];
+      const second = room.split(" ")[1] + " " + room.split(" ")[0];
+      //checking whatever comes from the front end (room), (It's either a room name or userId + chattingWith)
+      const firstTry = await RoomModel.findOne({ name: room });
+      const secondTry = await RoomModel.findOne({ name: second });
+      if (!firstTry && !secondTry && room.length < 40) {
+        //40 characters to prevent users from creating private rooms with other people's ids
+        socket.join(room);
+        console.log(socket.id + " connected to room (0.) " + room);
+      } else if (firstTry && room.includes(req.userId)) {
+        //checking room.includes to make sure that this user is the one trying to join their private room
+        socket.join(room);
+        console.log(socket.id + " connected to room (1.) " + room);
+      } else if (secondTry && second.includes(req.userId)) {
+        //checking second.includes to make sure that this user is the one trying to join their private room
 
-        //checking whatever comes from the front end (room), (It's either a room name or userId + chattingWith)
-        const firstTry = await RoomModel.findOne({ name: room });
-        const secondTry = await RoomModel.findOne({ name: second });
-        if (!firstTry && !secondTry) {
-          socket.join(room);
-          console.log(socket.id + " connected to room (0.) " + room);
-        } else if (firstTry) {
-          socket.join(room);
-          console.log(socket.id + " connected to room (1.) " + room);
-        } else if (secondTry) {
-          socket.join(second);
-          console.log(socket.id + " connected to room (2.) " + second);
-        }
-      }
-      else throw new Error("Room name must be a maximum of 40 characters long.")
+
+        socket.join(second);
+        console.log(socket.id + " connected to room (2.) " + second);
+      } else
+        throw new Error("Room name must be a maximum of 40 characters long.");
     } catch (err) {
       console.log(err.message);
     }

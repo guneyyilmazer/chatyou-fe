@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const DirectMessages = () => {
-    const navigate = useNavigate()
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((shop: any) => shop.app.user);
   const [rooms, setRooms] = useState([]);
@@ -30,7 +30,7 @@ const DirectMessages = () => {
   return (
     <div className="text-white d-flex justify-content-center align-items-center flex-column">
       <span className="lead">Direct Messages</span>
-      {rooms &&
+      {rooms.length != 0 ? (
         rooms.map((item: any) => {
           const chattingWith = item.users.filter(
             (object: any) => object.userId != user.userId
@@ -46,9 +46,9 @@ const DirectMessages = () => {
             <div
               style={{ cursor: "pointer" }}
               onClick={() => {
-                dispatch(setChattingWith(chattingWith.userId))
+                dispatch(setChattingWith(chattingWith.userId));
 
-                navigate("/")
+                navigate("/");
               }}
               className={"d-flex align-items-center mt-2 ".concat(
                 isTheMessageSeen ? " text-secondary " : " text-white "
@@ -72,7 +72,12 @@ const DirectMessages = () => {
               )}
             </div>
           );
-        })}
+        })
+      ) : (
+        <div className="lead my-5">
+          You dont have any messages, start a chat by clicking on a user.
+        </div>
+      )}
     </div>
   );
 };
