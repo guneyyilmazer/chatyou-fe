@@ -4,12 +4,12 @@ import Cookies from "js-cookie";
 import { useMemo, useState } from "react";
 import { useDispatch } from "react-redux"; 
 import { setRoom } from "../features/appSlice";
-type rooms = [{ name: string }];
+type room = { name: string };
 const Rooms = () => {
   const dispatch = useDispatch()
   const [page, setPage] = useState(1);
   const [amount, setAmount] = useState(8);
-  const [rooms, setRooms] = useState<rooms>();
+  const [rooms, setRooms] = useState<room[]>();
   const [loadedAll, setLoadedAll] = useState(false);
   const loadRooms = async () => {
     const response = await fetch("http://localhost:4000/loadRooms", {
@@ -34,7 +34,7 @@ const Rooms = () => {
     }
   };
   useMemo(loadRooms, [page]);
-  return rooms ? (
+  return rooms && rooms.length != 0 ? (
     <div>
       <div className="text-white lead text-center mt-lg-5"> Select A Room </div>
       {rooms!.map((item,index) => (
@@ -69,9 +69,9 @@ const Rooms = () => {
         </button>
       </div>
     </div>
-  ) : (
-    <div></div>
-  );
+  ) : rooms?(
+    <div className="lead text-white text-center">No rooms available, create one and start chatting!</div>
+  ):<></>;
 };
 
 export default Rooms;
