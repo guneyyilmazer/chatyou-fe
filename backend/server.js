@@ -36,7 +36,7 @@ const getMessagesReady = async (messages, cb) => {
     //this piece of code adds the sentAt property and formats the date object to properly display the sent hour and minutes
     //this function gets the profile picture and username values from the db and formats the date
 
-    const list = messages.map(async (item) => {
+    const list = messages.map(async (item, index) => {
       const newList = item.seenBy.map(async (object) => {
         const { profilePicture, username } = await UserModel.findOne({
           _id: object.userId,
@@ -98,7 +98,7 @@ io.on("connection", (socket) => {
         //checking room.includes to make sure that this user is the one trying to join their private room
         if (room.length > 40 && room.includes(userId)) {
           socket.join(room);
-          console.log(socket.id + " connected to room (1.) " + room);
+          console.log(socket.id + " connected to private room (1.) " + room);
         } else if (room.length <= 40) {
           socket.join(room);
           console.log(socket.id + " connected to room (1.) " + room);
@@ -108,7 +108,7 @@ io.on("connection", (socket) => {
 
         if (second.length > 40 && second.includes(userId)) {
           socket.join(second);
-          console.log(socket.id + " connected to room (2.) " + second);
+          console.log(socket.id + " connected to private room (2.) " + second);
         }
       }
     } catch (err) {
@@ -137,16 +137,18 @@ io.on("connection", (socket) => {
       newMessages[roomInDB.messages.length - 1].seenBy = message.seenBy
         ? [...message.seenBy, { userId, time: date }]
         : [{ userId, time: date }];
-       const newValueOfTheRoom = await RoomModel.findOneAndUpdate(
+      const newValueOfTheRoom = await RoomModel.findOneAndUpdate(
         { name: room },
         { messages: newMessages },
-        {new:true}
+        { new: true }
       );
       //passing it as an array because that's how the function works
       //adding that logic is unnecessarry as it would take more space.
-      await getMessagesReady([newValueOfTheRoom.messages[newValueOfTheRoom.messages.length - 1]], cb);
+      await getMessagesReady(
+        [newValueOfTheRoom.messages[newValueOfTheRoom.messages.length - 1]],
+        cb
+      );
     }
-
   });
   socket.on(
     "send-msg",
@@ -211,7 +213,7 @@ io.on("connection", (socket) => {
 app.post("/verify", async (req, res) => {
   try {
     const { token } = req.body;
-    const { userId, username } = await jwt.verify(token, process.env.SECRET);
+    const { userId } = await jwt.verify(token, process.env.SECRET);
     res.status(200).json({ valid: true, userId });
   } catch (err) {
     res.status(401).json({ valid: false, error: err.message });
@@ -318,7 +320,13 @@ app.post("/loadRooms", async (req, res) => {
 app.post("/findRoom", async (req, res) => {
   try {
     const { room } = req.body;
-    const Rooms = await RoomModel.find().limit(20).select("name");
+
+    const Rooms = await RoomModel.find({
+      name: { $regex: room, $options: "i" },
+      privateRoom: false,
+    })
+      .limit(20)
+      .select("name");
     const filter = Rooms.filter(
       (item) => item.name.includes(room) && !item.privateRoom
     );
@@ -339,16 +347,19 @@ app.post("/loadPrivateRooms", async (req, res) => {
       .limit(limit)
       .select("name users messages"); // will be userId when chattingWith becomes a user object
     const newList = rooms.map(async (item) => {
-      const withProfilePictures = item.users.map(async (item) => {
-        const { profilePicture } = await UserModel.findOne({
+      const withProfilePictureAndUsername = item.users.map(async (item) => {
+        const { profilePicture, username } = await UserModel.findOne({
           _id: item.userId,
-        }).select("profilePicture");
+        });
         return {
           userId: item.userId,
           profilePicture,
+          username,
         };
       });
-      const usersWithProfilePictures = await Promise.all(withProfilePictures);
+      const usersWithProfilePictureAndUsername = await Promise.all(
+        withProfilePictureAndUsername
+      );
       const lastMessage = item.messages[item.messages.length - 1];
       const formattedSentTime =
         (lastMessage.sent.getHours().toString().length == 1
@@ -368,7 +379,7 @@ app.post("/loadPrivateRooms", async (req, res) => {
           sent: formattedSentTime,
           seenBy: lastMessage.seenBy.map((item) => item.userId),
         },
-        users: usersWithProfilePictures,
+        users: usersWithProfilePictureAndUsername,
       };
     });
     const roomsWithProfilePictures = await Promise.all(newList);

@@ -60,7 +60,7 @@ const DirectMessages = () => {
                 src={chattingWith.profilePicture}
                 alt=""
               />
-              <span className="mx-1">{chattingWith.userId}:</span>
+              <span className="mx-1">{chattingWith.username}:</span>
               <span>{item.lastMessage.content}</span>
               <span className="mx-1">{item.lastMessage.sent}</span>
               {!isTheMessageSeen && (

@@ -154,10 +154,10 @@ const Messages = () => {
           profilePicture,
         },
       ]);
-socket.emit("read-msg",room,chattingWith,user)
-    },
+      socket.emit("read-msg", room, chattingWith, user);
+    }
   );
-useEffect(scrollDown,[messages[messages.length-1]]) //if you load more messages by scrolling up it won't scrollDown()
+  useEffect(scrollDown, [messages[messages.length - 1]]); //if you load more messages by scrolling up it won't scrollDown()
 
   return emptyRoom ? (
     <div className="d-flex m-5 fs-2 text-white justify-content-center">

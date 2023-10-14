@@ -3,11 +3,9 @@ const roomSchema = mongoose.Schema({
   name: { required: true, type: String },
   privateRoom: { type: String, default: false },
   users: { 
-    //only in private rooms
     type: [
       {
-        username: String,
-      /*   userId: String, */
+       userId: String
       },
     ],
   },
