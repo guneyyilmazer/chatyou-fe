@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import Rooms from "./Rooms";
 import { setRoom } from "../features/appSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Cookies from "js-cookie";
 const JoinRoom = () => {
   const socket = useSelector((shop: any) => shop.app.socket); //will implement the type later
 
@@ -15,7 +16,7 @@ const JoinRoom = () => {
       roomInputRef.current?.value &&
       roomInputRef.current.value.length <= 40
     ) {
-      socket.emit("join-room", roomInputRef.current.value);
+      socket.emit("join-room", roomInputRef.current.value,Cookies.get("Auth_Token"));
 
       dispatch(setRoom(roomInputRef.current!.value));
     } else {

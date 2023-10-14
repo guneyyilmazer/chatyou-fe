@@ -16,13 +16,16 @@ const SendMessage = () => {
   const [pictures, setPictures] = useState<String[]>();
   const [inputState, setInputState] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const [timer,setTimer] = useState<any>(null)
+  const [timer, setTimer] = useState<any>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const handleTyping = (e: any) => {
-    clearTimeout(timer)
-    socket.emit("typing",user,room,chattingWith)
-    const newTimer = setTimeout(()=>socket.emit("stopped-typing",user,room,chattingWith),700)
-    setTimer(newTimer)
+    clearTimeout(timer);
+    socket.emit("typing", user, room, chattingWith);
+    const newTimer = setTimeout(
+      () => socket.emit("stopped-typing", user, room, chattingWith),
+      700
+    );
+    setTimer(newTimer);
 
     setInputState(e.target.value);
   };
@@ -43,20 +46,18 @@ const SendMessage = () => {
         room,
         inputRef.current!.value ? inputRef.current!.value : " ",
         pictures,
-chattingWith
-        );
-        inputRef.current!.value = "";
-        socket.emit("stopped-typing",user,room,chattingWith)
+        chattingWith
+      );
+      inputRef.current!.value = "";
+      socket.emit("stopped-typing", user, room, chattingWith);
     }
   };
   return (
     (loadedFirstMessages || emptyRoom) && (
-
       <form
-      onSubmit={handleSubmit}
-      className="form-group d-flex justify-content-center"
+        onSubmit={handleSubmit}
+        className="form-group d-flex justify-content-center"
       >
-
         <input
           className="form-check col-7 col-md-4 col-lg-3 py-3 rounded-2"
           placeholder={"Send a message to room " + room}
@@ -64,16 +65,16 @@ chattingWith
           onChange={handleTyping}
           value={inputState}
           ref={inputRef}
-          />
+        />
         <button
           className="btn btn-danger ms-2 rounded-3"
           onClick={() => fileRef.current?.click()}
           type="button"
-          >
+        >
           <FontAwesomeIcon
             style={{ height: "22px", width: "1.5rem", marginTop: "3px" }}
             icon={faImage}
-            ></FontAwesomeIcon>
+          ></FontAwesomeIcon>
         </button>
         <input
           type="file"
@@ -81,7 +82,7 @@ chattingWith
           multiple
           onChange={handleChange}
           className="d-none"
-          />
+        />
         <button className="btn btn-danger ms-2 rounded-3" type="submit">
           Send
         </button>

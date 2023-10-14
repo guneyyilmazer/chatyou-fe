@@ -35,7 +35,8 @@ const Room = () => {
   if (user) {
     socket.emit(
       "join-room",
-      chattingWith ? user.userId! + " " + chattingWith : room
+      chattingWith ? user.userId! + " " + chattingWith : room,
+      Cookies.get("Auth_Token")
     );
   }
   return (

@@ -75,7 +75,6 @@ const getMessagesReady = async (messages, cb) => {
     console.log(err.message);
   }
 };
-app.use(withAuth);
 io.on("connection", (socket) => {
   console.log(socket.id + " connected");
 
@@ -84,8 +83,9 @@ io.on("connection", (socket) => {
   };
   //checking if either userId + chattingWith (firstTry) or chattingWith + userId (secondTry) exists
   //This is how private rooms are named
-  socket.on("join-room", async (room) => {
+  socket.on("join-room", async (room, token) => {
     try {
+      const { userId } = jwt.verify(token, process.env.SECRET);
       const second = room.split(" ")[1] + " " + room.split(" ")[0];
       //checking whatever comes from the front end (room), (It's either a room name or userId + chattingWith)
       const firstTry = await RoomModel.findOne({ name: room });
@@ -94,18 +94,23 @@ io.on("connection", (socket) => {
         //40 characters to prevent users from creating private rooms with other people's ids
         socket.join(room);
         console.log(socket.id + " connected to room (0.) " + room);
-      } else if (firstTry && room.includes(req.userId)) {
+      } else if (firstTry) {
         //checking room.includes to make sure that this user is the one trying to join their private room
-        socket.join(room);
-        console.log(socket.id + " connected to room (1.) " + room);
-      } else if (secondTry && second.includes(req.userId)) {
+        if (room.length > 40 && room.includes(userId)) {
+          socket.join(room);
+          console.log(socket.id + " connected to room (1.) " + room);
+        } else if (room.length <= 40) {
+          socket.join(room);
+          console.log(socket.id + " connected to room (1.) " + room);
+        }
+      } else if (secondTry) {
         //checking second.includes to make sure that this user is the one trying to join their private room
 
-
-        socket.join(second);
-        console.log(socket.id + " connected to room (2.) " + second);
-      } else
-        throw new Error("Room name must be a maximum of 40 characters long.");
+        if (second.length > 40 && second.includes(userId)) {
+          socket.join(second);
+          console.log(socket.id + " connected to room (2.) " + second);
+        }
+      }
     } catch (err) {
       console.log(err.message);
     }
@@ -119,7 +124,7 @@ io.on("connection", (socket) => {
     roomInDB && io.to(roomInDB.name).emit("typing-to-client", user);
   });
   socket.on("read-msg", async (room, chattingWith, user) => {
-    const { userId, username } = user;
+    const { userId } = user;
 
     const date = new Date();
     const roomInDB = await findTheRoom(userId, room, chattingWith);
@@ -132,16 +137,16 @@ io.on("connection", (socket) => {
       newMessages[roomInDB.messages.length - 1].seenBy = message.seenBy
         ? [...message.seenBy, { userId, time: date }]
         : [{ userId, time: date }];
-      await RoomModel.findOneAndUpdate(
+       const newValueOfTheRoom = await RoomModel.findOneAndUpdate(
         { name: room },
-        { messages: newMessages }
+        { messages: newMessages },
+        {new:true}
       );
+      //passing it as an array because that's how the function works
+      //adding that logic is unnecessarry as it would take more space.
+      await getMessagesReady([newValueOfTheRoom.messages[newValueOfTheRoom.messages.length - 1]], cb);
     }
-    const theRoom = await RoomModel.findOne({ name: roomInDB.name });
 
-    //passing it as an array because that's how the function works
-    //adding that logic is unnecessarry as it would take more space.
-    await getMessagesReady([theRoom.messages[theRoom.messages.length - 1]], cb);
   });
   socket.on(
     "send-msg",

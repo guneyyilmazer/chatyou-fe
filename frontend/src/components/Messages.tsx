@@ -78,7 +78,7 @@ const Messages = () => {
   useMemo(loadRoom, [page]);
   const scrollDown = () => {
     messageContainerRef.current &&
-      messageContainerRef.current!.scrollIntoView({
+      messageContainerRef.current.scrollIntoView({
         behavior: "smooth",
       });
   };
@@ -91,9 +91,11 @@ const Messages = () => {
     }
   };
   socket.on("update-message", (message: any) => {
-    const newList = messages;
-    newList[newList.length - 1] = message[0];
-    setMessages(newList);
+    setMessages((messages) => {
+      const newList = messages;
+      newList[newList.length - 1] = message[0];
+      return newList;
+    });
   });
   socket.on("stopped-typing-to-client", (user: user) => {
     setTyping((typing: any) => {
@@ -152,13 +154,10 @@ const Messages = () => {
           profilePicture,
         },
       ]);
-      setTimeout(scrollDown, 50); //waiting for setState to happen
-      socket.emit("read-msg", room, chattingWith, user);
-    }
+socket.emit("read-msg",room,chattingWith,user)
+    },
   );
-  useEffect(() => {
-    page == 1 && scrollDown();
-  }, [messages]);
+useEffect(scrollDown,[messages[messages.length-1]]) //if you load more messages by scrolling up it won't scrollDown()
 
   return emptyRoom ? (
     <div className="d-flex m-5 fs-2 text-white justify-content-center">
@@ -280,10 +279,10 @@ const Messages = () => {
             <Link
               className="d-flex align-items-center"
               to={`/users/${item.sender.userId}`}
-              style={{cursor:"default"}}
+              style={{ cursor: "default" }}
             >
               <img
-                style={{ height: "35px", width: "35px",cursor:"pointer"}}
+                style={{ height: "35px", width: "35px", cursor: "pointer" }}
                 className="ms-2 rounded-5"
                 src={
                   item.profilePicture
