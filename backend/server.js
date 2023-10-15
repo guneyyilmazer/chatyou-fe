@@ -31,7 +31,7 @@ app.listen(process.env.PORT, () => {
   console.log("listening on port " + process.env.PORT);
 });
 
-const getMessagesReady = async (messages, cb) => {
+const getMessagesReady = async (messages) => {
   try {
     //this piece of code adds the sentAt property and formats the date object to properly display the sent hour and minutes
     //this function gets the profile picture and username values from the db and formats the date
@@ -64,13 +64,8 @@ const getMessagesReady = async (messages, cb) => {
         seenBy: item.newSeenBy,
       };
     });
-    Promise.all(list).then(
-      (
-        values //this slows down the loading a bit
-      ) => {
-        cb(values);
-      }
-    );
+    const value = Promise.all(list);
+    return value;
   } catch (err) {
     console.log(err.message);
   }
@@ -78,9 +73,6 @@ const getMessagesReady = async (messages, cb) => {
 io.on("connection", (socket) => {
   console.log(socket.id + " connected");
 
-  const cb = (value) => {
-    socket.emit("update-message", value);
-  };
   //checking if either userId + chattingWith (firstTry) or chattingWith + userId (secondTry) exists
   //This is how private rooms are named
   socket.on("join-room", async (room, token) => {
@@ -144,10 +136,10 @@ io.on("connection", (socket) => {
       );
       //passing it as an array because that's how the function works
       //adding that logic is unnecessarry as it would take more space.
-      await getMessagesReady(
-        [newValueOfTheRoom.messages[newValueOfTheRoom.messages.length - 1]],
-        cb
-      );
+      const messageReady = await getMessagesReady([
+        newValueOfTheRoom.messages[newValueOfTheRoom.messages.length - 1],
+      ]);
+      socket.emit("update-message", messageReady);
     }
   });
   socket.on(
@@ -266,16 +258,14 @@ app.post("/loadRoom", async (req, res) => {
       { messages: newMessages }
     );
 
-    const cb = (value) => {
-      res.status(200).json({ messages: value });
-    };
     const amount = 5;
     console.log(messages.length - page * amount);
     if (messages.length - page * amount < 0) {
       if (!(Math.abs(messages.length - page * amount) > amount)) {
         console.log("cal");
         const limit = messages.slice(0, messages.length - (page - 1) * amount);
-        await getMessagesReady(limit, cb);
+        const readyMessages = await getMessagesReady(limit);
+        res.status(200).json({ messages: readyMessages });
       } else {
         throw new Error("Don't have any messages left.");
       }
@@ -284,7 +274,9 @@ app.post("/loadRoom", async (req, res) => {
         messages.length - page * amount,
         messages.length - (page - 1) * amount
       );
-      await getMessagesReady(limit, cb);
+
+      const readyMessages = await getMessagesReady(limit);
+      res.status(200).json({ messages: readyMessages });
     }
   } catch (err) {
     console.log(err.message);
