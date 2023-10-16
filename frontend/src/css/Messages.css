@@ -1,25 +1,34 @@
+/* mobile */
+@media (max-width: 600px) {
+  .main-div {
+    height: 75vh;
+  }
+}
 
-.message-sent{
-    margin-top: 10px;
-    margin-bottom: 10px;
-    background-color: tan;
-    border-radius: 15px;
-    text-align: end;
-;
-    border-bottom-right-radius: 0px;
-    padding: 10px;
-    color: black;
-    
+@media (min-width: 600px) {
+  .main-div {
+    height: 80vh;
+  }
 }
-.message-received{
-    background-color: whitesmoke;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border-radius: 15px;
-    border-bottom-left-radius: 0px;
-    padding: 10px;
-    color: black;
+.message-sent {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: tan;
+  border-radius: 15px;
+  text-align: end;
+  border-bottom-right-radius: 0px;
+  padding: 10px;
+  color: black;
 }
-.username{
-    font-size: 11px;
+.message-received {
+  background-color: whitesmoke;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  border-bottom-left-radius: 0px;
+  padding: 10px;
+  color: black;
+}
+.username {
+  font-size: 11px;
 }

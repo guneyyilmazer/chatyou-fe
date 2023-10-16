@@ -1,7 +1,7 @@
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Cookies from "js-cookie";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { setChattingWith } from "../features/appSlice";
 import { useDispatch } from "react-redux";
@@ -25,7 +25,7 @@ const DirectMessages = () => {
     };
   };
   const [rooms, setRooms] = useState<room[]>();
-  const loadRoom = async () => {
+  const loadPrivateRooms = async () => {
     const res = await fetch("http://localhost:4000/loadPrivateRooms", {
       headers: {
         "Content-Type": "application/json",
@@ -39,16 +39,20 @@ const DirectMessages = () => {
       setRooms(response.rooms);
     }
   };
-  useMemo(loadRoom, []);
-  return (
+  useEffect(() => {
+    loadPrivateRooms();
+  }, []);
+  return rooms?(
     <div className="text-white d-flex justify-content-center align-items-center flex-column">
       <span className="lead">Direct Messages</span>
-      {rooms && rooms.length != 0
+      {rooms.length != 0
         ? rooms.map((item: any) => {
+          //find who client is chatting with
             const chattingWith = item.users.filter(
               (object: any) => object.userId != user.userId
             )[0];
 
+            //check seenBy array to see if client's userId is in there
             const isTheMessageSeen =
               item.lastMessage.seenBy.filter(
                 (item: string) => item == user.userId
@@ -86,13 +90,13 @@ const DirectMessages = () => {
               </div>
             );
           })
-        : rooms && (
+        : ( //else rooms.length == 0
             <div className="lead my-5">
               You dont have any messages, start a chat by clicking on a user.
             </div>
           )}
     </div>
-  );
+  ):<div>Can't load private rooms</div>;
 };
 
 export default DirectMessages;

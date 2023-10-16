@@ -6,9 +6,10 @@ import Cookies from "js-cookie";
 import "../css/HamburgerBar.css";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const HamburgerBar = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const [collapsed, setCollapsed] = useState(true);
   const room = useSelector((shop: any) => shop.app.room); //will implement the type later
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
@@ -37,14 +38,15 @@ const HamburgerBar = () => {
             localStorage.setItem("room", "");
             chattingWith && dispatch(setChattingWith(""));
             localStorage.setItem("chattingWith", "");
-            window.location.replace("/");
+            navigate("/")
+            setCollapsed(!collapsed)
           }}
         >
           Home
         </button>
         <Link 
           className="btn btn-danger ms-1"
-        
+          onClick={() => setCollapsed(!collapsed)}
         to={"direct-messages"}>Direct Messages</Link>
 
         <div></div>
