@@ -30,13 +30,22 @@ app.use("/user", userRouter);
 app.listen(process.env.PORT, () => {
   console.log("listening on port " + process.env.PORT);
 });
+const findTheRoom = async (userId, room, chattingWith) => {
+  const privateRoom = userId + " " + chattingWith;
+  const secondPrivateRoom = chattingWith + " " + userId;
+  //checking both scenarios to find the privateRoom
+  const firstTry = await RoomModel.findOne({ name: privateRoom });
+  const secondTry = await RoomModel.findOne({ name: secondPrivateRoom });
 
+  const roomInDB = await RoomModel.findOne({
+    name: firstTry ? privateRoom : secondTry ? secondPrivateRoom : room,
+  });
+  return roomInDB;
+};
 const getMessagesReady = async (messages) => {
   try {
-    //this piece of code adds the sentAt property and formats the date object to properly display the sent hour and minutes
     //this function gets the profile picture and username values from the db and formats the date
-
-    const list = messages.map(async (item, index) => {
+    const list = messages.map(async (item) => {
       const newList = item.seenBy.map(async (object) => {
         const { profilePicture, username } = await UserModel.findOne({
           _id: object.userId,
@@ -64,8 +73,7 @@ const getMessagesReady = async (messages) => {
         seenBy: item.newSeenBy,
       };
     });
-    const value = Promise.all(list);
-    return value;
+    return await Promise.all(list);
   } catch (err) {
     console.log(err.message);
   }
@@ -117,29 +125,28 @@ io.on("connection", (socket) => {
   });
   socket.on("read-msg", async (room, chattingWith, user) => {
     const { userId } = user;
-
     const date = new Date();
     const roomInDB = await findTheRoom(userId, room, chattingWith);
-
-    const newMessages = roomInDB && roomInDB.messages;
-    const message = newMessages[roomInDB.messages.length - 1];
-    if (
-      message.seenBy.filter((item) => item.userId == user.userId).length == 0
-    ) {
-      newMessages[roomInDB.messages.length - 1].seenBy = message.seenBy
-        ? [...message.seenBy, { userId, time: date }]
-        : [{ userId, time: date }];
-      const newValueOfTheRoom = await RoomModel.findOneAndUpdate(
-        { name: room },
-        { messages: newMessages },
-        { new: true }
-      );
-      //passing it as an array because that's how the function works
-      //adding that logic is unnecessarry as it would take more space.
-      const messageReady = await getMessagesReady([
-        newValueOfTheRoom.messages[newValueOfTheRoom.messages.length - 1],
-      ]);
-      socket.emit("update-message", messageReady);
+    if (roomInDB) {
+      const message = roomInDB.messages[roomInDB.messages.length - 1];
+      if (
+        message.seenBy.filter((item) => item.userId == user.userId).length == 0
+      ) {
+        roomInDB.messages[roomInDB.messages.length - 1].seenBy = message.seenBy
+          ? [...message.seenBy, { userId, time: date }]
+          : [{ userId, time: date }];
+        const newValueOfTheRoom = await RoomModel.findOneAndUpdate(
+          { name: roomInDB.name },
+          { messages: roomInDB.messages },
+          { new: true }
+        );
+        //passing it as an array because that's how the function works
+        //adding that logic is unnecessarry as it would take more space.
+        const messageReady = await getMessagesReady([
+          newValueOfTheRoom.messages[newValueOfTheRoom.messages.length - 1],
+        ]);
+        socket.emit("update-message", messageReady);
+      }
     }
   });
   socket.on(
@@ -212,19 +219,7 @@ app.post("/verify", async (req, res) => {
   }
 });
 app.use(withAuth);
-const findTheRoom = async (userId, room, chattingWith) => {
-  const privateRoom = userId + " " + chattingWith;
-  const secondPrivateRoom = chattingWith + " " + userId;
-  //checking both scenearios to find the privateRoom
-  const firstTry = await RoomModel.findOne({ name: privateRoom });
-  const secondTry = await RoomModel.findOne({ name: secondPrivateRoom });
 
-  //querying every one of them to find the right one
-  const roomInDB = await RoomModel.findOne({
-    name: firstTry ? privateRoom : secondTry ? secondPrivateRoom : room,
-  });
-  return roomInDB;
-};
 app.post("/loadRoom", async (req, res) => {
   try {
     const date = new Date();
