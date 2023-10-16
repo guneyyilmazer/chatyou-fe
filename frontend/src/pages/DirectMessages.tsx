@@ -96,7 +96,7 @@ const DirectMessages = () => {
             </div>
           )}
     </div>
-  ):<div className="text-white text-center lead my-5">Can't load private rooms</div>;
+  ):<></>;
 };
 
 export default DirectMessages;
