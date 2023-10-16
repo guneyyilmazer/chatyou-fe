@@ -3,9 +3,8 @@ import Messages from "./Messages";
 import SendMessage from "./SendMessage";
 import Cookies from "js-cookie";
 import { useSelector } from "react-redux";
-//@ts-ignore
-import background from "../images/background.jpeg";
 import { user } from "../types/UserType";
+const background = require("../images/background.jpeg");
 const Room = () => {
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
   const socket = useSelector((shop: any) => shop.app.socket); //will implement the type later
@@ -41,16 +40,17 @@ const Room = () => {
   }
   return (
     <div
-      className="d-flex flex-column justify-content-center align-items-center row col-12"
+      className="d-flex flex-column justify-content-center align-items-center col-12"
       style={{
         backgroundImage: `url(${background})`,
         height: "95svh",
         backgroundSize: "600px",
       }}
     >
-
       <Messages />
-      <SendMessage />
+      <div className="col-12">
+        <SendMessage />
+      </div>
     </div>
   );
 };
