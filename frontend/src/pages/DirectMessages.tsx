@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { setChattingWith } from "../features/appSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+const DefaultProfilePicture = require("../images/default.jpeg")
 const DirectMessages = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -74,7 +74,7 @@ const DirectMessages = () => {
                 <img
                   style={{ height: "25px", width: "25px" }}
                   className="rounded-5"
-                  src={chattingWith.profilePicture}
+                  src={chattingWith.profilePicture ? chattingWith.profilePicture : DefaultProfilePicture}
                   alt=""
                 />
                 <span className="mx-1">{chattingWith.username}:</span>
@@ -96,7 +96,7 @@ const DirectMessages = () => {
             </div>
           )}
     </div>
-  ):<div>Can't load private rooms</div>;
+  ):<div className="text-white text-center lead my-5">Can't load private rooms</div>;
 };
 
 export default DirectMessages;
