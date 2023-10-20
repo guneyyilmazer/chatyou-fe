@@ -93,22 +93,26 @@ io.on("connection", (socket) => {
       if (!firstTry && !secondTry && room.length < 40) {
         //40 characters to prevent users from creating private rooms with other people's ids
         socket.join(room);
-        console.log(socket.id + " connected to room (0.) " + room);
+        console.log(socket.id + " connected to room (public.) " + room);
+      } else if (!firstTry && !secondTry && room.length > 40) {
+        //a private room that hasn't been created yet
+        socket.join(room);
+        console.log(socket.id + " connected to room (private.) " + room);
       } else if (firstTry) {
         //checking room.includes to make sure that this user is the one trying to join their private room
         if (room.length > 40 && room.includes(userId)) {
           socket.join(room);
-          console.log(socket.id + " connected to private room (1.) " + room);
+          console.log(socket.id + " connected to private room (1 private.) " + room);
         } else if (room.length <= 40) {
           socket.join(room);
-          console.log(socket.id + " connected to room (1.) " + room);
+          console.log(socket.id + " connected to room (1 public.) " + room);
         }
       } else if (secondTry) {
         //checking second.includes to make sure that this user is the one trying to join their private room
 
         if (second.length > 40 && second.includes(userId)) {
           socket.join(second);
-          console.log(socket.id + " connected to private room (2.) " + second);
+          console.log(socket.id + " connected to private room (2 private.) " + second);
         }
       }
     } catch (err) {
