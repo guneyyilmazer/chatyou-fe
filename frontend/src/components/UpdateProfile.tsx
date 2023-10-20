@@ -6,23 +6,35 @@ import UpdateEmail from "./UpdateEmail";
 const UpdateProfile = () => {
   const [index, setIndex] = useState(0);
   return (
-    <div>
+    <div className="row col-md-3">
       {index == 0 && (
-        <div
-          className="btn-group d-flex flex-column row  bg-dark gy-3 mt-5"
-          style={{ width: "25vw", height: "40vh" }}
-        >
-          <div className="text-center lead">Update Profile</div>
-          <button onClick={() => setIndex(1)} className="btn btn-danger p-3">
-            Update Profile Photo
-          </button>
-          <button onClick={() => setIndex(2)} className="btn btn-danger p-3">
-            Update Username
-          </button>
-          <button onClick={() => setIndex(3)} className="btn btn-danger p-3">
-            Change Email
-          </button>
-        </div>
+        <>
+          <div
+            className="d-flex flex-column mt-5"
+            style={{  height: "40vh" }}
+          >
+            <div className="text-center lead">Update Profile</div>
+            <button
+              onClick={() => setIndex(1)}
+              className="btn btn-danger p-3 my-2"
+            >
+              Update Profile Photo
+            </button>
+            <button
+              onClick={() => setIndex(2)}
+              className="btn btn-danger p-3 my-2"
+            >
+              Update Username
+            </button>
+            <button
+              onClick={() => setIndex(3)}
+              className="btn btn-danger p-3 my-2"
+            >
+              Change Email
+            </button>
+          </div>
+         
+        </>
       )}
       {index == 1 && (
         <div>

@@ -246,7 +246,7 @@ const Messages = () => {
               setShowSeen(true);
               setSeenBy(item.seenBy);
             }}
-            className={`text-break d-flex flex-column
+            className={`text-break d-flex flex-column 
             ${
               item.sender.username == user.username
                 ? "message-sent"

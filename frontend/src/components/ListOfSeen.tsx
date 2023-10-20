@@ -24,7 +24,7 @@ const ListOfSeen = ({ users, showSeen, setShowSeen }: any) => {
       className="bg-dark position-relative text-white position-absolute top-0 start-0"
     >
       {users && (
-        <div className="d-flex flex-column">
+        <div className="d-flex justify-content-center flex-column">
           <span className="lead fs-2 my-4 text-center">
             Seen By {count} {count == 1 ? "User" : "Users"}
           </span>
@@ -32,10 +32,10 @@ const ListOfSeen = ({ users, showSeen, setShowSeen }: any) => {
 
           {users.map((item: user,index:number) => {
             return (
-              <div key={index} className="d-flex col-1 my-1 flex-wrap justify-content-start align-items-center text-white">
+              <div key={index} className="my-1 container d-flex justify-content-center text-white">
 
                 <Link
-                  className="d-flex text-decoration-none text-white align-items-center"
+                  className=" text-decoration-none text-white"
                   to={`/users/${item.userId}`}
                   >
                   <img
