@@ -59,6 +59,10 @@ const Rooms = () => {
         >
           <FontAwesomeIcon icon={faAngleLeft} />
         </button>
+        <span className="text-white d-flex align-items-center">
+
+        {page}
+        </span>
         <button
           onClick={() => setPage(!loadedAll ? page + 1 : page)}
           className="btn btn-light mx-2"
