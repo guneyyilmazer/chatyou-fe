@@ -102,7 +102,9 @@ io.on("connection", (socket) => {
         //checking room.includes to make sure that this user is the one trying to join their private room
         if (room.length > 40 && room.includes(userId)) {
           socket.join(room);
-          console.log(socket.id + " connected to private room (1 private.) " + room);
+          console.log(
+            socket.id + " connected to private room (1 private.) " + room
+          );
         } else if (room.length <= 40) {
           socket.join(room);
           console.log(socket.id + " connected to room (1 public.) " + room);
@@ -112,7 +114,9 @@ io.on("connection", (socket) => {
 
         if (second.length > 40 && second.includes(userId)) {
           socket.join(second);
-          console.log(socket.id + " connected to private room (2 private.) " + second);
+          console.log(
+            socket.id + " connected to private room (2 private.) " + second
+          );
         }
       }
     } catch (err) {
@@ -146,10 +150,12 @@ io.on("connection", (socket) => {
         );
         //passing it as an array because that's how the function works
         //adding that logic is unnecessarry as it would take more space.
-        const messageReady = await getMessagesReady([
+        await getMessagesReady([
           newValueOfTheRoom.messages[newValueOfTheRoom.messages.length - 1],
-        ]);
-        socket.emit("update-message", messageReady);
+        ]).then((value) => {
+          console.log(value[0].seenBy.length);
+          io.emit("update-message", value);
+        });
       }
     }
   });

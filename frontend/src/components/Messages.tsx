@@ -158,7 +158,7 @@ const Messages = () => {
   );
 
   useEffect(() => {
-    //if you load more messages by scrolling up it won't scroll down
+    //if you load more messages by scrolling up it won't scroll down nor emit read-msg
     scrollDown();
     socket.emit("read-msg", room, chattingWith, user);
   }, [messages[messages.length - 1]]);

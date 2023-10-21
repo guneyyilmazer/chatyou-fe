@@ -20,7 +20,7 @@ const ListOfSeen = ({ users, showSeen, setShowSeen }: any) => {
   }, [handleUserKeyPress]);
   return (
     <div
-      style={{ height: "100vh", width: "100vw" }}
+      style={{ height: "100svh", width: "100vw" }}
       className="bg-dark position-relative text-white position-absolute top-0 start-0"
     >
       {users && (
@@ -35,7 +35,7 @@ const ListOfSeen = ({ users, showSeen, setShowSeen }: any) => {
               <div key={index} className="my-1 container d-flex justify-content-center text-white">
 
                 <Link
-                  className=" text-decoration-none text-white"
+                  className="text-decoration-none text-white"
                   to={`/users/${item.userId}`}
                   >
                   <img
