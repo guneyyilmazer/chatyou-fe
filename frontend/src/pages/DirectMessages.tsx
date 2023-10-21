@@ -43,65 +43,69 @@ const DirectMessages = () => {
     loadPrivateRooms();
   }, []);
   return rooms ? (
-    <div className="text-white d-flex justify-content-center align-items-center flex-column">
-      <span className="lead">Direct Messages</span>
-      {rooms.length != 0 ? (
-        rooms.map((item: any, index: number) => {
-          //find who client is chatting with
-          const chattingWith = item.users.filter(
-            (object: any) => object.userId != user.userId
-          )[0];
+    <div className="text-white d-flex container justify-content-center align-items-center flex-column">
+        <span className="lead">Direct Messages</span>
+        {rooms.length != 0 ? (
+          rooms.map((item: any, index: number) => {
+            //find who client is chatting with
+            const chattingWith = item.users.filter(
+              (object: any) => object.userId != user.userId
+            )[0];
 
-          //check seenBy array to see if client's userId is in there
-          const isTheMessageSeen =
-            item.lastMessage.seenBy.filter(
-              (item: string) => item == user.userId
-            ).length == 0
-              ? false
-              : true;
-          return (
-            <div
-              style={{ cursor: "pointer" }}
-              key={index}
-              onClick={() => {
-                dispatch(setChattingWith(chattingWith.userId));
+            //check seenBy array to see if client's userId is in there
+            const isTheMessageSeen =
+              item.lastMessage.seenBy.filter(
+                (item: string) => item == user.userId
+              ).length == 0
+                ? false
+                : true;
+            return (
+              <div
+                style={{ cursor: "pointer" }}
+                key={index}
+                onClick={() => {
+                  dispatch(setChattingWith(chattingWith.userId));
 
-                navigate("/");
-              }}
-              className={"d-flex align-items-center mt-2 ".concat(
-                isTheMessageSeen ? " text-secondary " : " text-white "
-              )}
-            >
-              <img
-                style={{ height: "25px", width: "25px" }}
-                className="rounded-5"
-                src={
-                  chattingWith.profilePicture
-                    ? chattingWith.profilePicture
-                    : DefaultProfilePicture
-                }
-                alt=""
-              />
-              <span className="mx-1">{chattingWith.username}:</span>
-              <span>{item.lastMessage.content}</span>
-              <span className="mx-3">{item.lastMessage.sent}</span>
-              {!isTheMessageSeen && (
-                <FontAwesomeIcon
-                  title="You have unread messages!"
-                  className="bg-danger p-2 rounded-5"
-                  icon={faBell}
+                  navigate("/");
+                }}
+                className={"d-flex col-md-2 align-items-center mt-2 ".concat(
+                  isTheMessageSeen ? " text-secondary " : " text-white "
+                )}
+              >
+                <img
+                  style={{ height: "25px", width: "25px" }}
+                  className="rounded-5"
+                  src={
+                    chattingWith.profilePicture
+                      ? chattingWith.profilePicture
+                      : DefaultProfilePicture
+                  }
+                  alt=""
                 />
-              )}
-            </div>
-          );
-        })
-      ) : (
-        //else rooms.length == 0
-        <div className="lead my-5">
-          You dont have any messages, start a chat by clicking on a user.
-        </div>
-      )}
-    </div>
+                <span className="mx-1">{chattingWith.username}:</span>
+                <span>
+                  {item.lastMessage.content.length < 20
+                    ? item.lastMessage.content
+                    : item.lastMessage.content.slice(0, 20) + "..."}
+                </span>
+                <span className="mx-3">{item.lastMessage.sent}</span>
+                {!isTheMessageSeen && (
+                  <FontAwesomeIcon
+                    title="You have unread messages!"
+                    className="bg-danger p-2 rounded-5"
+                    icon={faBell}
+                  />
+                )}
+              </div>
+            );
+          })
+        ) : (
+          //else rooms.length == 0
+          <div className="lead my-5">
+            You dont have any messages, start a chat by clicking on a user.
+          </div>
+        )}
+      </div>
   ) : (
     <></>
   );
