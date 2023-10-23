@@ -47,9 +47,9 @@ const SendMessage = () => {
         inputRef.current!.value ? inputRef.current!.value : " ",
         pictures,
         chattingWith
-      );
-      inputRef.current!.value = "";
-      socket.emit("stopped-typing", user, room, chattingWith);
+        );
+        inputRef.current!.value = "";
+        socket.emit("stopped-typing", user, room, chattingWith);
     }
   };
   return (

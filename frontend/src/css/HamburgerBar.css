@@ -37,15 +37,17 @@ button {
   right: 0;
   background-color: tomato;
   border-radius: 15%;
-  padding: 15px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 8px;
+  padding-left: 15px;
+  padding-right: 15px;
   color: white;
 }
 .hamburger-button {
   color: white;
   background-color: tomato;
-  padding: 1rem;
+  padding: 5px;
+  padding-right: 10px;
+  padding-left: 10px;
 }
 .hamburger-button:hover {
   color: white;

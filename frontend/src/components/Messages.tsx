@@ -31,6 +31,8 @@ const Messages = () => {
 
   type seenByUser = {
     userId: string;
+    username: string;
+    profilePicture: string;
     time?: Date;
   };
   const [seenBy, setSeenBy] = useState<seenByUser[]>();
@@ -68,7 +70,7 @@ const Messages = () => {
       dispatch(setLoadedFirstMessages(true));
     } else if (response.roomIsEmpty) {
       dispatch(setEmptyRoom(true));
-    } else {
+    } else { //if room is not empty
       dispatch(setEmptyRoom(false));
 
       setLoadedAllMessages(true);
@@ -91,9 +93,29 @@ const Messages = () => {
     }
   };
   socket.on("update-message", (message: any) => {
+    console.log(9);
+
     setMessages((messages) => {
       const newList = messages;
-      newList[newList.length - 1] = message[0];
+
+      message[0].seenBy.filter((item: any) => item.userId != user.userId);
+      if (
+        newList[newList.length - 1].seenBy &&
+        newList[newList.length - 1].seenBy!.length -
+          1 +
+          message[0].seenBy.length <=
+          message[0].seenBy.length
+      ) {
+        //@ts-ignore
+        newList[newList.length - 1].seenBy = [
+          ...(newList[newList.length - 1].seenBy as any),
+          ...message[0].seenBy.filter(
+            (item: any) => item.userId != user.userId
+          ),
+        ];
+        return newList as message[];
+      }
+      console.log(newList);
       return newList;
     });
   });
@@ -128,10 +150,11 @@ const Messages = () => {
 
     updateState();
   });
+
   socket.on(
     "receive-msg",
     (
-      user: user,
+      userMsg: user,
       content: string,
       pictures: string[],
       sent: string,
@@ -141,25 +164,63 @@ const Messages = () => {
       const minutes = sent.split(":")[1];
       dispatch(setEmptyRoom(false));
       dispatch(setLoadedFirstMessages(true));
-      setMessages([
-        ...messages,
-        {
-          sender: user,
-          content,
-          pictures,
-          sent:
-            (hours.length == 1 ? "0".concat(hours) : hours) +
-            ":" +
-            (minutes.length == 1 ? "0".concat(minutes) : minutes),
-          profilePicture,
-        },
-      ]);
+      setMessages((messages) => {
+        return userMsg.userId != user.userId
+          ? ([
+              ...messages,
+              {
+                sender: userMsg,
+                content,
+                pictures,
+                sent:
+                  (hours.length == 1 ? "0".concat(hours) : hours) +
+                  ":" +
+                  (minutes.length == 1 ? "0".concat(minutes) : minutes),
+                profilePicture,
+
+                seenBy: [
+                  {
+                    userId: user.userId,
+                    username: user.username,
+                    profilePicture: user.profilePicture as string,
+                  },
+
+                  {
+                    userId: userMsg.userId,
+                    username: userMsg.username,
+                    profilePicture: userMsg.profilePicture as string,
+                  },
+                ],
+              },
+            ] as message[])
+          : [
+              ...messages,
+              {
+                sender: userMsg,
+                content,
+                pictures,
+                sent:
+                  (hours.length == 1 ? "0".concat(hours) : hours) +
+                  ":" +
+                  (minutes.length == 1 ? "0".concat(minutes) : minutes),
+                profilePicture,
+
+                seenBy: [
+                  {
+                    userId: user.userId,
+                    username: user.username,
+                    profilePicture: user.profilePicture as string,
+                  },
+                ],
+              },
+            ];
+      });
     }
   );
-
   useEffect(() => {
     //if you load more messages by scrolling up it won't scroll down nor emit read-msg
     scrollDown();
+
     socket.emit("read-msg", room, chattingWith, user);
   }, [messages[messages.length - 1]]);
 
@@ -215,88 +276,93 @@ const Messages = () => {
             (typing.length - 3) +
             " users are typing..."}
       </div>
-      {messages.map((item: message, index: number) => (
-        <div
-          ref={messageContainerRef}
-          key={index}
-          className={`mt-5 d-flex ${
-            item.sender.username == user.username
-              ? "justify-content-end"
-              : "justify-content-start"
-          }`}
-        >
-          {item.sender.username != user.username && (
-            <Link
-              className="d-flex align-items-center me-2"
-              to={`/users/${item.sender.userId}`}
-            >
-              <img
-                style={{ height: "35px", width: "35px" }}
-                className="rounded-5"
-                src={
-                  item.profilePicture
-                    ? item.profilePicture
-                    : DefaultProfilePicture
-                }
-              />
-            </Link>
-          )}
+      {messages.map((item: message, index: number) => {
+        return (
           <div
-            onClick={() => {
-              setShowSeen(true);
-              setSeenBy(item.seenBy);
-            }}
-            className={`text-break d-flex flex-column 
+            ref={messageContainerRef}
+            key={index}
+            className={`mt-5 d-flex ${
+              item.sender.username == user.username
+                ? "justify-content-end"
+                : "justify-content-start"
+            }`}
+          >
+            {item.sender.username != user.username && (
+              <Link
+                className="d-flex align-items-center me-2"
+                to={`/users/${item.sender.userId}`}
+              >
+                <img
+                  style={{ height: "35px", width: "35px" }}
+                  className="rounded-5"
+                  src={
+                    item.profilePicture
+                      ? item.profilePicture
+                      : DefaultProfilePicture
+                  }
+                />
+              </Link>
+            )}
+            <div
+              onClick={() => {
+                setShowSeen(true);
+                console.log(item.seenBy);
+                item.seenBy
+                  ? setSeenBy(item.seenBy as unknown as seenByUser[])
+                  : console.log("1");
+              }}
+              className={`text-break d-flex flex-column 
             ${
               item.sender.username == user.username
                 ? "message-sent"
                 : "message-received"
             }`}
-            style={{ cursor: "pointer" }}
-          >
-            <div className="ms-1">{item.content + " "}</div>
-
-            <div className="d-flex flex-wrap">
-              {" "}
-              {item.pictures?.map((picture, index) => (
-                <div className="m-1" key={index}>
-                  <img
-                    className="img-fluid rounded-2"
-                    onClick={() => {
-                      setPreview(true);
-                      setPreviewPictures(item.pictures);
-                      setPreviewPicturesIndex(index);
-                    }}
-                    style={{ maxWidth: "100px", maxHeight: "150px" }}
-                    src={picture as string}
-                    alt=""
-                  />
-                </div>
-              ))}
-            </div>
-            <div className="username ms-1 d-flex justify-content-end align-items-end">
-              {item.sender.username} {item.sent}{" "}
-            </div>
-          </div>
-          {item.sender.username == user.username && (
-            <Link
-              className="d-flex align-items-center"
-              to={`/users/${item.sender.userId}`}
-              style={{ cursor: "default" }}
+              style={{ cursor: "pointer" }}
             >
-              <img
-                style={{ height: "35px", width: "35px", cursor: "pointer" }}
-                className="ms-2 rounded-5"
-                src={
-                  item.profilePicture
-                    ? item.profilePicture
-                    : DefaultProfilePicture
-                }
-              />
-            </Link>
-          )}
-        </div>
-      ))}
+              <div className="ms-1">{item.content + " "}</div>
+
+              <div className="d-flex flex-wrap">
+                {" "}
+                {item.pictures?.map((picture, index) => (
+                  <div className="m-1" key={index}>
+                    <img
+                      className="img-fluid rounded-2"
+                      onClick={() => {
+                        setPreview(true);
+                        setPreviewPictures(item.pictures);
+                        setPreviewPicturesIndex(index);
+                      }}
+                      style={{ maxWidth: "100px", maxHeight: "150px" }}
+                      src={picture as string}
+                      alt=""
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="username ms-1 d-flex justify-content-end align-items-end">
+                {item.sender.username} {item.sent}{" "}
+              </div>
+            </div>
+            {item.sender.username == user.username && (
+              <Link
+                className="d-flex align-items-center"
+                to={`/users/${item.sender.userId}`}
+                style={{ cursor: "default" }}
+              >
+                <img
+                  style={{ height: "35px", width: "35px", cursor: "pointer" }}
+                  className="ms-2 rounded-5"
+                  src={
+                    item.profilePicture
+                      ? item.profilePicture
+                      : DefaultProfilePicture
+                  }
+                />
+              </Link>
+            )}
+          </div>
+        );
+      })}
       {preview && previewPictures && (
         <ImagePreview
           setPreview={setPreview}

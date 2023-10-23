@@ -23,7 +23,6 @@ const ListOfSeen = ({ users, showSeen, setShowSeen }: any) => {
       style={{ height: "100svh", width: "100vw" }}
       className="bg-dark position-relative text-white position-absolute top-0 start-0"
     >
-      {users && (
         <div className="d-flex justify-content-center flex-column">
           <span className="lead fs-2 my-4 text-center">
             Seen By {count} {count == 1 ? "User" : "Users"}
@@ -52,7 +51,6 @@ const ListOfSeen = ({ users, showSeen, setShowSeen }: any) => {
           </div>
 
         </div>
-      )}
       <button
         onClick={() => setShowSeen(!showSeen)}
         className="btn btn-danger position-absolute top-0 end-0"
