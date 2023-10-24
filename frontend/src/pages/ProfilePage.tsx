@@ -49,7 +49,6 @@ const ProfilePage = () => {
   };
 
   useMemo(getUserData, [userId]);
-  console.log(user?.userId);
   return (
     <div className="text-white mt-5 d-flex flex-column justify-content-center align-items-center">
       {user && client && (

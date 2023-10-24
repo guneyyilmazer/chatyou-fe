@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import Cookies from "js-cookie";
 import "../css/Messages.css";
 import { Link } from "react-router-dom";
-import { user } from "../types/UserType";
+import { user } from "../types/UserTypes";
 import ImagePreview from "./ImagePreview";
 import { useSelector } from "react-redux";
 import ListOfSeen from "./ListOfSeen";
@@ -15,37 +15,34 @@ import {
   setEmptyRoom,
 } from "../features/appSlice";
 import { useDispatch } from "react-redux";
+import { seenByUser } from "../types/UserTypes";
 const DefaultProfilePicture = require("../images/default.jpeg");
-const Messages = () => {
-  const socket = useSelector((shop: any) => shop.app.socket);
 
-  const [messages, setMessages] = useState<message[]>([]);
+const Messages = () => {
   const user = useSelector((shop: any) => shop.app.user);
+  const socket = useSelector((shop: any) => shop.app.socket);
   const emptyRoom = useSelector((shop: any) => shop.app.emptyRoom);
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith);
   const room = useSelector((shop: any) => shop.app.room);
-  const [showSeen, setShowSeen] = useState(false);
-  const [page, setPage] = useState(1);
   const loading = useSelector((shop: any) => shop.app.loading);
-  const [preview, setPreview] = useState(false);
-
-  type seenByUser = {
-    userId: string;
-    username: string;
-    profilePicture: string;
-    time?: Date;
-  };
-  const [seenBy, setSeenBy] = useState<seenByUser[]>();
-  const [typing, setTyping] = useState<any>([]);
-  const [loadedAllMessages, setLoadedAllMessages] = useState(false);
   const loadedFirstMessages = useSelector(
     (shop: any) => shop.app.loadedFirstMessages
   );
 
+  const [messages, setMessages] = useState<message[]>([]);
+  const [showSeen, setShowSeen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [preview, setPreview] = useState(false);
+  const [seenBy, setSeenBy] = useState<seenByUser[]>();
+  const [typing, setTyping] = useState<user[]>([]);
+  const [loadedAllMessages, setLoadedAllMessages] = useState(false);
   const [previewPictures, setPreviewPictures] = useState<string[]>();
   const [previewPicturesIndex, setPreviewPicturesIndex] = useState(0);
+
   const messageContainerRef = useRef<HTMLDivElement>(null);
+
   const dispatch = useDispatch();
+
   const loadRoom = async () => {
     const res = await fetch("http://localhost:4000/loadRoom", {
       headers: {
@@ -70,19 +67,18 @@ const Messages = () => {
       dispatch(setLoadedFirstMessages(true));
     } else if (response.roomIsEmpty) {
       dispatch(setEmptyRoom(true));
-    } else { //if room is not empty
+    } else {
+      //if don't have any messages left to load
       dispatch(setEmptyRoom(false));
-
       setLoadedAllMessages(true);
     }
     dispatch(setLoading(false));
   };
   useMemo(loadRoom, [page]);
   const scrollDown = () => {
-    messageContainerRef.current &&
-      messageContainerRef.current.scrollIntoView({
-        behavior: "smooth",
-      });
+    messageContainerRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
   };
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     if (e.currentTarget.scrollTop == 0) {
@@ -92,63 +88,47 @@ const Messages = () => {
       }
     }
   };
-  socket.on("update-message", (message: any) => {
-    console.log(9);
-
+  socket.on("update-message", (messageArray: message[]) => {
+    //it's an array with a length of 1 always, getMessagesReady() (backend) always returns an array
+    const message = messageArray[0];
     setMessages((messages) => {
-      const newList = messages;
+      const seenBy = messages[messages.length - 1].seenBy;
 
-      message[0].seenBy.filter((item: any) => item.userId != user.userId);
-      if (
-        newList[newList.length - 1].seenBy &&
-        newList[newList.length - 1].seenBy!.length -
-          1 +
-          message[0].seenBy.length <=
-          message[0].seenBy.length
-      ) {
-        //@ts-ignore
-        newList[newList.length - 1].seenBy = [
-          ...(newList[newList.length - 1].seenBy as any),
-          ...message[0].seenBy.filter(
-            (item: any) => item.userId != user.userId
-          ),
+      message.seenBy.filter((item) => item.userId != user.userId);
+      if (seenBy.length - 1 + message.seenBy.length <= message.seenBy.length) {
+        messages[messages.length - 1].seenBy = [
+          ...seenBy,
+          ...message.seenBy.filter((item) => item.userId != user.userId),
         ];
-        return newList as message[];
       }
-      console.log(newList);
-      return newList;
+      return messages;
     });
   });
   socket.on("stopped-typing-to-client", (user: user) => {
-    setTyping((typing: any) => {
+    setTyping((typing) => {
       if (typing) {
         const doWeHaveUser = typing.filter(
-          (item: user) => item.userId == user.userId
+          (item) => item.userId == user.userId
         );
         if (doWeHaveUser.length != 0) {
-          const newList = typing.filter(
-            (item: user) => item.userId != user.userId
-          );
+          const newList = typing.filter((item) => item.userId != user.userId);
           return newList;
         }
       }
+      return typing;
     });
   });
   socket.on("typing-to-client", (user: user) => {
-    const updateState = () => {
-      setTyping((typing: any) => {
-        if (!typing || typing.length == 0) return [user];
-        else {
-          const doWeAlreadyHave = typing.filter(
-            (item: user) => item.userId == user.userId
-          );
-          if (doWeAlreadyHave.length == 0) return [...typing, user];
-          else return typing;
-        }
-      });
-    };
-
-    updateState();
+    setTyping((typing) => {
+      if (!typing || typing.length == 0) return [user];
+      else {
+        const doWeAlreadyHave = typing.filter(
+          (item) => item.userId == user.userId
+        );
+        if (doWeAlreadyHave.length == 0) return [...typing, user];
+      }
+      return typing;
+    });
   });
 
   socket.on(
@@ -164,57 +144,55 @@ const Messages = () => {
       const minutes = sent.split(":")[1];
       dispatch(setEmptyRoom(false));
       dispatch(setLoadedFirstMessages(true));
-      setMessages((messages) => {
-        return userMsg.userId != user.userId
-          ? ([
-              ...messages,
-              {
-                sender: userMsg,
-                content,
-                pictures,
-                sent:
-                  (hours.length == 1 ? "0".concat(hours) : hours) +
-                  ":" +
-                  (minutes.length == 1 ? "0".concat(minutes) : minutes),
-                profilePicture,
+      userMsg.userId != user.userId
+        ? //this is the initial value of seenBy, it's later being updated with "update-msg"
+          setMessages([
+            ...messages,
+            {
+              sender: userMsg,
+              content,
+              pictures,
+              sent:
+                (hours.length == 1 ? "0".concat(hours) : hours) +
+                ":" +
+                (minutes.length == 1 ? "0".concat(minutes) : minutes),
+              profilePicture,
 
-                seenBy: [
-                  {
-                    userId: user.userId,
-                    username: user.username,
-                    profilePicture: user.profilePicture as string,
-                  },
+              seenBy: [
+                {
+                  userId: user.userId,
+                  username: user.username,
+                  profilePicture: user.profilePicture!,
+                },
+                {
+                  userId: userMsg.userId,
+                  username: userMsg.username,
+                  profilePicture: userMsg.profilePicture!,
+                },
+              ],
+            },
+          ])
+        : setMessages([
+            ...messages,
+            {
+              sender: userMsg,
+              content,
+              pictures,
+              sent:
+                (hours.length == 1 ? "0".concat(hours) : hours) +
+                ":" +
+                (minutes.length == 1 ? "0".concat(minutes) : minutes),
+              profilePicture,
 
-                  {
-                    userId: userMsg.userId,
-                    username: userMsg.username,
-                    profilePicture: userMsg.profilePicture as string,
-                  },
-                ],
-              },
-            ] as message[])
-          : [
-              ...messages,
-              {
-                sender: userMsg,
-                content,
-                pictures,
-                sent:
-                  (hours.length == 1 ? "0".concat(hours) : hours) +
-                  ":" +
-                  (minutes.length == 1 ? "0".concat(minutes) : minutes),
-                profilePicture,
-
-                seenBy: [
-                  {
-                    userId: user.userId,
-                    username: user.username,
-                    profilePicture: user.profilePicture as string,
-                  },
-                ],
-              },
-            ];
-      });
+              seenBy: [
+                {
+                  userId: user.userId,
+                  username: user.username,
+                  profilePicture: user.profilePicture,
+                },
+              ],
+            },
+          ]);
     }
   );
   useEffect(() => {
@@ -276,7 +254,7 @@ const Messages = () => {
             (typing.length - 3) +
             " users are typing..."}
       </div>
-      {messages.map((item: message, index: number) => {
+      {messages.map((item, index) => {
         return (
           <div
             ref={messageContainerRef}
@@ -306,10 +284,7 @@ const Messages = () => {
             <div
               onClick={() => {
                 setShowSeen(true);
-                console.log(item.seenBy);
-                item.seenBy
-                  ? setSeenBy(item.seenBy as unknown as seenByUser[])
-                  : console.log("1");
+                item.seenBy && setSeenBy(item.seenBy);
               }}
               className={`text-break d-flex flex-column 
             ${
@@ -333,7 +308,7 @@ const Messages = () => {
                         setPreviewPicturesIndex(index);
                       }}
                       style={{ maxWidth: "100px", maxHeight: "150px" }}
-                      src={picture as string}
+                      src={picture}
                       alt=""
                     />
                   </div>
@@ -368,7 +343,7 @@ const Messages = () => {
           setPreview={setPreview}
           preview={preview}
           previewPicturesIndex={previewPicturesIndex}
-          images={previewPictures as string[]}
+          images={previewPictures}
         />
       )}
       {showSeen && seenBy && (

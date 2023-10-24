@@ -1,3 +1,4 @@
+import {seenByUser} from './UserTypes'
 export type message = {
     sender:  {
       username:string,
@@ -7,5 +8,5 @@ export type message = {
     pictures?: string[]
     sent:string,
     profilePicture:string,
-    seenBy?:[{userId:string,username:string,profilePicture:string}]
+    seenBy:seenByUser[]
   };
