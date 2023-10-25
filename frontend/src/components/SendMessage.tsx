@@ -18,6 +18,41 @@ const SendMessage = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [timer, setTimer] = useState<any>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  async function reduceBase64Size(
+    base64Str: string,
+    MAX_WIDTH = 450,
+    MAX_HEIGHT = 450
+  ) {
+    let resized_base64 = await new Promise((resolve) => {
+      let img = new Image();
+      img.src = base64Str;
+      img.onload = () => {
+        let canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        let ctx = canvas.getContext("2d");
+        ctx && ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL()); // this will return base64 image results after resize
+      };
+    });
+    return resized_base64;
+  }
+
   const handleTyping = (e: any) => {
     clearTimeout(timer);
     socket.emit("typing", user, room, chattingWith);
@@ -32,8 +67,9 @@ const SendMessage = () => {
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const array: String[] = [];
     for (let i = 0; i < e.target.files!.length; i++) {
-      const res = await getBase64(e.target.files![i]);
-      array.push(res as String);
+      const res = (await getBase64(e.target.files![i])) as string;
+      const reducedSize = await reduceBase64Size(res);
+      array.push(reducedSize as string);
     }
     setPictures(array);
   };
@@ -47,9 +83,9 @@ const SendMessage = () => {
         inputRef.current!.value ? inputRef.current!.value : " ",
         pictures,
         chattingWith
-        );
-        inputRef.current!.value = "";
-        socket.emit("stopped-typing", user, room, chattingWith);
+      );
+      inputRef.current!.value = "";
+      socket.emit("stopped-typing", user, room, chattingWith);
     }
   };
   return (

@@ -199,22 +199,26 @@ io.on("connection", (socket) => {
           messages: [{ sender: user, content, pictures, sent: date }],
         });
       } else if (room) {
-        io.to(room.name).emit(
-          "receive-msg",
-          user,
-          content,
-          pictures,
-          date.getHours().toString() + ":" + date.getMinutes().toString(),
-          profilePicture
-        );
-        const newMessages = [
-          ...room.messages,
-          { sender: user, content, pictures, sent: date },
-        ];
-        await RoomModel.findOneAndUpdate(
-          { name: room.name },
-          { messages: newMessages }
-        );
+        try {
+          io.to(room.name).emit(
+            "receive-msg",
+            user,
+            content,
+            pictures,
+            date.getHours().toString() + ":" + date.getMinutes().toString(),
+            profilePicture
+          );
+          const newMessages = [
+            ...room.messages,
+            { sender: user, content, pictures, sent: date },
+          ];
+          await RoomModel.findOneAndUpdate(
+            { name: room.name },
+            { messages: newMessages }
+          );
+        } catch (err) {
+          console.log(err.message);
+        }
       }
     }
   );
