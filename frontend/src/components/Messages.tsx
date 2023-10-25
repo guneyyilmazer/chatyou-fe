@@ -282,11 +282,11 @@ const Messages = () => {
               </Link>
             )}
             <div
-              onClick={() => {
-                setShowSeen(true);
-                item.seenBy && setSeenBy(item.seenBy);
+              onMouseUp={() => {
+                  setShowSeen(true);
+                   item.seenBy && setSeenBy(item.seenBy);
               }}
-              className={`text-break d-flex flex-column 
+              className={`word-break d-flex flex-column 
             ${
               item.sender.username == user.username
                 ? "message-sent"
@@ -302,7 +302,7 @@ const Messages = () => {
                   <div className="m-1" key={index}>
                     <img
                       className="img-fluid rounded-2"
-                      onClick={() => {
+                      onMouseDown={() => {
                         setPreview(true);
                         setPreviewPictures(item.pictures);
                         setPreviewPicturesIndex(index);
