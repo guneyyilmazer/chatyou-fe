@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import NotFound404 from "../pages/NotFound404";
 import { useNavigate, useParams } from "react-router-dom";
 import Cookies from "js-cookie";
@@ -48,7 +48,7 @@ const ProfilePage = () => {
     setClient(client);
   };
 
-  useMemo(getUserData, [userId]);
+  useEffect(()=>{getUserData()}, [userId]);
   return (
     <div className="text-white mt-5 d-flex flex-column justify-content-center align-items-center">
       {user && client && (
@@ -67,7 +67,7 @@ const ProfilePage = () => {
 
           {user.userId &&
             (user.userId == client.userId ? (
-                <MyProfilePage />
+              <MyProfilePage />
             ) : (
               <button
                 className="btn btn-danger mt-2"

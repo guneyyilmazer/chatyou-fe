@@ -22,29 +22,25 @@ const Signup = () => {
         }),
       });
       const response = await res.json();
-      if(!response.error)
-      {
-
-          Cookies.set("Auth_Token", response.AuthValidation, { expires: 5 });
-          window.location.replace("/")
-      }
-      else{
-        alert(response.error)
-      }
-    }
-    else{
-        alert("All credentials must be filled.")
-    }
+      if (!response.error) {
+        Cookies.set("Auth_Token", response.AuthValidation, { expires: 5 });
+        window.location.replace("/");
+      } else alert(response.error);
+    } else alert("All credentials must be filled.");
   };
-const handleSubmit = (e:React.FormEvent) => {
-    e.preventDefault()
-    toAPI()
-}
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    toAPI();
+  };
   const usernameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   return (
-    <form className="form-group col-10 col-md-4 col-lg-3 d-flex flex-column" onSubmit={handleSubmit}>
+    <form
+      className="form-group col-10 col-md-4 col-lg-3 d-flex flex-column"
+      onSubmit={handleSubmit}
+    >
       <h2 className="lead fs-1 text-white text-center">Signup</h2>
       <input
         type="text"
@@ -71,8 +67,9 @@ const handleSubmit = (e:React.FormEvent) => {
         id=""
       />
       <div className="mt-3 text-center">
-
-      <button className="btn btn-danger p-2" type="submit">Signup</button>
+        <button className="btn btn-danger p-2" type="submit">
+          Signup
+        </button>
       </div>
     </form>
   );

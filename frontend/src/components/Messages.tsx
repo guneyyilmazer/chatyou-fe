@@ -1,5 +1,5 @@
 import { message } from "../types/MessageType";
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect } from "react";
 import Cookies from "js-cookie";
 import "../css/Messages.css";
 import { Link } from "react-router-dom";
@@ -74,7 +74,7 @@ const Messages = () => {
     }
     dispatch(setLoading(false));
   };
-  useMemo(loadRoom, [page]);
+  useEffect(()=>{loadRoom()}, [page]);
   const scrollDown = () => {
     messageContainerRef.current?.scrollIntoView({
       behavior: "smooth",

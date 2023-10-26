@@ -1,9 +1,9 @@
 import Cookies from "js-cookie";
-import { useEffect, useRef, useState } from "react";
+import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import SearchBarResults from "./SearchBarResults";
-import { setUser } from "../features/appSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRepeat } from "@fortawesome/free-solid-svg-icons";
+import { user } from "../types/UserTypes";
 
 const SearchBar = () => {
   const [searchFor, setSearchFor] = useState("users");
@@ -12,15 +12,14 @@ const SearchBar = () => {
   const [userNotFound, setUserNotFound] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const [rooms, setRooms] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [rooms, setRooms] = useState<{ name: string }[]>([]);
+  const [users, setUsers] = useState<user[]>([]);
   const onClickOutside = () => {
     show && setShow(false);
   };
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const handleClickOutside = (event: any) => {
-      //@ts-ignore
       if (ref.current && !ref.current.contains(event.target)) {
         onClickOutside();
       }
@@ -37,42 +36,42 @@ const SearchBar = () => {
     }
   }, [inputRef.current?.value]);
   const findUsers = async () => {
-    const res = await fetch("http://localhost:4000/user/findUsers", {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${Cookies.get("Auth_Token")}`,
-      },
+    if (inputRef.current!.value != "") {
+      const res = await fetch("http://localhost:4000/user/findUsers", {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${Cookies.get("Auth_Token")}`,
+        },
 
-      method: "POST",
-      body: JSON.stringify({
-        username: inputRef.current!.value != "" && inputRef.current!.value,
-      }),
-    });
-    const response = await res.json();
-    if (!response.error) {
-      setUsers(response.users);
+        method: "POST",
+        body: JSON.stringify({
+          username: inputRef.current!.value,
+        }),
+      });
+      const response = await res.json();
+      if (!response.error) setUsers(response.users);
+      if (response.notFound) setUserNotFound(true);
+      if (!response.notFound) setUserNotFound(false);
     }
-    if (response.notFound) setUserNotFound(true);
-    if (!response.notFound) setUserNotFound(false);
   };
   const findRoom = async () => {
-    const res = await fetch("http://localhost:4000/findRoom", {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${Cookies.get("Auth_Token")}`,
-      },
+    if (inputRef.current!.value != "") {
+      const res = await fetch("http://localhost:4000/findRoom", {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${Cookies.get("Auth_Token")}`,
+        },
 
-      method: "POST",
-      body: JSON.stringify({
-        room: inputRef.current!.value != "" && inputRef.current!.value,
-      }),
-    });
-    const response = await res.json();
-    if (!response.error) {
-      setRooms(response.rooms);
+        method: "POST",
+        body: JSON.stringify({
+          room: inputRef.current!.value,
+        }),
+      });
+      const response = await res.json();
+      if (!response.error) setRooms(response.rooms);
+      if (response.notFound) setRoomNotFound(true);
+      if (!response.notFound) setRoomNotFound(false);
     }
-    if (response.notFound) setRoomNotFound(true);
-    if (!response.notFound) setRoomNotFound(false);
   };
 
   return (

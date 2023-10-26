@@ -10,7 +10,7 @@ const initialState = {
   emptyRoom:false,
   loading: true,
   loadedFirstMessages: false,
-  socket: "",
+  socket:{},
   chattingWith: localStorage.getItem("chattingWith"),
   room: localStorage.getItem("room"),
 };

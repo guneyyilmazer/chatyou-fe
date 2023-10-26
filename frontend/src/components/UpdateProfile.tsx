@@ -51,7 +51,6 @@ const UpdateProfile = () => {
           <UpdateEmail />
         </div>
       )}
-      {/* will implement update username and change email */}
     </div>
   );
 };

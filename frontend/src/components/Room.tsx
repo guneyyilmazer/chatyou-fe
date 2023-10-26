@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Messages from "./Messages";
 import SendMessage from "./SendMessage";
 import Cookies from "js-cookie";
@@ -24,12 +24,11 @@ const Room = () => {
       body: JSON.stringify({ token: Cookies.get("Auth_Token") }),
     });
     const response = await res.json();
-    if (response.error) {
-    } else {
+    if (!response.error) {
       setUser(response);
     }
   };
-  useMemo(loadUser, []);
+  useEffect(()=>{loadUser()}, []);
 
   if (user) {
     socket.emit(

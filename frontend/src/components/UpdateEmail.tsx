@@ -1,11 +1,9 @@
 import { useRef, useState } from "react";
 import Cookies from "js-cookie";
 const UpdateProfilePicture = () => {
-  const [error, setError] = useState<String>();
+  const [error, setError] = useState<string>();
   const newEmailInput = useRef<HTMLInputElement>(null);
-  type data = {
-    error?: String;
-  };
+
   const updateProfilePicture = async (e: React.FormEvent) => {
     e.preventDefault();
     const response = await fetch("http://localhost:4000/verify", {
@@ -28,8 +26,8 @@ const UpdateProfilePicture = () => {
         newEmail: newEmailInput.current!.value,
       }),
     });
-    const data: data = await res.json();
-    if (data.error) setError(data.error as String);
+    const data: { error?: string } = await res.json();
+    if (data.error) setError(data.error);
   };
 
   return (

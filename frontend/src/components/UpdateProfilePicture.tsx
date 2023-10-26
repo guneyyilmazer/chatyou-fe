@@ -3,12 +3,8 @@ import Cookies from "js-cookie";
 import getBase64 from "./GetBase64";
 const UpdateProfilePicture = () => {
   const [profilePicture, setProfilePicture] = useState<string>();
-  const [error,setError] = useState<String>()
-  type data = {
-    error?:String
-  }
-  const updateProfilePicture = async (e:React.FormEvent) => {
-    e.preventDefault()
+  const updateProfilePicture = async (e: React.FormEvent) => {
+    e.preventDefault();
     const response = await fetch("http://localhost:4000/verify", {
       headers: {
         "Content-Type": "application/json",
@@ -17,7 +13,7 @@ const UpdateProfilePicture = () => {
       method: "POST",
       body: JSON.stringify({ token: Cookies.get("Auth_Token") }),
     });
-    const {userId} = await response.json()
+    const { userId } = await response.json();
     const res = await fetch("http://localhost:4000/user/updateProfilePicture", {
       headers: {
         "Content-Type": "application/json",
@@ -29,28 +25,29 @@ const UpdateProfilePicture = () => {
         profilePicture,
       }),
     });
-    const data:data = await res.json();
-    if(data.error) {setError(data.error as String)}
-    window.location.reload()
-
+    const data: { error?: string } = await res.json();
+    if (data.error) alert(data.error);
+    else window.location.reload();
   };
-  
+
   return (
-    <form className="form-group d-flex flex-column justify-content-center text-center align-items-center" onSubmit={updateProfilePicture}>
-      <h2 className="lead my-2">
-      UpdateProfilePicture
-        </h2>
-        
+    <form
+      className="form-group d-flex flex-column justify-content-center text-center align-items-center"
+      onSubmit={updateProfilePicture}
+    >
+      <h2 className="lead my-2">UpdateProfilePicture</h2>
+
       <input
         type="file"
         className="form-control my-1"
-        onChange={async(e) => {
-          const base64 = await getBase64(e.target.files![0]);
-          setProfilePicture(base64 as string);
+        onChange={async (e) => {
+          setProfilePicture(await getBase64(e.target.files![0]));
         }}
         placeholder="Upload"
       />
-      <button className="btn btn-danger my-1"  type="submit">Submit</button>
+      <button className="btn btn-danger my-1" type="submit">
+        Submit
+      </button>
     </form>
   );
 };
