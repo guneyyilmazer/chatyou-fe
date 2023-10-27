@@ -25,7 +25,10 @@ const Rooms = () => {
     if (res.loadedAll) {
       setLoadedAll(true);
     }
-    if (res.rooms.length < amount) {
+    if(res.empty){
+console.log("empty")
+    }
+    if (res.rooms && res.rooms.length < amount) {
       if (res.rooms.length == 0) {
         setLoadedAll(true);
       }

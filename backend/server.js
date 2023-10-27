@@ -310,9 +310,15 @@ app.post("/loadRooms", async (req, res) => {
     const allRooms = await RoomModel.find({ privateRoom: false })
       .limit(amount + 1)
       .select("name");
+
+    console.log(allRooms);
     res
       .status(200)
-      .json({ rooms, loadedAll: allRooms.length == amount ? true : false });
+      .json({
+        rooms,
+        loadedAll: allRooms.length == amount ? true : false,
+        empty: allRooms.length == 0 ? false : true,
+      });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

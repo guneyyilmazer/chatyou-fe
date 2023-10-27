@@ -10,10 +10,10 @@ const genToken = (userId, username) => {
 
 const Signup = async (req, res) => {
   try {
+    const { username, email, password } = req.body;
     if(username.length>=4)
     {
 
-      const { username, email, password } = req.body;
       const userId = await UserModel.signup(username, email, password);
       const token = genToken(userId, username);
       res.status(200).json({ AuthValidation: token });
