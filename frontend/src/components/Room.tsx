@@ -3,7 +3,7 @@ import Messages from "./Messages";
 import SendMessage from "./SendMessage";
 import Cookies from "js-cookie";
 import { useSelector } from "react-redux";
-import { user } from "../types/UserTypes";
+import { user } from "../types/AllTypes";
 const background = require("../images/background.jpeg");
 const Room = () => {
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later

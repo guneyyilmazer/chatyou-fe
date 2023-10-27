@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setRoom } from "../features/appSlice";
-type room = { name: string };
+import {room} from '../types/AllTypes'
 const Rooms = () => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);

@@ -1,9 +1,9 @@
-import { message } from "../types/MessageType";
+import { message } from "../types/AllTypes";
 import { useState, useRef, useEffect } from "react";
 import Cookies from "js-cookie";
 import "../css/Messages.css";
 import { Link } from "react-router-dom";
-import { user } from "../types/UserTypes";
+import { user } from "../types/AllTypes";
 import ImagePreview from "./ImagePreview";
 import { useSelector } from "react-redux";
 import ListOfSeen from "./ListOfSeen";
@@ -15,7 +15,7 @@ import {
   setEmptyRoom,
 } from "../features/appSlice";
 import { useDispatch } from "react-redux";
-import { seenByUser } from "../types/UserTypes";
+import { seenByUser } from "../types/AllTypes";
 const DefaultProfilePicture = require("../images/default.jpeg");
 
 const Messages = () => {

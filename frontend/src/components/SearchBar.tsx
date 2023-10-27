@@ -3,7 +3,7 @@ import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import SearchBarResults from "./SearchBarResults";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRepeat } from "@fortawesome/free-solid-svg-icons";
-import { user } from "../types/UserTypes";
+import { user } from "../types/AllTypes";
 
 const SearchBar = () => {
   const [searchFor, setSearchFor] = useState("users");

@@ -4,7 +4,7 @@ import { setRoom } from "../features/appSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { user } from "../types/UserTypes";
+import { user } from "../types/AllTypes";
 const DefaultProfilePicture = require("../images/default.jpeg");
 
 const SearchBarResults = ({
@@ -17,7 +17,7 @@ const SearchBarResults = ({
   roomNotFound,
 }: {
   users: user[];
-  rooms: {name:string}[];
+  rooms: { name: string }[];
   searchFor: string;
   show: boolean;
   setShow: any;

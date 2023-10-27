@@ -6,25 +6,14 @@ import { useSelector } from "react-redux";
 import { setChattingWith } from "../features/appSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { DirectMessagesRoom } from "../types/AllTypes";
 const DefaultProfilePicture = require("../images/default.jpeg");
 const DirectMessages = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((shop: any) => shop.app.user);
-  type room = {
-    name: string;
-    users: [{ userId: string; username: string; profilePicture: string }];
-    lastMessage: {
-      sender: {
-        username: string;
-        userId: string;
-        content: string;
-        sent: string;
-        seenBy: [string];
-      };
-    };
-  };
-  const [rooms, setRooms] = useState<room[]>();
+
+  const [rooms, setRooms] = useState<DirectMessagesRoom[]>();
   const loadPrivateRooms = async () => {
     const res = await fetch("http://localhost:4000/loadPrivateRooms", {
       headers: {
