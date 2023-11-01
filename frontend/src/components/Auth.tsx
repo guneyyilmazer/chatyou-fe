@@ -4,6 +4,7 @@ import AuthPage from "../pages/AuthPage";
 import { setUser } from "../features/appSlice";
 import { useDispatch } from "react-redux";
 import { redirect } from "react-router-dom";
+import { IP, BACKEND_PORT } from "../index";
 type verified = {
   valid: boolean;
   userId: string;
@@ -14,7 +15,7 @@ type notVerified = {
   error: string;
 };
 const logUserIn = async (dispatch: any) => {
-  const res = await fetch("http://localhost:4000/user/loadUser", {
+  const res = await fetch(IP.concat(`${BACKEND_PORT}/user/loadUser`), {
     headers: {
       "Content-Type": "application/json",
       authorization: `Bearer ${Cookies.get("Auth_Token")}`,
@@ -30,7 +31,7 @@ const logUserIn = async (dispatch: any) => {
 };
 const verify = async () => {
   const token = Cookies.get("Auth_Token");
-  const res = await fetch("http://localhost:4000/verify", {
+  const res = await fetch(IP.concat(`${BACKEND_PORT}/verify`), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

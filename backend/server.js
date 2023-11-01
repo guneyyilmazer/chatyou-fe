@@ -312,13 +312,10 @@ app.post("/loadRooms", async (req, res) => {
       .select("name");
 
     console.log(allRooms);
-    res
-      .status(200)
-      .json({
-        rooms,
-        loadedAll: allRooms.length == amount ? true : false,
-        empty: allRooms.length == 0 ? false : true,
-      });
+    res.status(200).json({
+      rooms,
+      loadedAll: allRooms.length == amount ? true : false,
+    });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

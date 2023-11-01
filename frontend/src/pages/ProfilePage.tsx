@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import MyProfilePage from "../components/MyProfilePage";
 import { useDispatch } from "react-redux";
 import { setChattingWith, setRoom } from "../features/appSlice";
+import { BACKEND_PORT, IP } from "..";
 const DefaultProfilePicture = require("../images/default.jpeg");
 
 const ProfilePage = () => {
@@ -22,7 +23,7 @@ const ProfilePage = () => {
   const [user, setUser] = useState<user>();
   const [client, setClient] = useState<client>();
   const getUserData = async () => {
-    const res = await fetch("http://localhost:4000/user/loadUser", {
+    const res = await fetch(IP.concat(`${BACKEND_PORT}/user/loadUser`), {
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${Cookies.get("Auth_Token")}`,
@@ -36,7 +37,7 @@ const ProfilePage = () => {
     const user = await res.json();
     setUser(user);
 
-    const response = await fetch("http://localhost:4000/verify", {
+    const response = await fetch(IP.concat(`${BACKEND_PORT}/verify`), {
       headers: {
         "Content-Type": "application/json",
       },

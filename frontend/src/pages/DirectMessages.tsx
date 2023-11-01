@@ -7,6 +7,7 @@ import { setChattingWith } from "../features/appSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { DirectMessagesRoom } from "../types/AllTypes";
+import { BACKEND_PORT, IP } from "..";
 const DefaultProfilePicture = require("../images/default.jpeg");
 const DirectMessages = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const DirectMessages = () => {
 
   const [rooms, setRooms] = useState<DirectMessagesRoom[]>();
   const loadPrivateRooms = async () => {
-    const res = await fetch("http://localhost:4000/loadPrivateRooms", {
+    const res = await fetch(IP.concat(`${BACKEND_PORT}/loadPrivateRooms`), {
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${Cookies.get("Auth_Token")}`,

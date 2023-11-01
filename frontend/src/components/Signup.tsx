@@ -2,6 +2,7 @@ import React from "react";
 
 import { useRef } from "react";
 import Cookies from "js-cookie";
+import { BACKEND_PORT, IP } from "..";
 
 const Signup = () => {
   const toAPI = async () => {
@@ -10,7 +11,7 @@ const Signup = () => {
       emailRef.current?.value &&
       passwordRef.current?.value
     ) {
-      const res = await fetch("http://localhost:4000/user/signup", {
+      const res = await fetch(IP.concat(`${BACKEND_PORT}/user/signup`), {
         headers: {
           "Content-Type": "application/json",
         },
@@ -28,7 +29,7 @@ const Signup = () => {
       } else alert(response.error);
     } else alert("All credentials must be filled.");
   };
-  
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toAPI();

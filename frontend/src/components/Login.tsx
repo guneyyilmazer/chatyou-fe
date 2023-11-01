@@ -1,9 +1,10 @@
 import { useRef } from "react";
 import Cookies from "js-cookie";
+import {IP,BACKEND_PORT} from '../index'
 const Login = () => {
   const toAPI = async () => {
     if (usernameRef.current?.value && passwordRef.current?.value) {
-      const res = await fetch("http://localhost:4000/user/login", {
+      const res = await fetch(IP.concat(`${BACKEND_PORT}/user/login`), {
         headers: {
           "Content-Type": "application/json",
         },

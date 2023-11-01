@@ -1,10 +1,11 @@
 import { useRef, useState } from "react";
 import Cookies from "js-cookie";
+import { BACKEND_PORT, IP } from "..";
 const UpdateProfilePicture = () => {
   const newUsernameInput = useRef<HTMLInputElement>(null);
   const updateProfilePicture = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:4000/verify", {
+    const response = await fetch(IP.concat(`${BACKEND_PORT}/verify`), {
       headers: {
         "Content-Type": "application/json",
       },
@@ -17,7 +18,7 @@ const UpdateProfilePicture = () => {
       newUsernameInput.current!.value.length >= 5 &&
       newUsernameInput.current!.value.length <= 20
     ) {
-      const res = await fetch("http://localhost:4000/user/updateUsername", {
+      const res = await fetch(IP.concat(`${BACKEND_PORT}/user/updateUsername`), {
         headers: {
           "Content-Type": "application/json",
           authorization: `Bearer ${Cookies.get("Auth_Token")}`,

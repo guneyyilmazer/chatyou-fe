@@ -1,19 +1,21 @@
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { Provider } from "react-redux";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "./components/Header";
 import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
 import { store } from "./app/store";
 import DirectMessages from "./pages/DirectMessages";
+export const IP = "http://51.20.124.151"
+export const BACKEND_PORT = ":4000"
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   //@ts-ignore doesn't have an easy fix
-  <BrowserRouter>
+  <HashRouter>
     <Provider store={store}>
       <Routes>
         <Route path="/" element={<Header />}>
@@ -30,5 +32,5 @@ root.render(
         </Route>
       </Routes>
     </Provider>
-  </BrowserRouter>
+  </HashRouter>
 );

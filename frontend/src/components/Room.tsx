@@ -4,6 +4,7 @@ import SendMessage from "./SendMessage";
 import Cookies from "js-cookie";
 import { useSelector } from "react-redux";
 import { user } from "../types/AllTypes";
+import { BACKEND_PORT, IP } from "..";
 const background = require("../images/background.jpeg");
 const Room = () => {
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
@@ -14,7 +15,7 @@ const Room = () => {
   const [user, setUser] = useState<user>();
 
   const loadUser = async () => {
-    const res = await fetch("http://localhost:4000/verify", {
+    const res = await fetch(IP.concat(`${BACKEND_PORT}/verify`), {
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${Cookies.get("Auth_Token")}`,

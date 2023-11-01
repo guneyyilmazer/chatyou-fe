@@ -1,11 +1,12 @@
 import { useState } from "react";
 import Cookies from "js-cookie";
 import getBase64 from "./GetBase64";
+import { BACKEND_PORT, IP } from "..";
 const UpdateProfilePicture = () => {
   const [profilePicture, setProfilePicture] = useState<string>();
   const updateProfilePicture = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:4000/verify", {
+    const response = await fetch(IP.concat(`${BACKEND_PORT}/verify`), {
       headers: {
         "Content-Type": "application/json",
       },
@@ -14,7 +15,7 @@ const UpdateProfilePicture = () => {
       body: JSON.stringify({ token: Cookies.get("Auth_Token") }),
     });
     const { userId } = await response.json();
-    const res = await fetch("http://localhost:4000/user/updateProfilePicture", {
+    const res = await fetch(IP.concat(`${BACKEND_PORT}/user/updateProfilePicture`), {
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${Cookies.get("Auth_Token")}`,
