@@ -13,7 +13,7 @@ const SendMessage = () => {
   const emptyRoom = useSelector((shop: any) => shop.app.emptyRoom);
   const user = useSelector((shop: any) => shop.app.user);
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith);
-  
+
   const [pictures, setPictures] = useState<string[]>();
   const [inputState, setInputState] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -42,7 +42,7 @@ const SendMessage = () => {
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if ((inputRef.current?.value || pictures) && user) {
+    if ((inputRef.current?.value || pictures?.length!=0) && user) {
       socket.emit(
         "send-msg",
         user,
@@ -51,6 +51,7 @@ const SendMessage = () => {
         pictures,
         chattingWith
       );
+      setPictures([])
       inputRef.current!.value = "";
       socket.emit("stopped-typing", user, room, chattingWith);
     }

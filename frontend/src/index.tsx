@@ -8,7 +8,7 @@ import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
 import { store } from "./app/store";
 import DirectMessages from "./pages/DirectMessages";
-export const IP = "http://51.20.124.151"
+export const IP = "https://www.chatyou.io"
 export const BACKEND_PORT = ":4000"
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
