@@ -16,7 +16,6 @@ const SendMessage = () => {
 
   const [pictures, setPictures] = useState<string[]>();
   const [inputState, setInputState] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
   const [timer, setTimer] = useState<any>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -42,17 +41,10 @@ const SendMessage = () => {
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if ((inputRef.current?.value || pictures?.length!=0) && user) {
-      socket.emit(
-        "send-msg",
-        user,
-        room,
-        inputRef.current!.value ? inputRef.current!.value : " ",
-        pictures,
-        chattingWith
-      );
-      setPictures([])
-      inputRef.current!.value = "";
+    if ((inputState != "" || pictures?.length != 0) && user) {
+      socket.emit("send-msg", user, room, inputState, pictures, chattingWith);
+      setPictures([]);
+      setInputState("");
       socket.emit("stopped-typing", user, room, chattingWith);
     }
   };
@@ -68,7 +60,6 @@ const SendMessage = () => {
           type="text"
           onChange={handleTyping}
           value={inputState}
-          ref={inputRef}
         />
         <button
           className="btn btn-danger ms-2 rounded-3"

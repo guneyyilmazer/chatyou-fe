@@ -15,8 +15,9 @@ button {
 }
 
 .hamburger-bar {
-  height: 100vh;
-  max-width: 50vw;
+  height: 100svh;
+  position: absolute;
+  width: 100vw;
   background-color: rgb(20, 20, 20);
   font-size: large;
 }
