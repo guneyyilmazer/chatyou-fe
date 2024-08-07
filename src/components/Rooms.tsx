@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setRoom } from "../features/appSlice";
 import {room} from '../types/AllTypes'
-import { BACKEND_PORT, IP } from "..";
+import { API_BACKEND_SUFFIX, BACKEND_URL } from "..";
 const Rooms = () => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
@@ -13,7 +13,7 @@ const Rooms = () => {
   const [rooms, setRooms] = useState<room[]>();
   const [loadedAll, setLoadedAll] = useState(false);
   const loadRooms = async () => {
-    const response = await fetch(IP.concat(`${BACKEND_PORT}/loadRooms`), {
+    const response = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/loadRooms`), {
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${Cookies.get("Auth_Token")}`,

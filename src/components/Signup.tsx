@@ -2,7 +2,7 @@ import React from "react";
 
 import { useRef } from "react";
 import Cookies from "js-cookie";
-import { BACKEND_PORT, IP } from "..";
+import { API_BACKEND_SUFFIX, BACKEND_URL} from "..";
 
 const Signup = () => {
   const toAPI = async () => {
@@ -11,7 +11,7 @@ const Signup = () => {
       emailRef.current?.value &&
       passwordRef.current?.value
     ) {
-      const res = await fetch(IP.concat(`${BACKEND_PORT}/user/signup`), {
+      const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/user/signup`), {
         headers: {
           "Content-Type": "application/json",
         },

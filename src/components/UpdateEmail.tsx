@@ -1,13 +1,13 @@
 import { useRef, useState } from "react";
 import Cookies from "js-cookie";
-import { BACKEND_PORT, IP } from "..";
+import { API_BACKEND_SUFFIX, BACKEND_URL} from "..";
 const UpdateProfilePicture = () => {
   const [error, setError] = useState<string>();
   const newEmailInput = useRef<HTMLInputElement>(null);
 
   const updateProfilePicture = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch(IP.concat(`${BACKEND_PORT}/verify`), {
+    const response = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/verify`), {
       headers: {
         "Content-Type": "application/json",
       },
@@ -16,7 +16,7 @@ const UpdateProfilePicture = () => {
       body: JSON.stringify({ token: Cookies.get("Auth_Token") }),
     });
     const { userId } = await response.json();
-    const res = await fetch(IP.concat(`${BACKEND_PORT}/user/updateEmail`), {
+    const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/user/updateEmail`), {
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${Cookies.get("Auth_Token")}`,

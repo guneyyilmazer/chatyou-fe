@@ -4,7 +4,7 @@ import SearchBarResults from "./SearchBarResults";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRepeat } from "@fortawesome/free-solid-svg-icons";
 import { user } from "../types/AllTypes";
-import { BACKEND_PORT, IP } from "..";
+import { API_BACKEND_SUFFIX, BACKEND_URL } from "..";
 
 const SearchBar = () => {
   const [searchFor, setSearchFor] = useState("users");
@@ -38,7 +38,7 @@ const SearchBar = () => {
   }, [inputRef.current?.value]);
   const findUsers = async () => {
     if (inputRef.current!.value != "") {
-      const res = await fetch(IP.concat(`${BACKEND_PORT}/user/findUsers`), {
+      const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/user/findUsers`), {
         headers: {
           "Content-Type": "application/json",
           authorization: `Bearer ${Cookies.get("Auth_Token")}`,
@@ -57,7 +57,7 @@ const SearchBar = () => {
   };
   const findRoom = async () => {
     if (inputRef.current!.value != "") {
-      const res = await fetch(IP.concat(`${BACKEND_PORT}/findRoom`), {
+      const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/findRoom`), {
         headers: {
           "Content-Type": "application/json",
           authorization: `Bearer ${Cookies.get("Auth_Token")}`,

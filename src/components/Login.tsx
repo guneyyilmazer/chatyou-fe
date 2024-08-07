@@ -1,10 +1,10 @@
 import { useRef } from "react";
 import Cookies from "js-cookie";
-import {IP,BACKEND_PORT} from '../index'
+import {BACKEND_URL,API_BACKEND_SUFFIX} from '../index'
 const Login = () => {
   const toAPI = async () => {
     if (usernameRef.current?.value && passwordRef.current?.value) {
-      const res = await fetch(IP.concat(`${BACKEND_PORT}/user/login`), {
+      const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/user/login`), {
         headers: {
           "Content-Type": "application/json",
         },

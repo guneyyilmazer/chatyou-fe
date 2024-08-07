@@ -16,7 +16,7 @@ import {
 } from "../features/appSlice";
 import { useDispatch } from "react-redux";
 import { seenByUser } from "../types/AllTypes";
-import { BACKEND_PORT, IP } from "../index";
+import { API_BACKEND_SUFFIX, BACKEND_URL} from "../index";
 const DefaultProfilePicture = require("../images/default.jpeg");
 
 const Messages = () => {
@@ -45,7 +45,7 @@ const Messages = () => {
   const dispatch = useDispatch();
 
   const loadRoom = async () => {
-    const res = await fetch(IP.concat(`${BACKEND_PORT}/loadRoom`), {
+    const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/loadRoom`), {
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${Cookies.get("Auth_Token")}`,
