@@ -8,9 +8,9 @@ import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
 import { store } from "./app/store";
 import DirectMessages from "./pages/DirectMessages";
-export const BACKEND_URL = "https://www.chatyou.io"
-export const API_BACKEND_SUFFIX = "/api"
-export const SOCKET_IO_BACKEND_SUFFIX = "/socket"
+export const BACKEND_URL = "https://www.chatyou.io";
+export const API_BACKEND_SUFFIX = "/api";
+export const SOCKET_IO_BACKEND_SUFFIX = "/socket.io";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
@@ -25,7 +25,7 @@ root.render(
             <Route index element={<AuthPage />} />
           </Route>
           <Route path="direct-messages">
-            <Route index element={<DirectMessages/>}/>
+            <Route index element={<DirectMessages />} />
           </Route>
           <Route path="users">
             <Route path=":userId" element={<ProfilePage />} />
