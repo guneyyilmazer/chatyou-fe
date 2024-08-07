@@ -10,6 +10,7 @@ import { store } from "./app/store";
 import DirectMessages from "./pages/DirectMessages";
 export const BACKEND_URL = "https://www.chatyou.io"
 export const API_BACKEND_SUFFIX = "/api"
+export const SOCKET_IO_BACKEND_SUFFIX = "/socket"
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );

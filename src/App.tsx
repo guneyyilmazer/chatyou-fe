@@ -5,12 +5,12 @@ import JoinRoom from "./components/JoinRoom";
 import Auth from "./components/Auth";
 import { useSelector, useDispatch } from "react-redux";
 import { setRoom, setSocket } from "./features/appSlice";
-import {BACKEND_URL} from './index'
+import {BACKEND_URL,SOCKET_IO_BACKEND_SUFFIX} from './index'
 const App = () => {
   const dispatch = useDispatch();
   const room = useSelector((shop: any) => shop.app.room); //will implement the type later
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
-  const socket = io(BACKEND_URL.concat(":3001"));
+  const socket = io(BACKEND_URL.concat(SOCKET_IO_BACKEND_SUFFIX));
   dispatch(setSocket(socket));
   // to keep the state in localStorage as well
   useEffect(() => {
