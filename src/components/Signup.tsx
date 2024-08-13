@@ -2,7 +2,7 @@ import React from "react";
 
 import { useRef } from "react";
 import Cookies from "js-cookie";
-import { API_BACKEND_SUFFIX, BACKEND_URL} from "..";
+import { API_BACKEND_SUFFIX, BACKEND_URL } from "..";
 
 const Signup = () => {
   const toAPI = async () => {
@@ -11,17 +11,20 @@ const Signup = () => {
       emailRef.current?.value &&
       passwordRef.current?.value
     ) {
-      const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/user/signup`), {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({
-          username: usernameRef.current!.value,
-          email: emailRef.current!.value,
-          password: passwordRef.current!.value,
-        }),
-      });
+      const res = await fetch(
+        BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/user/signup`),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify({
+            username: usernameRef.current!.value,
+            email: emailRef.current!.value,
+            password: passwordRef.current!.value,
+          }),
+        }
+      );
       const response = await res.json();
       if (!response.error) {
         Cookies.set("Auth_Token", response.AuthValidation, { expires: 5 });
@@ -69,7 +72,7 @@ const Signup = () => {
       />
       <div className="mt-3 text-center">
         <button className="btn btn-danger p-2" type="submit">
-          Signup
+          Sign Up
         </button>
       </div>
     </form>
