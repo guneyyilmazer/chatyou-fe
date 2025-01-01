@@ -4,7 +4,6 @@ import SearchBarResults from "./SearchBarResults";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRepeat } from "@fortawesome/free-solid-svg-icons";
 import { user } from "../types/AllTypes";
-import { API_BACKEND_SUFFIX, BACKEND_URL } from "..";
 
 const SearchBar = () => {
   const [searchFor, setSearchFor] = useState("users");
@@ -38,17 +37,20 @@ const SearchBar = () => {
   }, [inputRef.current?.value]);
   const findUsers = async () => {
     if (inputRef.current!.value != "") {
-      const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/user/findUsers`), {
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${Cookies.get("Auth_Token")}`,
-        },
+      const res = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/user/findUsers`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${Cookies.get("Auth_Token")}`,
+          },
 
-        method: "POST",
-        body: JSON.stringify({
-          username: inputRef.current!.value,
-        }),
-      });
+          method: "POST",
+          body: JSON.stringify({
+            username: inputRef.current!.value,
+          }),
+        }
+      );
       const response = await res.json();
       if (!response.error) setUsers(response.users);
       if (response.notFound) setUserNotFound(true);
@@ -57,17 +59,20 @@ const SearchBar = () => {
   };
   const findRoom = async () => {
     if (inputRef.current!.value != "") {
-      const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/findRoom`), {
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${Cookies.get("Auth_Token")}`,
-        },
+      const res = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/room/findRoom`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${Cookies.get("Auth_Token")}`,
+          },
 
-        method: "POST",
-        body: JSON.stringify({
-          room: inputRef.current!.value,
-        }),
-      });
+          method: "POST",
+          body: JSON.stringify({
+            room: inputRef.current!.value,
+          }),
+        }
+      );
       const response = await res.json();
       if (!response.error) setRooms(response.rooms);
       if (response.notFound) setRoomNotFound(true);

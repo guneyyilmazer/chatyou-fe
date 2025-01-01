@@ -4,7 +4,6 @@ import AuthPage from "../pages/AuthPage";
 import { setUser } from "../features/appSlice";
 import { useDispatch } from "react-redux";
 import { redirect } from "react-router-dom";
-import { BACKEND_URL, API_BACKEND_SUFFIX } from "../index";
 type verified = {
   valid: boolean;
   userId: string;
@@ -15,23 +14,26 @@ type notVerified = {
   error: string;
 };
 const logUserIn = async (dispatch: any) => {
-  const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/user/loadUser`), {
-    headers: {
-      "Content-Type": "application/json",
-      authorization: `Bearer ${Cookies.get("Auth_Token")}`,
-    },
+  const res = await fetch(
+    `${process.env.REACT_APP_API_BASE_URL}/user/loadUser`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${Cookies.get("Auth_Token")}`,
+      },
 
-    method: "POST",
-    body: JSON.stringify({
-      token: Cookies.get("Auth_Token"),
-    }),
-  });
+      method: "POST",
+      body: JSON.stringify({
+        token: Cookies.get("Auth_Token"),
+      }),
+    }
+  );
   const { userId, username, profilePicture } = await res.json();
   dispatch(setUser({ userId, username, profilePicture }));
 };
 const verify = async () => {
   const token = Cookies.get("Auth_Token");
-  const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/verify`), {
+  const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/verify`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

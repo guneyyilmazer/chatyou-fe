@@ -1,31 +1,36 @@
 import { useState } from "react";
 import Cookies from "js-cookie";
 import getBase64 from "./GetBase64";
-import { API_BACKEND_SUFFIX, BACKEND_URL} from "..";
 const UpdateProfilePicture = () => {
   const [profilePicture, setProfilePicture] = useState<string>();
   const updateProfilePicture = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/verify`), {
-      headers: {
-        "Content-Type": "application/json",
-      },
+    const response = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/user/verify`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-      method: "POST",
-      body: JSON.stringify({ token: Cookies.get("Auth_Token") }),
-    });
+        method: "POST",
+        body: JSON.stringify({ token: Cookies.get("Auth_Token") }),
+      }
+    );
     const { userId } = await response.json();
-    const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/user/updateProfilePicture`), {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${Cookies.get("Auth_Token")}`,
-      },
-      method: "POST",
-      body: JSON.stringify({
-        userId,
-        profilePicture,
-      }),
-    });
+    const res = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/user/updateProfilePicture`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${Cookies.get("Auth_Token")}`,
+        },
+        method: "POST",
+        body: JSON.stringify({
+          userId,
+          profilePicture,
+        }),
+      }
+    );
     const data: { error?: string } = await res.json();
     if (data.error) alert(data.error);
     else window.location.reload();

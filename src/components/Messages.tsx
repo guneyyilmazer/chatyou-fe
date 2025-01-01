@@ -16,7 +16,6 @@ import {
 } from "../features/appSlice";
 import { useDispatch } from "react-redux";
 import { seenByUser } from "../types/AllTypes";
-import { API_BACKEND_SUFFIX, BACKEND_URL} from "../index";
 const DefaultProfilePicture = require("../images/default.jpeg");
 
 const Messages = () => {
@@ -45,20 +44,23 @@ const Messages = () => {
   const dispatch = useDispatch();
 
   const loadRoom = async () => {
-    const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/loadRoom`), {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${Cookies.get("Auth_Token")}`,
-      },
+    const res = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/room/loadRoom`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${Cookies.get("Auth_Token")}`,
+        },
 
-      method: "POST",
-      body: JSON.stringify({
-        room,
-        chattingWith,
-        userId: user.userId,
-        page,
-      }),
-    });
+        method: "POST",
+        body: JSON.stringify({
+          room,
+          chattingWith,
+          userId: user.userId,
+          page,
+        }),
+      }
+    );
     const response = await res.json();
     if (!response.error) {
       dispatch(setEmptyRoom(false));
@@ -75,7 +77,9 @@ const Messages = () => {
     }
     dispatch(setLoading(false));
   };
-  useEffect(()=>{loadRoom()}, [page]);
+  useEffect(() => {
+    loadRoom();
+  }, [page]);
   const scrollDown = () => {
     messageContainerRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -138,11 +142,10 @@ const Messages = () => {
       userMsg: user,
       content: string,
       pictures: string[],
-      sent: string,
+      sent: { hour: string; minute: string },
       profilePicture: string
     ) => {
-      const hours = sent.split(":")[0];
-      const minutes = sent.split(":")[1];
+      const { hour, minute } = sent;
       dispatch(setEmptyRoom(false));
       dispatch(setLoadedFirstMessages(true));
       userMsg.userId != user.userId
@@ -153,10 +156,7 @@ const Messages = () => {
               sender: userMsg,
               content,
               pictures,
-              sent:
-                (hours.length == 1 ? "0".concat(hours) : hours) +
-                ":" +
-                (minutes.length == 1 ? "0".concat(minutes) : minutes),
+              sent,
               profilePicture,
 
               seenBy: [
@@ -179,10 +179,7 @@ const Messages = () => {
               sender: userMsg,
               content,
               pictures,
-              sent:
-                (hours.length == 1 ? "0".concat(hours) : hours) +
-                ":" +
-                (minutes.length == 1 ? "0".concat(minutes) : minutes),
+              sent,
               profilePicture,
 
               seenBy: [
@@ -284,8 +281,8 @@ const Messages = () => {
             )}
             <div
               onMouseUp={() => {
-                  setShowSeen(true);
-                   item.seenBy && setSeenBy(item.seenBy);
+                setShowSeen(true);
+                item.seenBy && setSeenBy(item.seenBy);
               }}
               className={`word-break d-flex flex-column 
             ${
@@ -316,7 +313,7 @@ const Messages = () => {
                 ))}
               </div>
               <div className="username ms-1 d-flex justify-content-end align-items-end">
-                {item.sender.username} {item.sent}{" "}
+                {item.sender.username} {item.sent.hour}:{item.sent.minute}{" "}
               </div>
             </div>
             {item.sender.username == user.username && (

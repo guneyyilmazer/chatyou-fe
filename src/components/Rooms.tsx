@@ -4,8 +4,7 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setRoom } from "../features/appSlice";
-import {room} from '../types/AllTypes'
-import { API_BACKEND_SUFFIX, BACKEND_URL } from "..";
+import { room } from "../types/AllTypes";
 const Rooms = () => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
@@ -13,15 +12,18 @@ const Rooms = () => {
   const [rooms, setRooms] = useState<room[]>();
   const [loadedAll, setLoadedAll] = useState(false);
   const loadRooms = async () => {
-    const response = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/loadRooms`), {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${Cookies.get("Auth_Token")}`,
-      },
+    const response = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/room/loadRooms`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${Cookies.get("Auth_Token")}`,
+        },
 
-      method: "POST",
-      body: JSON.stringify({ page, amount }),
-    });
+        method: "POST",
+        body: JSON.stringify({ page, amount }),
+      }
+    );
     const res = await response.json();
     if (res.loadedAll) {
       setLoadedAll(true);
@@ -36,7 +38,9 @@ const Rooms = () => {
       setRooms(res.rooms);
     }
   };
-  useEffect(()=>{loadRooms()}, [page]);
+  useEffect(() => {
+    loadRooms();
+  }, [page]);
   return rooms && rooms.length != 0 ? (
     <div>
       <div className="text-white lead text-center mt-lg-5"> Select A Room </div>

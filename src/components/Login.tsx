@@ -1,19 +1,21 @@
 import { useRef } from "react";
 import Cookies from "js-cookie";
-import {BACKEND_URL,API_BACKEND_SUFFIX} from '../index'
 const Login = () => {
   const toAPI = async () => {
     if (usernameRef.current?.value && passwordRef.current?.value) {
-      const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/user/login`), {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({
-          username: usernameRef.current!.value,
-          password: passwordRef.current!.value,
-        }),
-      });
+      const res = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/user/login`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify({
+            username: usernameRef.current!.value,
+            password: passwordRef.current!.value,
+          }),
+        }
+      );
       const response = await res.json();
       if (!response.error) {
         Cookies.set("Auth_Token", response.AuthValidation, { expires: 5 });

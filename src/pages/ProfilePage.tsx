@@ -5,7 +5,6 @@ import Cookies from "js-cookie";
 import MyProfilePage from "../components/MyProfilePage";
 import { useDispatch } from "react-redux";
 import { setChattingWith, setRoom } from "../features/appSlice";
-import { API_BACKEND_SUFFIX, BACKEND_URL} from "..";
 const DefaultProfilePicture = require("../images/default.jpeg");
 
 const ProfilePage = () => {
@@ -23,33 +22,41 @@ const ProfilePage = () => {
   const [user, setUser] = useState<user>();
   const [client, setClient] = useState<client>();
   const getUserData = async () => {
-    const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/user/loadUser`), {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${Cookies.get("Auth_Token")}`,
-      },
-      method: "POST",
-      body: JSON.stringify({
-        userId,
-      }),
-    });
+    const res = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/user/loadUser`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${Cookies.get("Auth_Token")}`,
+        },
+        method: "POST",
+        body: JSON.stringify({
+          userId,
+        }),
+      }
+    );
 
     const user = await res.json();
     setUser(user);
 
-    const response = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/verify`), {
-      headers: {
-        "Content-Type": "application/json",
-      },
+    const response = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/user/verify`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-      method: "POST",
-      body: JSON.stringify({ token: Cookies.get("Auth_Token") }),
-    });
+        method: "POST",
+        body: JSON.stringify({ token: Cookies.get("Auth_Token") }),
+      }
+    );
     const client = await response.json();
     setClient(client);
   };
 
-  useEffect(()=>{getUserData()}, [userId]);
+  useEffect(() => {
+    getUserData();
+  }, [userId]);
   return (
     <div className="text-white mt-5 d-flex flex-column justify-content-center align-items-center">
       {user && client && (

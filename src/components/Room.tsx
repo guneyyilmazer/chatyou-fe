@@ -4,7 +4,6 @@ import SendMessage from "./SendMessage";
 import Cookies from "js-cookie";
 import { useSelector } from "react-redux";
 import { user } from "../types/AllTypes";
-import { API_BACKEND_SUFFIX, BACKEND_URL } from "..";
 const background = require("../images/background.jpeg");
 const Room = () => {
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
@@ -15,21 +14,26 @@ const Room = () => {
   const [user, setUser] = useState<user>();
 
   const loadUser = async () => {
-    const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/verify`), {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${Cookies.get("Auth_Token")}`,
-      },
+    const res = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/user/verify`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${Cookies.get("Auth_Token")}`,
+        },
 
-      method: "POST",
-      body: JSON.stringify({ token: Cookies.get("Auth_Token") }),
-    });
+        method: "POST",
+        body: JSON.stringify({ token: Cookies.get("Auth_Token") }),
+      }
+    );
     const response = await res.json();
     if (!response.error) {
       setUser(response);
     }
   };
-  useEffect(()=>{loadUser()}, []);
+  useEffect(() => {
+    loadUser();
+  }, []);
 
   if (user) {
     socket.emit(

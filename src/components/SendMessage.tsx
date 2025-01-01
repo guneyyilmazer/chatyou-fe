@@ -41,8 +41,9 @@ const SendMessage = () => {
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if ((inputState != "" || pictures?.length != 0) && user) {
+    if ((inputState !== "" || pictures?.length !== 0) && user) {
       socket.emit("send-msg", user, room, inputState, pictures, chattingWith);
+      console.log(user, room, inputState);
       setPictures([]);
       setInputState("");
       socket.emit("stopped-typing", user, room, chattingWith);

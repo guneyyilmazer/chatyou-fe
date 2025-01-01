@@ -1,32 +1,37 @@
 import { useRef, useState } from "react";
 import Cookies from "js-cookie";
-import { API_BACKEND_SUFFIX, BACKEND_URL} from "..";
 const UpdateProfilePicture = () => {
   const [error, setError] = useState<string>();
   const newEmailInput = useRef<HTMLInputElement>(null);
 
   const updateProfilePicture = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/verify`), {
-      headers: {
-        "Content-Type": "application/json",
-      },
+    const response = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/user/verify`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-      method: "POST",
-      body: JSON.stringify({ token: Cookies.get("Auth_Token") }),
-    });
+        method: "POST",
+        body: JSON.stringify({ token: Cookies.get("Auth_Token") }),
+      }
+    );
     const { userId } = await response.json();
-    const res = await fetch(BACKEND_URL.concat(`${API_BACKEND_SUFFIX}/user/updateEmail`), {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${Cookies.get("Auth_Token")}`,
-      },
-      method: "POST",
-      body: JSON.stringify({
-        userId,
-        newEmail: newEmailInput.current!.value,
-      }),
-    });
+    const res = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/user/updateEmail`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${Cookies.get("Auth_Token")}`,
+        },
+        method: "POST",
+        body: JSON.stringify({
+          userId,
+          newEmail: newEmailInput.current!.value,
+        }),
+      }
+    );
     const data: { error?: string } = await res.json();
     if (data.error) setError(data.error);
   };

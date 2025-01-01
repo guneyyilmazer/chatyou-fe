@@ -6,7 +6,7 @@ export type message = {
     };
     content:  string ;
     pictures?: string[]
-    sent:string,
+    sent:{hour:string,minute:string},
     profilePicture:string,
     seenBy:seenByUser[]
   };
