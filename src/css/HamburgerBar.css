@@ -1,26 +1,9 @@
 /* 600 and over */
-@media (min-width: 600px) {
-  .hamburger-bar {
-    display: none !important;
-  }
-  .collapsed {
-    display: none !important;
-  }
-}
+
 button {
   border: none;
 }
-.collapsed {
-  display: block;
-}
 
-.hamburger-bar {
-  height: 100svh;
-  position: absolute;
-  width: 100vw;
-  background-color: rgb(20, 20, 20);
-  font-size: large;
-}
 .button-group button {
   background: none;
   padding: 20px;

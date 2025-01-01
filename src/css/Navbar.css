@@ -1,9 +1,0 @@
-@media (max-width: 600px) {
-  .nav {
-    display: none !important;
-  }
-}
-.nav {
-  display: flex;
-  justify-content: space-between;
-}

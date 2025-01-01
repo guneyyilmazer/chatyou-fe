@@ -3,7 +3,6 @@ import SearchBar from "./SearchBar";
 import { useSelector, useDispatch } from "react-redux";
 import { setRoom, setChattingWith } from "../features/appSlice";
 import Cookies from "js-cookie";
-import "../css/Navbar.css";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 const Navbar = () => {
@@ -12,7 +11,10 @@ const Navbar = () => {
   const room = useSelector((shop: any) => shop.app.room); //will implement the type later
   const chattingWith = useSelector((shop: any) => shop.app.chattingWith); //will implement the type later
   return (
-    <nav className="nav">
+    <nav
+      className="d-none d-md-flex justify-content-between"
+      style={{ height: "3vh" }}
+    >
       <div>
         <button
           onClick={() => {

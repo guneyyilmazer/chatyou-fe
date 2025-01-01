@@ -228,7 +228,7 @@ const Messages = () => {
           />
         </div>
       )}
-      <div className="position-absolute mb-1 w-100 bottom-0 start-0 text-white d-flex justify-content-center align-items-center">
+      <div className="position-absolute mb-5 w-100 bottom-0 start-0 text-white d-flex justify-content-center align-items-center">
         {typing && typing.length == 1 && typing[0].username + " is typing..."}
         {typing &&
           typing.length == 2 &&

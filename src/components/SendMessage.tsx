@@ -21,9 +21,9 @@ const SendMessage = () => {
 
   const handleTyping = (e: ChangeEvent<HTMLInputElement>) => {
     clearTimeout(timer);
-    socket.emit("typing", user, room, chattingWith);
+    socket.emit("typing", user, room);
     const newTimer = setTimeout(
-      () => socket.emit("stopped-typing", user, room, chattingWith),
+      () => socket.emit("stopped-typing", user, room),
       700
     );
     setTimer(newTimer);
@@ -43,7 +43,6 @@ const SendMessage = () => {
     e.preventDefault();
     if ((inputState !== "" || pictures?.length !== 0) && user) {
       socket.emit("send-msg", user, room, inputState, pictures, chattingWith);
-      console.log(user, room, inputState);
       setPictures([]);
       setInputState("");
       socket.emit("stopped-typing", user, room, chattingWith);

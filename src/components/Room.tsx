@@ -47,7 +47,7 @@ const Room = () => {
       className="d-flex flex-column justify-content-center align-items-center col-12"
       style={{
         backgroundImage: `url(${background})`,
-        height: "95svh",
+        height: "97vh",
         backgroundSize: "600px",
       }}
     >
