@@ -148,6 +148,8 @@ const Messages = () => {
       const { hour, minute } = sent;
       dispatch(setEmptyRoom(false));
       dispatch(setLoadedFirstMessages(true));
+      console.log(userMsg);
+
       userMsg.userId != user.userId
         ? //this is the initial value of seenBy, it's later being updated with "update-msg"
           setMessages([
@@ -272,8 +274,8 @@ const Messages = () => {
                   style={{ height: "35px", width: "35px" }}
                   className="rounded-5"
                   src={
-                    item.profilePicture
-                      ? item.profilePicture
+                    item.sender.profilePicture
+                      ? item.sender.profilePicture
                       : DefaultProfilePicture
                   }
                 />
@@ -326,8 +328,8 @@ const Messages = () => {
                   style={{ height: "35px", width: "35px", cursor: "pointer" }}
                   className="ms-2 rounded-5"
                   src={
-                    item.profilePicture
-                      ? item.profilePicture
+                    item.sender.profilePicture
+                      ? item.sender.profilePicture
                       : DefaultProfilePicture
                   }
                 />

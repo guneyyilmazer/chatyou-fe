@@ -2,7 +2,8 @@ import {seenByUser} from './AllTypes'
 export type message = {
     sender:  {
       username:string,
-      userId:string
+      userId:string,
+      profilePicture?:string
     };
     content:  string ;
     pictures?: string[]
